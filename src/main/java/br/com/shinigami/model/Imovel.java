@@ -1,18 +1,39 @@
 package br.com.shinigami.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public abstract class Imovel implements Impressao {
 
     private Endereco endereco;
-    private int qntdQuartos, qntdBanheiros, idImovel;
-    private double valorMensal, condominio;
-    private boolean alugado, ativo;
+    @NotEmpty
+    private int qntdQuartos;
+    @NotEmpty
+    private int qntdBanheiros;
+    @NotEmpty
+    private int idImovel;
+    @NotEmpty
+    private double valorMensal;
+    @NotEmpty
+    private double condominio;
+    @NotBlank
+    @Size(max=1)
+    private boolean alugado;
+    @NotBlank
+    @Size(max=1)
+    private boolean ativo;
     private TipoImovel tipoImovel;
+    @NotEmpty
     private int idEndereco;
     private Cliente dono;
-
-    public Imovel() {
-    }
-
 
     public Imovel(Endereco endereco, int qntdQuartos, int qntdBanheiros, double valorMensal, double condominio, TipoImovel tipoImovel) {
         this.endereco = endereco;
@@ -22,79 +43,6 @@ public abstract class Imovel implements Impressao {
         this.condominio = condominio;
         this.tipoImovel = tipoImovel;
         alugado = false;
-    }
-
-
-    public int getIdImovel() {
-        return idImovel;
-    }
-
-    public void setIdImovel(int idImovel) {
-        this.idImovel = idImovel;
-    }
-
-    public Cliente getDono() {
-        return dono;
-    }
-
-    public void setDono(Cliente dono) {
-        this.dono = dono;
-    }
-
-    public int getQntdQuartos() {
-        return qntdQuartos;
-    }
-
-    public void setQntdQuartos(int qntdQuartos) {
-        this.qntdQuartos = qntdQuartos;
-    }
-
-    public int getQntdBanheiros() {
-        return qntdBanheiros;
-    }
-
-    public void setQntdBanheiros(int qntdBanheiros) {
-        this.qntdBanheiros = qntdBanheiros;
-    }
-
-    public double getValorMensal() {
-        return valorMensal;
-    }
-
-    public void setValorMensal(double valorMensal) {
-        this.valorMensal = valorMensal;
-    }
-
-    public double getCondominio() {
-        return condominio;
-    }
-
-    public void setCondominio(double condominio) {
-        this.condominio = condominio;
-    }
-
-    public boolean isAlugado() {
-        return alugado;
-    }
-
-    public void setAlugado(boolean alugado) {
-        this.alugado = alugado;
-    }
-
-    public TipoImovel getTipoImovel() {
-        return tipoImovel;
-    }
-
-    public void setTipoImovel(TipoImovel tipoImovel) {
-        this.tipoImovel = tipoImovel;
-    }
-
-    public Endereco getEndereco() {
-        return endereco;
-    }
-
-    public void setEndereco(Endereco endereco) {
-        this.endereco = endereco;
     }
 
     public boolean isAtivo() {

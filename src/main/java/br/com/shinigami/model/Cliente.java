@@ -1,17 +1,38 @@
 package br.com.shinigami.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class Cliente implements Impressao {
 
+    @NotBlank
+    @Size(max=100)
     private String nome;
+    @NotBlank
+    @Size(max=11)
     private String cpf;
+    @NotBlank
+    @Size(max=100)
     private String email;
+    @NotBlank
+    @Size(max=14)
     private String telefone;
+    @NotEmpty
     private int idCliente;
+    @NotBlank
+    @Size(max=1)
     private boolean ativo;
+    @NotBlank
     private TipoCliente tipoCliente;
-
-    public Cliente() {
-    }
 
     public Cliente(int idCliente, String nome, String cpf, String email, String telefone, TipoCliente tipoCliente) {
         this.idCliente = idCliente;
@@ -28,54 +49,6 @@ public class Cliente implements Impressao {
 
     public void setAtivo(boolean ativo) {
         this.ativo = ativo;
-    }
-
-    public int getIdCliente() {
-        return idCliente;
-    }
-
-    public void setIdCliente(int idCliente) {
-        this.idCliente = idCliente;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
-    }
-
-    public String getCpf() {
-        return cpf;
-    }
-
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public String getTelefone() {
-        return telefone;
-    }
-
-    public void setTelefone(String telefone) {
-        this.telefone = telefone;
-    }
-
-    public TipoCliente getTipoCliente() {
-        return tipoCliente;
-    }
-
-    public void setTipoCliente(TipoCliente tipoCliente) {
-        this.tipoCliente = tipoCliente;
     }
 
     @Override

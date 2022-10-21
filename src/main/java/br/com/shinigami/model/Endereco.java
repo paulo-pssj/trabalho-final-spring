@@ -1,8 +1,39 @@
 package br.com.shinigami.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
+
+@NoArgsConstructor
+@Getter
+@Setter
 public class Endereco implements Impressao {
-    private String rua, cidade, estado, pais, cep, complemento;
-    private int idEndereco, numero;
+    @NotBlank
+    @Size(max=50)
+    private String rua;
+    @NotBlank
+    @Size(max=50)
+    private String cidade;
+    @NotBlank
+    @Size(max=50)
+    private String estado;
+    @NotBlank
+    @Size(max=50)
+    private String pais;
+    @NotBlank
+    @Size(max=9)
+    private String cep;
+    @NotBlank
+    @Size(max=50)
+    private String complemento;
+    @NotEmpty
+    private int idEndereco;
+    @NotEmpty
+    private int numero;
 
     public Endereco(int idEndereco, String rua, String cidade, String estado, String pais, String cep, int numero, String complemento) {
         this.idEndereco = idEndereco;
@@ -14,74 +45,6 @@ public class Endereco implements Impressao {
         this.numero = numero;
         this.complemento = complemento;
     }
-
-    public int getIdEndereco() {
-        return idEndereco;
-    }
-
-    public void setIdEndereco(int idEndereco) {
-        this.idEndereco = idEndereco;
-    }
-
-    public Endereco() {
-    }
-
-    public String getRua() {
-        return rua;
-    }
-
-    public void setRua(String rua) {
-        this.rua = rua;
-    }
-
-    public String getCidade() {
-        return cidade;
-    }
-
-    public void setCidade(String cidade) {
-        this.cidade = cidade;
-    }
-
-    public String getEstado() {
-        return estado;
-    }
-
-    public void setEstado(String estado) {
-        this.estado = estado;
-    }
-
-    public String getPais() {
-        return pais;
-    }
-
-    public void setPais(String pais) {
-        this.pais = pais;
-    }
-
-    public String getCep() {
-        return cep;
-    }
-
-    public void setCep(String cep) {
-        this.cep = cep;
-    }
-
-    public int getNumero() {
-        return numero;
-    }
-
-    public void setNumero(int numero) {
-        this.numero = numero;
-    }
-
-    public String getComplemento() {
-        return complemento;
-    }
-
-    public void setComplemento(String complemento) {
-        this.complemento = complemento;
-    }
-
     @Override
     public void imprimir() {
         System.out.println("País: " + pais + " - " +

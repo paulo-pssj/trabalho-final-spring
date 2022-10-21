@@ -1,19 +1,34 @@
 package br.com.shinigami.model;
 
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Size;
 import java.time.LocalDate;
-
+@NoArgsConstructor
+@Getter
+@Setter
 public class Contrato implements Impressao {
-    private Cliente locador, locatario;
+    @NotEmpty
+    private Cliente locador;
+    @NotEmpty
+    private Cliente locatario;
+    @NotEmpty
     private double valorAluguel;
-    private LocalDate dataEntrada, dataVencimento;
+    @NotBlank
+    private LocalDate dataEntrada;
+    @NotBlank
+    private LocalDate dataVencimento;
+    @NotEmpty
     private Imovel imovel;
+    @NotEmpty
     private int idContrato;
+    @NotBlank
+    @Size(max=1)
     private boolean ativo;
-
-    public Contrato() {
-
-    }
-
     public Contrato(int idContrato, Cliente locador, Cliente locatario, double valorAluguel, LocalDate dataEntrada, LocalDate dataVencimento, Imovel imovel) {
         this.locador = locador;
         this.locatario = locatario;
@@ -21,63 +36,6 @@ public class Contrato implements Impressao {
         this.dataEntrada = dataEntrada;
         this.dataVencimento = dataVencimento;
         this.imovel = imovel;
-        this.idContrato = idContrato;
-    }
-
-
-    public Cliente getLocador() {
-        return locador;
-    }
-
-    public void setLocador(Cliente locador) {
-        this.locador = locador;
-    }
-
-    public Cliente getLocatario() {
-        return locatario;
-    }
-
-    public void setLocatario(Cliente locatario) {
-        this.locatario = locatario;
-    }
-
-    public double getValorAluguel() {
-        return valorAluguel;
-    }
-
-    public void setValorAluguel(double valorAluguel) {
-        this.valorAluguel = valorAluguel;
-    }
-
-    public LocalDate getDataEntrada() {
-        return dataEntrada;
-    }
-
-    public void setDataEntrada(LocalDate dataEntrada) {
-        this.dataEntrada = dataEntrada;
-    }
-
-    public Imovel getImovel() {
-        return imovel;
-    }
-
-    public void setImovel(Imovel imovel) {
-        this.imovel = imovel;
-    }
-
-    public LocalDate getDataVencimento() {
-        return dataVencimento;
-    }
-
-    public void setDataVencimento(LocalDate dataVencimento) {
-        this.dataVencimento = dataVencimento;
-    }
-
-    public int getIdContrato() {
-        return idContrato;
-    }
-
-    public void setIdContrato(int idContrato) {
         this.idContrato = idContrato;
     }
 
