@@ -1,5 +1,6 @@
 package br.com.shinigami.model;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,24 +15,14 @@ import javax.validation.constraints.Size;
 public abstract class Imovel implements Impressao {
 
     private Endereco endereco;
-    @NotEmpty
     private int qntdQuartos;
-    @NotEmpty
     private int qntdBanheiros;
-    @NotEmpty
     private int idImovel;
-    @NotEmpty
     private double valorMensal;
-    @NotEmpty
     private double condominio;
-    @NotBlank
-    @Size(max=1)
     private boolean alugado;
-    @NotBlank
-    @Size(max=1)
     private boolean ativo;
     private TipoImovel tipoImovel;
-    @NotEmpty
     private int idEndereco;
     private Cliente dono;
 
@@ -43,14 +34,6 @@ public abstract class Imovel implements Impressao {
         this.condominio = condominio;
         this.tipoImovel = tipoImovel;
         alugado = false;
-    }
-
-    public boolean isAtivo() {
-        return ativo;
-    }
-
-    public void setAtivo(boolean ativo) {
-        this.ativo = ativo;
     }
 
     @Override
