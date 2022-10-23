@@ -1,4 +1,4 @@
-package br.com.shinigami.dto;
+package br.com.shinigami.dto.Imovel;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Endereco;
@@ -29,10 +29,6 @@ public class ImovelCreateDTO {
     @NotBlank
     @Size(max=1)
     private boolean alugado;
-
-    @NotBlank
-    @Size(max=1)
-    private boolean ativo;
 
     @NotBlank
     private TipoImovel tipoImovel;

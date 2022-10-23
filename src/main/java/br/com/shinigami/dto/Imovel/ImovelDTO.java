@@ -1,4 +1,4 @@
-package br.com.shinigami.dto;
+package br.com.shinigami.dto.Imovel;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Endereco;

@@ -1,16 +1,15 @@
 package br.com.shinigami.model;
 
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 import java.time.LocalDate;
 @NoArgsConstructor
-@Getter
-@Setter
+@Data
 public class Contrato implements Impressao {
     @NotEmpty
     private Cliente locador;
