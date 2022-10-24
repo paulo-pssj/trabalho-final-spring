@@ -1,52 +1,71 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.dto.Contrato.ContratoCreateDTO;
+import br.com.shinigami.dto.Contrato.ContratoDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Contrato;
 import br.com.shinigami.repository.ContratoRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class ContratoService {
 
     private final ContratoRepository contratoRepository;
+    private final ObjectMapper objectMapper;
 
-    public ContratoService(ContratoRepository contratoRepository) {
-        this.contratoRepository = contratoRepository;
+    public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException, BancoDeDadosException {
+        Contrato contratoNovo = objectMapper.convertValue(contrato, Contrato.class);
+        log.info("Criando contrato...");
+        Contrato contratoAdicionado = contratoRepository.adicionar(contratoNovo);
+        log.info("Contrato criado com sucesso!");
+        return objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
     }
 
-    @Override
-    public boolean adicionar(Contrato contrato) throws RegraDeNegocioException, BancoDeDadosException {
-            contratoRepository.adicionar(contrato);
-            return true;
+
+    public void remover(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Removendo Contrato...");
+        if(contratoRepository.buscarContrato(id)==null){
+            throw new RegraDeNegocioException("Contrato não encontrado!");
+        }
+        contratoRepository.remover(id);
+        log.info("Contrato Removido!");
     }
 
-    @Override
-    public boolean remover(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-            boolean conseguiuRemover = contratoRepository.remover(id);
-            return conseguiuRemover;
+
+    public void editar(Integer id, ContratoCreateDTO contrato) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Editando Contrato...");
+        if(contratoRepository.buscarContrato(id)==null){
+            throw new RegraDeNegocioException("Contrato não encontrado!");
+        }
+        contratoRepository.editar(id, objectMapper.convertValue(contrato,Contrato.class));
+        log.info("Contrato Editado!");
     }
 
-    @Override
-    public void editar(Integer id, Contrato contrato) throws RegraDeNegocioException, BancoDeDadosException {
-            contratoRepository.editar(id, contrato);
+
+    public List<ContratoDTO> listar() throws BancoDeDadosException {
+        List<Contrato> listar = contratoRepository.listar();
+        return listar.stream()
+                .map(contrato -> objectMapper.convertValue(contrato,ContratoDTO.class))
+                .toList();
     }
 
-    @Override
-    public void listar() throws BancoDeDadosException {
-          List<Contrato> listar = contratoRepository.listar();
-          listar.forEach(contrato -> {
-              System.out.println("id:" + contrato.getIdContrato() +
-                      " | Nome Locatario: " + contrato.getLocatario().getNome() +
-                      " | Nome Locador: " + contrato.getLocador().getNome());
-          });
-
-    }
-
-    public Contrato buscarContrato(int id) throws RegraDeNegocioException, BancoDeDadosException {
-            return contratoRepository.buscarContrato(id);
+    public ContratoDTO buscarContrato(int id) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Buscando Contrato...");
+        Contrato contrato = contratoRepository.buscarContrato(id);
+        if(contrato==null){
+            throw new RegraDeNegocioException("Contrato não encontrado!");
+        }
+        log.info("Contrato encontrado!!");
+        return objectMapper.convertValue(contrato,ContratoDTO.class);
     }
 
 

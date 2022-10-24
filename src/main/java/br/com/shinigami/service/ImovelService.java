@@ -1,57 +1,76 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.dto.Imovel.ImovelCreateDTO;
+import br.com.shinigami.dto.Imovel.ImovelDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Imovel;
 import br.com.shinigami.repository.ImovelRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+@RequiredArgsConstructor
+@Slf4j
 @Service
 public class ImovelService {
     private final ImovelRepository imovelRepository;
 
-    public ImovelService(ImovelRepository imovelRepository) {
-        this.imovelRepository = imovelRepository;
+    private final ObjectMapper objectMapper;
+
+    public void adicionar(ImovelCreateDTO imovel) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Criando Imovel...");
+            imovelRepository.adicionar(objectMapper.convertValue(imovel,Imovel.class));
+        log.info("Imovel Criado!!");
     }
 
 
-    public boolean adicionar(Imovel imovel) throws RegraDeNegocioException, BancoDeDadosException {
-            imovelRepository.adicionar(imovel);
-            return true;
+    public void remover(Integer id) throws RegraDeNegocioException, BancoDeDadosException{
+
+        if(imovelRepository.buscarImovel(id)==null){
+            throw new RegraDeNegocioException("Imovel não Encontrado!");
+        }
+            log.info("Deletando Imovel...");
+            imovelRepository.remover(id);
+            log.info("Imovel Deletado!!");
     }
 
 
-    public boolean remover(Integer id) throws RegraDeNegocioException, BancoDeDadosException{
-            boolean conseguiuRemover = imovelRepository.remover(id);
-            return conseguiuRemover;
+    public void editar(Integer id, ImovelCreateDTO imovel) throws RegraDeNegocioException, BancoDeDadosException {
+            if(imovelRepository.buscarImovel(id)==null){
+                throw new RegraDeNegocioException("Imovel Não Encontrado");
+            }
+            log.info("Editando Imovel");
+            imovelRepository.editar(id, objectMapper.convertValue(imovel,Imovel.class));
     }
 
 
-    public void editar(Integer id, Imovel imovel) throws RegraDeNegocioException, BancoDeDadosException {
-            imovelRepository.editar(id, imovel);
-    }
-
-
-    public void listar() throws BancoDeDadosException{
+    public List<ImovelDTO> listar() throws BancoDeDadosException{
             List<Imovel> listar = imovelRepository.listar();
-            listar.forEach(imovel -> {
-                System.out.println("id: " + imovel.getIdImovel() + "| Dono: " + imovel.getDono().getNome() + "| Alugado: " + (imovel.isAlugado() ? "SIM" : "NÃO"));
-            });
+            return listar.stream()
+                    .map(imovel -> objectMapper.convertValue(imovel,ImovelDTO.class))
+                    .toList();
     }
 
-    public void listarImoveisDisponiveis() throws RegraDeNegocioException, BancoDeDadosException{
+    public List<ImovelDTO> listarImoveisDisponiveis() throws RegraDeNegocioException, BancoDeDadosException{
             List<Imovel> listar = imovelRepository.listarImoveisDisponiveis();
-            listar.forEach(imovel -> {
-                System.out.println("id: " + imovel.getIdImovel() + "| Dono: " + imovel.getDono().getNome() + "| Alugado: " + (imovel.isAlugado() ? "SIM" : "NÃO"));
-            });
-
+            return listar.stream()
+                    .map(imovel -> objectMapper.convertValue(imovel,ImovelDTO.class))
+                    .toList();
     }
 
-    public Imovel buscarImovel(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
-            return imovelRepository.buscarImovel(id);
+    public ImovelDTO buscarImovel(Integer id) throws RegraDeNegocioException, BancoDeDadosException {
+        log.info("Buscando imovel...");
+        Imovel imovel = imovelRepository.buscarImovel(id);
+        if(imovel == null){
+            throw new RegraDeNegocioException("Imovel não encontrando!");
+        }
+        log.info("Imovel encontrado!!");
+        return objectMapper.convertValue(imovel,ImovelDTO.class);
 
     }
 }

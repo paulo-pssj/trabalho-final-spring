@@ -9,9 +9,10 @@ import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.Size;
 
-@NoArgsConstructor
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public abstract class Imovel implements Impressao {
 
     private Endereco endereco;
@@ -25,16 +26,6 @@ public abstract class Imovel implements Impressao {
     private TipoImovel tipoImovel;
     private int idEndereco;
     private Cliente dono;
-
-    public Imovel(Endereco endereco, int qntdQuartos, int qntdBanheiros, double valorMensal, double condominio, TipoImovel tipoImovel) {
-        this.endereco = endereco;
-        this.qntdQuartos = qntdQuartos;
-        this.qntdBanheiros = qntdBanheiros;
-        this.valorMensal = valorMensal;
-        this.condominio = condominio;
-        this.tipoImovel = tipoImovel;
-        alugado = false;
-    }
 
     @Override
     public void imprimir() {
