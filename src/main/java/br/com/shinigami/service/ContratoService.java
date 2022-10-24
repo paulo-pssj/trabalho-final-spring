@@ -9,7 +9,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 @Service
-public class ContratoService implements ServiceInterface<Contrato> {
+public class ContratoService {
 
     private final ContratoRepository contratoRepository;
 

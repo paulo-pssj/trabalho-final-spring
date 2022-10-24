@@ -1,51 +1,68 @@
 package br.com.shinigami.service;
 
+import br.com.shinigami.dto.Cliente.ClienteCreateDTO;
+import br.com.shinigami.dto.Cliente.ClienteDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.repository.ClienteRepository;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
+@RequiredArgsConstructor
+@Slf4j
 @Service
-public class ClienteService implements ServiceInterface<Cliente> {
+public class ClienteService {
 
 
     private final ClienteRepository clienteRepository;
 
-    public ClienteService(ClienteRepository clienteRepository) {
-        this.clienteRepository = clienteRepository;
+    private final ObjectMapper objectMapper;
+
+
+
+    public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException,BancoDeDadosException {
+            Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
+            log.info("criando cliente...");
+            Cliente pessoaAdicionada = clienteRepository.adicionar(clienteNovo);
+            log.info("Cliente criado com sucesso!");
+            return objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
     }
 
-    @Override
-    public boolean adicionar(Cliente pessoa) throws RegraDeNegocioException,BancoDeDadosException {
 
-            Cliente pessoaAdicionada = clienteRepository.adicionar(pessoa);
-            return true;
+    public void delete(Integer id) throws RegraDeNegocioException,BancoDeDadosException {
+            log.info("Deletando cliente...");
+            Cliente clienteRecovery = clienteRepository.listar().stream()
+                    .filter(cliente -> cliente.getIdCliente().equals(id))
+                    .findFirst()
+                    .orElseThrow(() -> new RegraDeNegocioException("Cliente não encontrado!"));
+            clienteRepository.listar().remove(clienteRecovery);
+            log.info("Cliente deletado com sucesso!");
     }
 
-    @Override
-    public boolean remover(Integer id) throws RegraDeNegocioException,BancoDeDadosException {
-            boolean conseguiuRemover = clienteRepository.remover(id);
-            return conseguiuRemover;
+
+    public ClienteDTO update(Integer id, ClienteCreateDTO clienteUpdate) throws RegraDeNegocioException,BancoDeDadosException {
+        log.info("Atualizando cliente...");
+        Cliente clienteRecovery = clienteRepository.listar().stream()
+                .filter(cliente -> cliente.getIdCliente().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RegraDeNegocioException("Cliente não encontrado!"));
+        clienteRecovery.setNome(clienteUpdate.getNome());
+        clienteRecovery.setCpf(clienteUpdate.getCpf());
+        clienteRecovery.setEmail(clienteUpdate.getEmail());
+        log.info("Cliente atualizado com sucesso!");
+        return objectMapper.convertValue(clienteRecovery, ClienteDTO.class);
     }
 
-    @Override
-    public void editar(Integer id, Cliente pessoa) throws RegraDeNegocioException,BancoDeDadosException {
-        try {
-            boolean conseguiuEditar = clienteRepository.editar(id, pessoa);
-        } catch (BancoDeDadosException e) {
-            e.printStackTrace();
-        }
-    }
 
-    @Override
-    public void listar() throws BancoDeDadosException {
-            List<Cliente> listar = clienteRepository.listar();
-            listar.forEach(cliente -> {
-                System.out.println("id:" + cliente.getIdCliente() + " | Nome: " + cliente.getNome());
-            });
-    }
+//    public void listar() throws BancoDeDadosException {
+//            List<Cliente> listar = clienteRepository.listar();
+//            listar.forEach(cliente -> {
+//                System.out.println("id:" + cliente.getIdCliente() + " | Nome: " + cliente.getNome());
+//            });
+//    }
 
     public Cliente buscarCliente(String busca) throws RegraDeNegocioException,BancoDeDadosException {
             int id = Integer.parseInt(busca.trim());

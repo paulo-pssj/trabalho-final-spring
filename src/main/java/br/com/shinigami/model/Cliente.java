@@ -23,7 +23,7 @@ public class Cliente implements Impressao {
     @Size(max=14)
     private String telefone;
     @NotEmpty
-    private int idCliente;
+    private Integer idCliente;
     @NotBlank
     @Size(max=1)
     private boolean ativo;
