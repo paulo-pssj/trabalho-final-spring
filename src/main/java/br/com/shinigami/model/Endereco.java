@@ -17,7 +17,7 @@ public class Endereco implements Impressao {
     private String pais;
     private String cep;
     private String complemento;
-    private int idEndereco;
+    private Integer idEndereco;
     private int numero;
 
     @Override

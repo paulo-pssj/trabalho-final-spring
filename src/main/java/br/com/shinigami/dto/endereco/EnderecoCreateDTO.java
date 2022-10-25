@@ -1,4 +1,4 @@
-package br.com.shinigami.dto.Endereco;
+package br.com.shinigami.dto.endereco;
 
 import lombok.Data;
 

@@ -1,7 +1,7 @@
 package br.com.shinigami.service;
 
-import br.com.shinigami.dto.Cliente.ClienteCreateDTO;
-import br.com.shinigami.dto.Cliente.ClienteDTO;
+import br.com.shinigami.dto.cliente.ClienteCreateDTO;
+import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
@@ -24,7 +24,7 @@ public class ClienteService {
     public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException, BancoDeDadosException {
         Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
         log.info("criando cliente...");
-        Cliente pessoaAdicionada = clienteRepository.adicionar(clienteNovo);
+        Cliente pessoaAdicionada = clienteRepository.create(clienteNovo);
         log.info("Cliente criado com sucesso!");
         return objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
     }
@@ -36,7 +36,7 @@ public class ClienteService {
         if (clienteRecovery == null) {
             throw new RegraDeNegocioException("Cliente não encontrado!");
         }
-        clienteRepository.remover(clienteRecovery.getIdCliente());
+        clienteRepository.delete(clienteRecovery.getIdCliente());
         log.info("Cliente deletado com sucesso!");
     }
 
@@ -56,15 +56,14 @@ public class ClienteService {
 
 
     public List<ClienteDTO> list() throws BancoDeDadosException {
-        List<Cliente> listar = clienteRepository.listar();
+        List<Cliente> listar = clienteRepository.list();
         return listar.stream()
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
     }
 
-    public ClienteDTO buscarCliente(String busca) throws RegraDeNegocioException, BancoDeDadosException {
-        int id = Integer.parseInt(busca.trim());
-        return objectMapper.convertValue(clienteRepository.buscarCliente(id), ClienteDTO.class);
+    public ClienteDTO buscarCliente(Integer idCliente) throws RegraDeNegocioException, BancoDeDadosException {
+        return objectMapper.convertValue(clienteRepository.buscarCliente(idCliente), ClienteDTO.class);
     }
 
 }

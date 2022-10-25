@@ -1,8 +1,10 @@
 package br.com.shinigami.repository;
 
+import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.TipoCliente;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -10,8 +12,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@RequiredArgsConstructor
 public class ClienteRepository implements Repositorio<Integer, Cliente> {
 
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT seq_cliente.nextval mysequence from DUAL";
@@ -27,10 +31,10 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
     }
 
     @Override
-    public Cliente adicionar(Cliente cliente) throws BancoDeDadosException {
+    public Cliente create(Cliente cliente) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             cliente.setIdCliente(proximoId);
@@ -65,10 +69,10 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public boolean delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CLIENTE SET ativo = ? WHERE id_cliente = ?";
 
@@ -95,10 +99,10 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
     }
 
     @Override
-    public boolean editar(Integer id, Cliente cliente) throws BancoDeDadosException {
+    public Cliente update(Integer id, Cliente cliente) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CLIENTE SET " +
                     " cpf = ?," +
@@ -120,7 +124,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             // Executa-se a consulta
             int res = stmt.executeUpdate();
 
-            return res > 0;
+            return cliente;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
         } finally {
@@ -135,11 +139,11 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
     }
 
     @Override
-    public List<Cliente> listar() throws BancoDeDadosException {
+    public List<Cliente> list() throws BancoDeDadosException {
         List<Cliente> clientes = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM CLIENTE WHERE ATIVO LIKE 'T'";
@@ -175,7 +179,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
         Cliente cliente = new Cliente();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM CLIENTE WHERE id_cliente = ?";
 
@@ -209,7 +213,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
         Cliente cliente = new Cliente();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM CLIENTE WHERE UPPER(nome) = ? or UPPER(telefone) = ? or UPPER(cpf) = ? or UPPER(email) = ?";
 

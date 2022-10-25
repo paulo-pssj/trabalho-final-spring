@@ -1,4 +1,4 @@
-package br.com.shinigami.imobiliaria;
+package br.com.shinigami;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

@@ -1,4 +1,4 @@
-package br.com.shinigami.dto.Contrato;
+package br.com.shinigami.dto.contrato;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Imovel;

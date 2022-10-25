@@ -1,4 +1,4 @@
-package br.com.shinigami.dto.Imovel;
+package br.com.shinigami.dto.imovel;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Endereco;
@@ -13,27 +13,26 @@ import javax.validation.constraints.Size;
 public class ImovelCreateDTO {
 
     private Endereco endereco;
-
     @NotEmpty
     private int qntdQuartos;
-
     @NotEmpty
     private int qntdBanheiros;
-
     @NotEmpty
     private double valorMensal;
-
     @NotEmpty
     private double condominio;
-
     @NotBlank
     @Size(max=1)
     private boolean alugado;
-
     @NotBlank
     private TipoImovel tipoImovel;
-
     @NotEmpty
     private int idEndereco;
+    private boolean areaDeLazer = false;
+    private boolean garagem = false;
+    private boolean permiteAnimais = false;
+    private boolean salaoDeFesta = false;
+    private int numeroDeVagas = 0;
     private Cliente dono;
+
 }

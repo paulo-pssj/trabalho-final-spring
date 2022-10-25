@@ -1,14 +1,25 @@
 package br.com.shinigami.repository;
 
+import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Contrato;
 import br.com.shinigami.model.Imovel;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@RequiredArgsConstructor
 public class ContratoRepository implements Repositorio<Integer, Contrato> {
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
+    private final ImovelRepository imovelRepository;
+    private final ClienteRepository clienteRepository;
+
+
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT seq_contrato.nextval mysequence from DUAL";
@@ -24,10 +35,10 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     }
 
     @Override
-    public Contrato adicionar(Contrato contrato) throws BancoDeDadosException {
+    public Contrato create(Contrato contrato) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer idProxContrato = getProximoId(con);
             contrato.setIdContrato(idProxContrato);
@@ -48,9 +59,8 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setString(8, contrato.isAtivo() ? "T" : "F");
 
             int res = stmt.executeUpdate();
-            ImovelRepository imovelRepository = new ImovelRepository();
             contrato.getImovel().setAlugado(true);
-            imovelRepository.editar(contrato.getImovel().getIdImovel(), contrato.getImovel());
+            imovelRepository.update(contrato.getImovel().getIdImovel(), contrato.getImovel());
             return contrato;
 
         } catch (BancoDeDadosException e) {
@@ -70,11 +80,10 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public boolean delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
-        ImovelRepository imovelRepository = new ImovelRepository();
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CONTRATO SET ativo = ? WHERE ID_CONTRATO = ?";
 
@@ -86,7 +95,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             int res = stmt.executeUpdate();
             Imovel imovel = buscarContrato(id).getImovel();
             imovel.setAlugado(false);
-            imovelRepository.editar(buscarContrato(id).getImovel().getIdImovel(), imovel);
+            imovelRepository.update(buscarContrato(id).getImovel().getIdImovel(), imovel);
             return res > 0;
 
         } catch (SQLException e) {
@@ -103,10 +112,10 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     }
 
     @Override
-    public boolean editar(Integer id, Contrato contrato) throws BancoDeDadosException {
+    public Contrato update(Integer id, Contrato contrato) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE CONTRATO SET " +
                     "DATA_ENTRADA = ?, " +
@@ -124,7 +133,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setInt(5, id);
 
             int res = stmt.executeUpdate();
-            return res > 0;
+            return contrato;
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -140,10 +149,10 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     }
 
     @Override
-    public List<Contrato> listar() throws BancoDeDadosException {
+    public List<Contrato> list() throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             List<Contrato> contratos = new ArrayList<>();
 
@@ -155,9 +164,6 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
 
             while (res.next()) {
                 Contrato contrato = new Contrato();
-
-                ClienteRepository clienteRepository = new ClienteRepository();
-                ImovelRepository imovelRepository = new ImovelRepository();
 
                 contrato.setIdContrato(res.getInt("id_contrato"));
                 contrato.setValorAluguel(res.getDouble("valor_aluguel"));
@@ -187,10 +193,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     public Contrato buscarContrato(int id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
-
-            ClienteRepository clienteRepository = new ClienteRepository();
-            ImovelRepository imovelRepository = new ImovelRepository();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM CONTRATO WHERE ID_CONTRATO = ?";
             PreparedStatement stmt = con.prepareStatement(sql);

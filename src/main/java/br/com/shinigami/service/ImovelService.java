@@ -1,8 +1,8 @@
 package br.com.shinigami.service;
 
 
-import br.com.shinigami.dto.Imovel.ImovelCreateDTO;
-import br.com.shinigami.dto.Imovel.ImovelDTO;
+import br.com.shinigami.dto.imovel.ImovelCreateDTO;
+import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Imovel;
@@ -24,18 +24,18 @@ public class ImovelService {
 
     public void adicionar(ImovelCreateDTO imovel) throws RegraDeNegocioException, BancoDeDadosException {
         log.info("Criando Imovel...");
-            imovelRepository.adicionar(objectMapper.convertValue(imovel,Imovel.class));
+            imovelRepository.create(objectMapper.convertValue(imovel,Imovel.class));
         log.info("Imovel Criado!!");
     }
 
 
-    public void remover(Integer id) throws RegraDeNegocioException, BancoDeDadosException{
+    public void delete(Integer id) throws RegraDeNegocioException, BancoDeDadosException{
 
         if(imovelRepository.buscarImovel(id)==null){
             throw new RegraDeNegocioException("Imovel não Encontrado!");
         }
             log.info("Deletando Imovel...");
-            imovelRepository.remover(id);
+            imovelRepository.delete(id);
             log.info("Imovel Deletado!!");
     }
 
@@ -45,12 +45,12 @@ public class ImovelService {
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
             log.info("Editando Imovel");
-            imovelRepository.editar(id, objectMapper.convertValue(imovel,Imovel.class));
+            imovelRepository.update(id, objectMapper.convertValue(imovel,Imovel.class));
     }
 
 
     public List<ImovelDTO> listar() throws BancoDeDadosException{
-            List<Imovel> listar = imovelRepository.listar();
+            List<Imovel> listar = imovelRepository.list();
             return listar.stream()
                     .map(imovel -> objectMapper.convertValue(imovel,ImovelDTO.class))
                     .toList();

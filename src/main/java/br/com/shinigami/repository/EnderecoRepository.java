@@ -1,14 +1,21 @@
 package br.com.shinigami.repository;
 
 
+import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Endereco;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@RequiredArgsConstructor
 public class EnderecoRepository implements Repositorio<Integer, Endereco> {
+
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
 
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
@@ -25,10 +32,10 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     }
 
     @Override
-    public Endereco adicionar(Endereco endereco) throws BancoDeDadosException {
+    public Endereco create(Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             Integer proximoId = this.getProximoId(con);
             endereco.setIdEndereco(proximoId);
@@ -66,10 +73,10 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public boolean delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "DELETE FROM ENDERECO WHERE id_endereco = ?";
 
@@ -94,10 +101,10 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     }
 
     @Override
-    public boolean editar(Integer id, Endereco endereco) throws BancoDeDadosException {
+    public Endereco update(Integer id, Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE ENDERECO SET " +
                     " RUA = ?," +
@@ -121,7 +128,7 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
             stmt.setInt(8, id);
 
             int res = stmt.executeUpdate();
-            return res > 0;
+            return endereco;
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -137,11 +144,11 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     }
 
     @Override
-    public List<Endereco> listar() throws BancoDeDadosException {
+    public List<Endereco> list() throws BancoDeDadosException {
         List<Endereco> enderecos = new ArrayList<>();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
             String sql = "SELECT * FROM ENDERECO";
@@ -180,7 +187,7 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     public Endereco buscarEndereco(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             Endereco endereco = new Endereco();
 
             String sql = "SELECT * FROM ENDERECO WHERE ID_ENDERECO = ?";

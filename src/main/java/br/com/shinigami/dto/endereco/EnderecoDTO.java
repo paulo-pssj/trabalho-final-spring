@@ -1,4 +1,4 @@
-package br.com.shinigami.dto.Endereco;
+package br.com.shinigami.dto.endereco;
 
 import lombok.Data;
 
@@ -10,6 +10,6 @@ public class EnderecoDTO extends EnderecoCreateDTO {
     private String pais;
     private String cep;
     private String complemento;
-    private int idEndereco;
+    private Integer idEndereco;
     private int numero;
 }

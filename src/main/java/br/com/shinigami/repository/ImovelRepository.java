@@ -1,19 +1,26 @@
 package br.com.shinigami.repository;
 
 
+import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Apartamento;
 import br.com.shinigami.model.Casa;
 import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.TipoImovel;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Repository;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+@Repository
+@RequiredArgsConstructor
 public class ImovelRepository implements Repositorio<Integer, Imovel> {
 
-    private final EnderecoRepository enderecoRepository = new EnderecoRepository();
+    private final ConexaoBancoDeDados conexaoBancoDeDados;
+    private final EnderecoRepository enderecoRepository;
+    private final ClienteRepository clienteRepository;
 
     @Override
     public Integer getProximoId(Connection connection) throws SQLException {
@@ -30,12 +37,12 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
     }
 
     @Override
-    public Imovel adicionar(Imovel imovel) throws BancoDeDadosException {
+    public Imovel create(Imovel imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
-            enderecoRepository.adicionar(imovel.getEndereco());
+            enderecoRepository.create(imovel.getEndereco());
             imovel.setAtivo(true);
 
 
@@ -92,10 +99,10 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
     }
 
     @Override
-    public boolean remover(Integer id) throws BancoDeDadosException {
+    public boolean delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "UPDATE IMOVEL SET ativo = ? WHERE id_imovel = ?";
 
@@ -122,10 +129,10 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
     }
 
     @Override
-    public boolean editar(Integer id, Imovel imovel) throws BancoDeDadosException {
+    public Imovel update(Integer id, Imovel imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
 
             StringBuilder sql = new StringBuilder();
 
@@ -163,7 +170,7 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
 
             //Executa-se a consulta
             int res = stmt.executeUpdate();
-            return res > 0;
+            return imovel;
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -179,12 +186,11 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
     }
 
     @Override
-    public List<Imovel> listar() throws BancoDeDadosException {
+    public List<Imovel> list() throws BancoDeDadosException {
         List<Imovel> imoveis = new ArrayList<>();
-        ClienteRepository clienteRepository = new ClienteRepository();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'T'";
             Statement stmt = con.createStatement();
             // Executa-se a consulta
@@ -236,10 +242,9 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
 
     public List<Imovel> listarImoveisDisponiveis() throws BancoDeDadosException {
         List<Imovel> imoveis = new ArrayList<>();
-        ClienteRepository clienteRepository = new ClienteRepository();
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
+            con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'T' and ALUGADO LIKE 'F'";
             Statement stmt = con.createStatement();
             // Executa-se a consulta
@@ -292,9 +297,7 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
     public Imovel buscarImovel(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
-            con = ConexaoBancoDeDados.getConnection();
-            EnderecoRepository enderecoRepository = new EnderecoRepository();
-            ClienteRepository clienteRepository = new ClienteRepository();
+            con = conexaoBancoDeDados.getConnection();
 
             String sql = "SELECT * FROM IMOVEL WHERE id_imovel = ?";
 
