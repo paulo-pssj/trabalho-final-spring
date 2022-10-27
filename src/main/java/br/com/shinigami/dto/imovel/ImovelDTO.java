@@ -17,5 +17,10 @@ public class ImovelDTO extends ImovelCreateDTO {
     private boolean ativo;
     private TipoImovel tipoImovel;
     private Endereco endereco;
+    private boolean areaDeLazer;
+    private boolean garagem;
+    private boolean permiteAnimais;
+    private boolean salaoDeFesta;
+    private int numeroDeVagas;
     private Cliente dono;
 }

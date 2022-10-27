@@ -1,5 +1,6 @@
 package br.com.shinigami.controller;
 
+import br.com.shinigami.controller.controllerInterface.ClienteControllerInterface;
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
@@ -23,18 +24,10 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("/cliente")
-public class ClienteController {
+public class ClienteController implements ClienteControllerInterface{
 
     private final ClienteService clienteService;
 
-    @Operation(summary = "listar clientes", description = "Lista todas os clientes do banco")
-    @ApiResponses(
-            value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de clientes"),
-                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-            }
-    )
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException, BancoDeDadosException {
         return new ResponseEntity<>( clienteService.list(), HttpStatus.OK);

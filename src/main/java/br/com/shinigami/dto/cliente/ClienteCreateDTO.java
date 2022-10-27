@@ -4,10 +4,7 @@ import br.com.shinigami.model.TipoCliente;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 
 @Data
 public class ClienteCreateDTO {
@@ -22,8 +19,8 @@ public class ClienteCreateDTO {
     @NotBlank
     @Size(max=14)
     private String telefone;
-    @NotBlank
+    @NotNull
     private boolean ativo;
-    @NotBlank
+    @NotNull
     private TipoCliente tipoCliente;
 }

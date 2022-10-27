@@ -7,7 +7,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Contrato implements Impressao {
+public class Contrato{
 
     private Cliente locador;
     private Cliente locatario;
@@ -16,21 +16,6 @@ public class Contrato implements Impressao {
     private LocalDate dataVencimento;
     private Imovel imovel;
     private int idContrato;
-
     private boolean ativo;
 
-    @Override
-    public void imprimir() {
-        System.out.print("\n- Informações do contrato selecionado -\n" +
-                "Numero Do Contrato: " + idContrato + " \n " +
-                "Locador: " + "Nome Locador: " + locador.getNome() +
-                " - CPF Locador: " + locador.getCpf() + " \n " +
-                "Locatario: " + "Nome Locatario: " + locatario.getNome() +
-                " - CPF Locatario: " + locatario.getCpf() + " \n " +
-                "Valor do Aluguel: " + valorAluguel + " - " +
-                "Data de Entrada: " + dataEntrada + " - " +
-                "Data de Vencimento: " + dataVencimento + " - \n" +
-                " Endereço: ");
-        imovel.getEndereco().imprimir();
-    }
 }

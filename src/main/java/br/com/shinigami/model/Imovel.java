@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Imovel implements Impressao {
+public abstract class Imovel {
 
     private Endereco endereco;
     private int qntdQuartos;
@@ -27,16 +27,5 @@ public abstract class Imovel implements Impressao {
     private int idEndereco;
     private Cliente dono;
 
-    @Override
-    public void imprimir() {
-        System.out.println("" +
-                "CEP do endereco: " + endereco.getCep() + " - " +
-                "Quantidade de Quartos: " + qntdQuartos + " - " +
-                "Quantidade de Banheiros: " + qntdBanheiros + " - " +
-                "Valor Mensal Aluguel:" + valorMensal + " - " +
-                "Taxa do Condominio: " + condominio + " - " +
-                "Alugado: " + alugado + " - " +
-                "Tipo do Imovel: " + tipoImovel.toString() + " - " + "Dono: " + dono.getNome());
-    }
 
 }

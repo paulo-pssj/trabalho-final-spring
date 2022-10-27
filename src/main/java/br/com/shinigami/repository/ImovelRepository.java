@@ -16,13 +16,12 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ImovelRepository implements Repositorio<Integer, Imovel> {
+public class ImovelRepository{
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final EnderecoRepository enderecoRepository;
     private final ClienteRepository clienteRepository;
 
-    @Override
     public Integer getProximoId(Connection connection) throws SQLException {
         String sql = "SELECT seq_imovel.nextval mysequence from DUAL";
 
@@ -36,7 +35,6 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
         return null;
     }
 
-    @Override
     public Imovel create(Imovel imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -66,19 +64,13 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
             stmt.setInt(8, imovel.getEndereco().getIdEndereco());
             stmt.setInt(9, imovel.getDono().getIdCliente());
-            if (imovel.getTipoImovel() == TipoImovel.APARTAMENTO) {
-                stmt.setString(10, ((Apartamento) imovel).isPermiteAnimais() ? "T" : "F");
-                stmt.setString(11, ((Apartamento) imovel).isSalaoDeFesta() ? "T" : "F");
-                stmt.setString(12, "F");
-                stmt.setString(13, "F");
-                stmt.setInt(15, ((Apartamento) imovel).getNumeroDeVagas());
-            } else {
-                stmt.setString(10, "F");
-                stmt.setString(11, "F");
-                stmt.setString(12, ((Casa) imovel).isAreaDeLazer() ? "T" : "F");
-                stmt.setString(13, ((Casa) imovel).isGaragem() ? "T" : "F");
-                stmt.setInt(15, 0);
-            }
+            stmt.setString(10, ((Apartamento) imovel).isPermiteAnimais() ? "T" : "F");
+            stmt.setString(11, ((Apartamento) imovel).isSalaoDeFesta() ? "T" : "F");
+            stmt.setInt(15, ((Apartamento) imovel).getNumeroDeVagas());
+            stmt.setString(12, ((Casa) imovel).isAreaDeLazer() ? "T" : "F");
+            stmt.setString(13, ((Casa) imovel).isGaragem() ? "T" : "F");
+            stmt.setInt(15, 0);
+
             stmt.setString(14, imovel.isAtivo() ? "T" : "F");
 
             stmt.executeUpdate();
@@ -98,7 +90,6 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
         }
     }
 
-    @Override
     public boolean delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -128,7 +119,6 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
         }
     }
 
-    @Override
     public Imovel update(Integer id, Imovel imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
@@ -185,7 +175,6 @@ public class ImovelRepository implements Repositorio<Integer, Imovel> {
         }
     }
 
-    @Override
     public List<Imovel> list() throws BancoDeDadosException {
         List<Imovel> imoveis = new ArrayList<>();
         Connection con = null;

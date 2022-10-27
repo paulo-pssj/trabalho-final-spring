@@ -9,7 +9,7 @@ import lombok.Setter;
 @AllArgsConstructor
 @Getter
 @Setter
-public class Endereco implements Impressao {
+public class Endereco{
 
     private String rua;
     private String cidade;
@@ -20,14 +20,4 @@ public class Endereco implements Impressao {
     private Integer idEndereco;
     private int numero;
 
-    @Override
-    public void imprimir() {
-        System.out.println("País: " + pais + " - " +
-                "Estado: " + estado + " - " +
-                "Cidade: " + cidade + " - " +
-                "Rua: " + rua + " - " +
-                "Número: " + numero + " - " +
-                "Complemento: " + complemento + " - " +
-                "CEP: " + cep);
-    }
 }
