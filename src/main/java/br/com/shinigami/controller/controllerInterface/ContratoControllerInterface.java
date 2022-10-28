@@ -13,56 +13,57 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface ClienteControllerInterface {
+public interface ContratoControllerInterface {
 
-    @Operation(summary = "listar clientes", description = "Listar todos os clientes do banco de dados")
+    @Operation(summary = "listar contratos", description = "Listar todos os contratos do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de clientes"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de contratos"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
     ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException;
 
-    @Operation(summary = "Buscar Cliente", description = "Busca o cliente pelo id do banco de dados")
+    @Operation(summary = "Buscar contrato", description = "Busca o contrato pelo id do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o cliente"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o contrato"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException;
+    ResponseEntity<ClienteDTO> buscarContrato(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException;
 
-    @Operation(summary = "Criar Cliente", description = "Cria o Cliente no banco de dados")
+    @Operation(summary = "Criar contrato", description = "Cria o contrato no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Criado com Sucesso."),
+                    @ApiResponse(responseCode = "200", description = "Contrato criado com Sucesso."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO cliente)throws RegraDeNegocioException;
+    ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO contrato) throws RegraDeNegocioException;
 
-    @Operation(summary = "Atualizar Cliente", description = "Atualiza o cliente do banco de dados com base no id e o body informado")
+    @Operation(summary = "Atualizar contrato", description = "Atualiza o contrato do banco de dados com base no id e o body informado")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Atualizado com sucesso."),
+                    @ApiResponse(responseCode = "200", description = "Contrato atualizado com sucesso."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
- ResponseEntity<ClienteDTO> update(@PathVariable("idCliente") Integer idCliente,
-                                   @RequestBody @Valid ClienteCreateDTO clienteAtualizar)throws RegraDeNegocioException;
+    ResponseEntity<ClienteDTO> update(@PathVariable("idContrato") Integer idContrato,
+                                      @RequestBody @Valid ClienteCreateDTO contratoCreate) throws RegraDeNegocioException;
 
-    @Operation(summary = "Deletar cliente", description = "Deleta o cliente do banco de dados")
+    @Operation(summary = "Deletar contrato", description = "Deleta o contrato do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Deletado!"),
+                    @ApiResponse(responseCode = "200", description = "Contrato deletado!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<Void> delete(@PathVariable("idCliente") Integer idCliente)throws RegraDeNegocioException;
+    ResponseEntity<Void> delete(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException;
+
 }

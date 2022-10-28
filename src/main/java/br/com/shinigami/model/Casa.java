@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Casa extends Imovel {
-    private boolean areaDeLazer;
-    private boolean garagem;
+    private Tipo areaDeLazer;
+    private Tipo garagem;
 }

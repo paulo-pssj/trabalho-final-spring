@@ -12,7 +12,7 @@ public interface Repositorio<CHAVE, OBJETO> {
 
     OBJETO create(OBJETO object) throws BancoDeDadosException;
 
-    boolean delete(CHAVE id) throws BancoDeDadosException;
+    void delete(CHAVE id) throws BancoDeDadosException;
 
     OBJETO update(CHAVE id, OBJETO objeto) throws BancoDeDadosException;
 

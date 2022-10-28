@@ -1,5 +1,8 @@
 package br.com.shinigami.service;
 
+import br.com.shinigami.dto.cliente.ClienteDTO;
+import freemarker.template.Template;
+import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.FileSystemResource;
@@ -7,10 +10,14 @@ import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Component;
+import org.springframework.ui.freemarker.FreeMarkerTemplateUtils;
 
 import javax.mail.MessagingException;
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
@@ -53,31 +60,30 @@ public class EmailService {
         emailSender.send(message);
     }
 //
-//    public void sendEmail(PessoaDTO pessoa,String base) {
-//        MimeMessage mimeMessage = emailSender.createMimeMessage();
-//        try {
-//
-//            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-//
-//            mimeMessageHelper.setFrom(from);
-//            mimeMessageHelper.setTo(pessoa.getEmail());
-//            mimeMessageHelper.setSubject("subject");
-//            mimeMessageHelper.setText(geContentFromTemplate(pessoa,"email-template.ftl",base), true);
-//
-//            emailSender.send(mimeMessageHelper.getMimeMessage());
-//        } catch (MessagingException | IOException | TemplateException e) {
-//            e.printStackTrace();
-//        }
-//    }
-//
-//    public String geContentFromTemplate(PessoaDTO pessoa,String emailTemplate,String base) throws IOException, TemplateException {
-//        Map<String, Object> dados = new HashMap<>();
-//        dados.put("nome", pessoa.getNome());
-//        dados.put("from", from);
-//        dados.put("id", pessoa.getIdPessoa());
-//        dados.put("base",base);
-//        Template template = fmConfiguration.getTemplate(emailTemplate);
-//        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-//        return html;
-//    }
+    public void sendEmail(ClienteDTO cliente, String base) {
+        MimeMessage mimeMessage = emailSender.createMimeMessage();
+        try {
+
+            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+
+            mimeMessageHelper.setFrom(from);
+            mimeMessageHelper.setTo(cliente.getEmail());
+            mimeMessageHelper.setSubject("subject");
+            mimeMessageHelper.setText(createFromTemplate(cliente,"email-template.ftl",base), true);
+
+            emailSender.send(mimeMessageHelper.getMimeMessage());
+        } catch (MessagingException | IOException | TemplateException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String createFromTemplate(ClienteDTO cliente) throws IOException, TemplateException {
+        Map<String, Object> dados = new HashMap<>();
+        dados.put("nome", cliente.getNome());
+        dados.put("from", from);
+        dados.put("id", cliente.getIdCliente());
+        Template template = fmConfiguration.getTemplate(emailTemplate);
+        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
+        return html;
+    }
 }

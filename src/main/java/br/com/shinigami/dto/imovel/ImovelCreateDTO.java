@@ -7,12 +7,13 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Data
 public class ImovelCreateDTO {
-
-    private Endereco endereco;
+    @NotNull
+    private Integer idEndereco;
     @NotEmpty
     private int qntdQuartos;
     @NotEmpty
@@ -26,11 +27,11 @@ public class ImovelCreateDTO {
     private boolean alugado;
     @NotBlank
     private TipoImovel tipoImovel;
-    private boolean areaDeLazer = false;
-    private boolean garagem = false;
-    private boolean permiteAnimais = false;
-    private boolean salaoDeFesta = false;
-    private int numeroDeVagas = 0;
+    private boolean areaDeLazer;
+    private boolean garagem;
+    private boolean permiteAnimais;
+    private boolean salaoDeFesta;
+    private int numeroDeVagas;
     private Cliente dono;
 
 }

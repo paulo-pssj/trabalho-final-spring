@@ -1,7 +1,7 @@
 package br.com.shinigami.controller.controllerInterface;
 
-import br.com.shinigami.dto.cliente.ClienteCreateDTO;
-import br.com.shinigami.dto.cliente.ClienteDTO;
+import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
+import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -13,56 +13,55 @@ import org.springframework.web.bind.annotation.RequestBody;
 import javax.validation.Valid;
 import java.util.List;
 
-public interface ClienteControllerInterface {
-
-    @Operation(summary = "listar clientes", description = "Listar todos os clientes do banco de dados")
+public interface EnderecoControllerInterface {
+    @Operation(summary = "listar endereços", description = "Listar todos os endereços do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de clientes"),
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de endereços"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException;
+    ResponseEntity<List<EnderecoDTO>> list() throws RegraDeNegocioException;
 
-    @Operation(summary = "Buscar Cliente", description = "Busca o cliente pelo id do banco de dados")
+    @Operation(summary = "Buscar endereço", description = "Busca o endereço pelo id do banco de dados de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna o cliente"),
+                    @ApiResponse(responseCode = "200", description = "Retorna o endereço"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException;
+    public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException;
 
-    @Operation(summary = "Criar Cliente", description = "Cria o Cliente no banco de dados")
+    @Operation(summary = "Criar endereco", description = "Cria o endereço no banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Criado com Sucesso."),
+                    @ApiResponse(responseCode = "200", description = "Endereço criado com sucesso."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO cliente)throws RegraDeNegocioException;
+    public ResponseEntity<EnderecoDTO> create(@RequestBody @Valid EnderecoCreateDTO endereco) throws RegraDeNegocioException;
 
-    @Operation(summary = "Atualizar Cliente", description = "Atualiza o cliente do banco de dados com base no id e o body informado")
+    @Operation(summary = "Atualizar endereço", description = "Atualiza o endereço do banco de dados com base no id e o body informado")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Atualizado com sucesso."),
+                    @ApiResponse(responseCode = "200", description = "Endereço atualizado com sucesso."),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
- ResponseEntity<ClienteDTO> update(@PathVariable("idCliente") Integer idCliente,
-                                   @RequestBody @Valid ClienteCreateDTO clienteAtualizar)throws RegraDeNegocioException;
+    public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
+                                               @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws  RegraDeNegocioException;
 
-    @Operation(summary = "Deletar cliente", description = "Deleta o cliente do banco de dados")
+    @Operation(summary = "Deletar endereço", description = "Deleta o endereço do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Cliente Deletado!"),
+                    @ApiResponse(responseCode = "200", description = "Endereço deletado!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<Void> delete(@PathVariable("idCliente") Integer idCliente)throws RegraDeNegocioException;
+    public void delete(@PathVariable("idEndereco") Integer id) throws  RegraDeNegocioException;
 }

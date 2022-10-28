@@ -14,7 +14,7 @@ public class Cliente{
     private String email;
     private String telefone;
     private Integer idCliente;
-    private boolean ativo;
+    private Tipo ativo;
     private TipoCliente tipoCliente;
 
 }

@@ -16,6 +16,6 @@ public class Contrato{
     private LocalDate dataVencimento;
     private Imovel imovel;
     private int idContrato;
-    private boolean ativo;
+    private Tipo ativo;
 
 }

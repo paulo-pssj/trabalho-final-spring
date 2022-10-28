@@ -28,7 +28,7 @@ public class EnderecoController {
     private final ObjectMapper objectMapper;
 
     @PostMapping
-    public ResponseEntity<EnderecoDTO> create(@RequestBody @Valid EnderecoCreateDTO endereco) throws RegraDeNegocioException, BancoDeDadosException {
+    public ResponseEntity<EnderecoDTO> create(@RequestBody @Valid EnderecoCreateDTO endereco) throws RegraDeNegocioException{
         log.info("Criando Endereco...");
         EnderecoDTO e = enderecoService.create(endereco);
         log.info("Endereco Criado!!");
@@ -36,18 +36,18 @@ public class EnderecoController {
     }
 
     @GetMapping
-    public List<EnderecoDTO> list() throws BancoDeDadosException {
+    public List<EnderecoDTO> list() throws RegraDeNegocioException {
         return enderecoService.list();
     }
 
     @GetMapping("/{idEndereco}")
-         public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws BancoDeDadosException{
+         public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException{
              return objectMapper.convertValue(enderecoService.findById(id), EnderecoDTO.class);
          }
 
     @PutMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
-                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws BancoDeDadosException, RegraDeNegocioException {
+                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws  RegraDeNegocioException {
         log.info("Atualizando Endereco...");
         EnderecoDTO endereco = enderecoService.update(id, enderecoAtualizar);
         log.info("Endereco Atualizado!!");
@@ -56,7 +56,7 @@ public class EnderecoController {
     }
 
     @DeleteMapping("/{idEndereco}")
-    public void delete(@PathVariable("idEndereco") Integer id) throws BancoDeDadosException, RegraDeNegocioException {
+    public void delete(@PathVariable("idEndereco") Integer id) throws  RegraDeNegocioException {
         log.info("deletando Endereco...");
         enderecoService.delete(id);
         log.info("Endereco Deletado!!");

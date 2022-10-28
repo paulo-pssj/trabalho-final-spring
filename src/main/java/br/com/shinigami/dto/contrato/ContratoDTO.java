@@ -2,6 +2,7 @@ package br.com.shinigami.dto.contrato;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Imovel;
+import br.com.shinigami.model.Tipo;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -15,6 +16,6 @@ public class ContratoDTO {
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;
     private Imovel imovel;
-    private boolean ativo;
+    private Tipo ativo;
 
 }

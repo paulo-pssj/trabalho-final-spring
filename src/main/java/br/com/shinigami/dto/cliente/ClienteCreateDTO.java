@@ -1,5 +1,6 @@
 package br.com.shinigami.dto.cliente;
 
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoCliente;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
@@ -19,8 +20,6 @@ public class ClienteCreateDTO {
     @NotBlank
     @Size(max=14)
     private String telefone;
-    @NotNull
-    private boolean ativo;
     @NotNull
     private TipoCliente tipoCliente;
 }

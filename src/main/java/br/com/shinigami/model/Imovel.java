@@ -13,7 +13,7 @@ import javax.validation.constraints.Size;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public abstract class Imovel {
+public class Imovel {
 
     private Endereco endereco;
     private int qntdQuartos;
@@ -21,8 +21,8 @@ public abstract class Imovel {
     private int idImovel;
     private double valorMensal;
     private double condominio;
-    private boolean alugado;
-    private boolean ativo;
+    private Tipo alugado;
+    private Tipo ativo;
     private TipoImovel tipoImovel;
     private int idEndereco;
     private Cliente dono;

@@ -3,10 +3,7 @@ package br.com.shinigami.repository;
 
 import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
-import br.com.shinigami.model.Apartamento;
-import br.com.shinigami.model.Casa;
-import br.com.shinigami.model.Imovel;
-import br.com.shinigami.model.TipoImovel;
+import br.com.shinigami.model.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -16,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ImovelRepository{
+public class ImovelRepository {
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final EnderecoRepository enderecoRepository;
@@ -35,14 +32,13 @@ public class ImovelRepository{
         return null;
     }
 
-    public Imovel create(Imovel imovel) throws BancoDeDadosException {
+    public Casa create(Casa imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
 
             enderecoRepository.create(imovel.getEndereco());
-            imovel.setAtivo(true);
-
+            imovel.setAtivo(Tipo.S);
 
             Integer imovelProxId = this.getProximoId(con);
             imovel.setIdImovel(imovelProxId);
@@ -58,25 +54,22 @@ public class ImovelRepository{
             stmt.setInt(1, imovel.getIdImovel());
             stmt.setDouble(2, imovel.getValorMensal());
             stmt.setDouble(3, imovel.getCondominio());
-            stmt.setString(4, imovel.isAlugado() ? "T" : "F");
+            stmt.setString(4, imovel.getAlugado().toString());
             stmt.setInt(5, imovel.getQntdQuartos());
             stmt.setInt(6, imovel.getQntdBanheiros());
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
             stmt.setInt(8, imovel.getEndereco().getIdEndereco());
             stmt.setInt(9, imovel.getDono().getIdCliente());
-            stmt.setString(10, ((Apartamento) imovel).isPermiteAnimais() ? "T" : "F");
-            stmt.setString(11, ((Apartamento) imovel).isSalaoDeFesta() ? "T" : "F");
-            stmt.setInt(15, ((Apartamento) imovel).getNumeroDeVagas());
-            stmt.setString(12, ((Casa) imovel).isAreaDeLazer() ? "T" : "F");
-            stmt.setString(13, ((Casa) imovel).isGaragem() ? "T" : "F");
+            stmt.setString(10, ("N"));
+            stmt.setString(11, ("N"));
+            stmt.setString(12, (imovel.getAreaDeLazer().toString()));
+            stmt.setString(13, (imovel.getGaragem().toString()));
+            stmt.setString(14, imovel.getAtivo().toString());
             stmt.setInt(15, 0);
 
-            stmt.setString(14, imovel.isAtivo() ? "T" : "F");
 
             stmt.executeUpdate();
             return imovel;
-
-
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
         } finally {
@@ -90,7 +83,58 @@ public class ImovelRepository{
         }
     }
 
-    public boolean delete(Integer id) throws BancoDeDadosException {
+    public Apartamento create(Apartamento imovel) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            enderecoRepository.create(imovel.getEndereco());
+            imovel.setAtivo(Tipo.S);
+
+            Integer imovelProxId = this.getProximoId(con);
+            imovel.setIdImovel(imovelProxId);
+
+            String sql = "INSERT INTO IMOVEL\n" +
+                    "(id_imovel, valor_mensal, condominio, alugado, qntd_quartos, qntd_banheiros, tipo_imovel," +
+                    " id_endereco, id_cliente, permite_animais, salao_de_festas,area_de_lazer,garagem, ativo, numero_de_vagas)\n" +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+            PreparedStatement stmt = con.prepareStatement(sql);
+
+
+            stmt.setInt(1, imovel.getIdImovel());
+            stmt.setDouble(2, imovel.getValorMensal());
+            stmt.setDouble(3, imovel.getCondominio());
+            stmt.setString(4, imovel.getAlugado().toString());
+            stmt.setInt(5, imovel.getQntdQuartos());
+            stmt.setInt(6, imovel.getQntdBanheiros());
+            stmt.setInt(7, imovel.getTipoImovel().ordinal());
+            stmt.setInt(8, imovel.getEndereco().getIdEndereco());
+            stmt.setInt(9, imovel.getDono().getIdCliente());
+            stmt.setString(10, imovel.getPermiteAnimais().toString());
+            stmt.setString(11, imovel.getSalaoDeFesta().toString());
+            stmt.setString(12, ("N"));
+            stmt.setString(13, ("N"));
+            stmt.setString(14, imovel.getAtivo().toString());
+            stmt.setInt(15, imovel.getNumeroDeVagas());
+
+
+            stmt.executeUpdate();
+            return imovel;
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause().getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public void delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -99,13 +143,11 @@ public class ImovelRepository{
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setString(1, "F");
+            stmt.setString(1, "N");
             stmt.setInt(2, id);
 
-            // Executa-se a consulta
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
 
-            return res > 0;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
         } finally {
@@ -119,7 +161,7 @@ public class ImovelRepository{
         }
     }
 
-    public Imovel update(Integer id, Imovel imovel) throws BancoDeDadosException {
+    public Casa update(Integer id, Casa imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -132,13 +174,9 @@ public class ImovelRepository{
             sql.append(" qntd_quartos = ?,");
             sql.append(" qntd_banheiros = ?,");
             sql.append(" alugado = ?,");
-            if (imovel.getTipoImovel().equals(TipoImovel.APARTAMENTO)) {
-                sql.append(" permite_animais = ?,");
-                sql.append(" salao_de_festas = ?");
-            } else {
-                sql.append(" area_de_lazer = ?,");
-                sql.append(" garagem = ?");
-            }
+            sql.append(" area_de_lazer = ?,");
+            sql.append(" garagem = ?,");
+            sql.append(" id_cliente = ?");
             sql.append(" WHERE id_imovel = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -147,16 +185,12 @@ public class ImovelRepository{
             stmt.setDouble(2, imovel.getCondominio());
             stmt.setInt(3, imovel.getQntdQuartos());
             stmt.setInt(4, imovel.getQntdBanheiros());
-            stmt.setString(5, imovel.isAlugado() ? "T" : "F");
+            stmt.setString(5, imovel.getAlugado().toString());
+            stmt.setString(6, imovel.getAreaDeLazer().toString());
+            stmt.setInt(7, imovel.getDono().getIdCliente());
+            stmt.setString(8, imovel.getGaragem().toString());
 
-            if (imovel.getTipoImovel().equals(TipoImovel.APARTAMENTO)) {
-                stmt.setString(6, ((Apartamento) imovel).isPermiteAnimais() ? "T" : "F");
-                stmt.setString(7, ((Apartamento) imovel).isSalaoDeFesta() ? "T" : "F");
-            } else {
-                stmt.setString(6, ((Casa) imovel).isAreaDeLazer() ? "T" : "F");
-                stmt.setString(7, ((Casa) imovel).isGaragem() ? "T" : "F");
-            }
-            stmt.setInt(8, id);
+            stmt.setInt(9, id);
 
             //Executa-se a consulta
             int res = stmt.executeUpdate();
@@ -175,6 +209,56 @@ public class ImovelRepository{
         }
     }
 
+    public Apartamento update(Integer id, Apartamento imovel) throws BancoDeDadosException {
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("UPDATE IMOVEL SET");
+            sql.append(" valor_mensal = ?,");
+            sql.append(" condominio = ?,");
+            sql.append(" qntd_quartos = ?,");
+            sql.append(" qntd_banheiros = ?,");
+            sql.append(" alugado = ?,");
+            sql.append(" permite_animais = ?,");
+            sql.append(" salao_de_festas = ?,");
+            sql.append(" numero_de_vagas = ?,");
+            sql.append(" id_cliente = ?");
+            sql.append(" WHERE id_imovel = ?");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+
+            stmt.setDouble(1, imovel.getValorMensal());
+            stmt.setDouble(2, imovel.getCondominio());
+            stmt.setInt(3, imovel.getQntdQuartos());
+            stmt.setInt(4, imovel.getQntdBanheiros());
+            stmt.setString(5, imovel.getAlugado().toString());
+            stmt.setString(6, imovel.getPermiteAnimais().toString());
+            stmt.setString(7, imovel.getSalaoDeFesta().toString());
+            stmt.setInt(8, imovel.getNumeroDeVagas());
+            stmt.setInt(9, imovel.getDono().getIdCliente());
+            stmt.setInt(10, id);
+
+            //Executa-se a consulta
+            int res = stmt.executeUpdate();
+            return imovel;
+
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause().getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+
     public List<Imovel> list() throws BancoDeDadosException {
         List<Imovel> imoveis = new ArrayList<>();
         Connection con = null;
@@ -185,35 +269,24 @@ public class ImovelRepository{
             // Executa-se a consulta
             ResultSet res = stmt.executeQuery(sql);
             while (res.next()) {
-                if (res.getInt("tipo_imovel") == 1) {
-                    Imovel imovel = new Apartamento();
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    ((Apartamento) imovel).setPermiteAnimais(converteCharPraBoolean(res.getString("permite_animais")));
-                    ((Apartamento) imovel).setSalaoDeFesta(converteCharPraBoolean(res.getString("salao_de_festas")));
-                    ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                Imovel imovel = new Imovel();
 
-                    imoveis.add(imovel);
+                imovel.setIdImovel(res.getInt("id_imovel"));
+                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setValorMensal(res.getDouble("valor_mensal"));
+                imovel.setCondominio(res.getDouble("condominio"));
+                imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
+                imovel.setQntdQuartos(res.getInt("qntd_quartos"));
+                imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
+                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
 
-                } else {
-                    Imovel imovel = new Casa();
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    ((Casa) imovel).setAreaDeLazer(converteCharPraBoolean(res.getString("area_de_lazer")));
-                    ((Casa) imovel).setGaragem(converteCharPraBoolean(res.getString("garagem")));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
-
-                    imoveis.add(imovel);
-                }
+                imoveis.add(imovel);
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -234,40 +307,27 @@ public class ImovelRepository{
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'T' and ALUGADO LIKE 'F'";
+            String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'S' and ALUGADO LIKE 'N'";
             Statement stmt = con.createStatement();
             // Executa-se a consulta
             ResultSet res = stmt.executeQuery(sql);
             while (res.next()) {
-                if (res.getInt("tipo_imovel") == 1) {
-                    Imovel imovel = new Apartamento();
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    ((Apartamento) imovel).setPermiteAnimais(converteCharPraBoolean(res.getString("permite_animais")));
-                    ((Apartamento) imovel).setSalaoDeFesta(converteCharPraBoolean(res.getString("salao_de_festas")));
-                    ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
-
-                    imoveis.add(imovel);
-
-                } else {
-                    Imovel imovel = new Casa();
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    ((Casa) imovel).setAreaDeLazer(converteCharPraBoolean(res.getString("area_de_lazer")));
-                    ((Casa) imovel).setGaragem(converteCharPraBoolean(res.getString("garagem")));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
-
-                    imoveis.add(imovel);
-                }
+                Imovel imovel = new Imovel();
+                imovel.setIdImovel(res.getInt("id_imovel"));
+                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setValorMensal(res.getDouble("valor_mensal"));
+                imovel.setCondominio(res.getDouble("condominio"));
+                imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
+                imovel.setQntdQuartos(res.getInt("qntd_quartos"));
+                imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
+                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
+                imoveis.add(imovel);
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -298,40 +358,24 @@ public class ImovelRepository{
 
 
             if (res.next()) {
-                if (res.getInt("tipo_imovel") == 1) {
-                    Imovel imovel = new Apartamento();
+                Imovel imovel = new Imovel();
 
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    imovel.setTipoImovel(TipoImovel.APARTAMENTO);
-                    ((Apartamento) imovel).setPermiteAnimais(converteCharPraBoolean(res.getString("permite_animais")));
-                    ((Apartamento) imovel).setSalaoDeFesta(converteCharPraBoolean(res.getString("salao_de_festas")));
-                    ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                    imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
-                    return imovel;
+                imovel.setIdImovel(res.getInt("id_imovel"));
+                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setValorMensal(res.getDouble("valor_mensal"));
+                imovel.setCondominio(res.getDouble("condominio"));
+                imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
+                imovel.setQntdQuartos(res.getInt("qntd_quartos"));
+                imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
+                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
+                return imovel;
 
-                } else {
-                    Imovel imovel = new Casa();
-                    imovel.setIdImovel(res.getInt("id_imovel"));
-                    imovel.setValorMensal(res.getDouble("valor_mensal"));
-                    imovel.setCondominio(res.getDouble("condominio"));
-                    imovel.setAlugado(converteCharPraBoolean(res.getString("alugado")));
-                    imovel.setQntdQuartos(res.getInt("qntd_quartos"));
-                    imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                    imovel.setTipoImovel(TipoImovel.CASA);
-                    ((Casa) imovel).setAreaDeLazer(converteCharPraBoolean(res.getString("area_de_lazer")));
-                    ((Casa) imovel).setGaragem(converteCharPraBoolean(res.getString("garagem")));
-                    imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
-                    imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
-
-                    return imovel;
-
-                }
             } else {
                 throw new BancoDeDadosException("Nenhum dado encontrado!!");
             }
@@ -348,8 +392,41 @@ public class ImovelRepository{
         }
     }
 
-    private boolean converteCharPraBoolean(String valor) {
-        return valor.equalsIgnoreCase("T");
+    public void alugarImovel(Integer idImovel) throws BancoDeDadosException{
+        Connection con = null;
+        try {
+            con = conexaoBancoDeDados.getConnection();
+
+
+
+            StringBuilder sql = new StringBuilder();
+
+            sql.append("UPDATE IMOVEL SET");
+            sql.append(" alugado = ?");
+            sql.append(" WHERE = ?");
+
+            PreparedStatement stmt = con.prepareStatement(sql.toString());
+            stmt.setString(1, "S");
+            stmt.setInt(2, idImovel);
+
+            ResultSet res = stmt.executeQuery();
+
+            if (res.next()) {
+                Imovel imovel = new Imovel();
+            } else {
+                throw new BancoDeDadosException("Nenhum dado encontrado!!");
+            }
+        } catch (SQLException e) {
+            throw new BancoDeDadosException(e.getCause().getMessage());
+        } finally {
+            try {
+                if (con != null) {
+                    con.close();
+                }
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 

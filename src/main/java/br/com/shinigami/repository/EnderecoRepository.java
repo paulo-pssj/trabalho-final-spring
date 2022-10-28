@@ -73,7 +73,7 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
     }
 
     @Override
-    public boolean delete(Integer id) throws BancoDeDadosException {
+    public void delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -85,7 +85,6 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
             stmt.setInt(1, id);
 
             int res = stmt.executeUpdate();
-            return res > 0;
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());

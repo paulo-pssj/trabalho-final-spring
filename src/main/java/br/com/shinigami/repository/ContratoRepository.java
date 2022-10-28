@@ -4,6 +4,8 @@ import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Contrato;
 import br.com.shinigami.model.Imovel;
+import br.com.shinigami.model.Tipo;
+import br.com.shinigami.service.ImovelService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -18,6 +20,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final ImovelRepository imovelRepository;
     private final ClienteRepository clienteRepository;
+    private final ImovelService imovelService;
 
 
     @Override
@@ -56,11 +59,11 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setInt(5, contrato.getLocatario().getIdCliente());
             stmt.setInt(6, contrato.getLocador().getIdCliente());
             stmt.setInt(7, contrato.getImovel().getIdImovel());
-            stmt.setString(8, contrato.isAtivo() ? "T" : "F");
+            stmt.setString(8, contrato.getAtivo().toString());
 
             int res = stmt.executeUpdate();
-            contrato.getImovel().setAlugado(true);
-            imovelRepository.update(contrato.getImovel().getIdImovel(), contrato.getImovel());
+            contrato.getImovel().setAlugado(Tipo.S);
+            imovelService.update(contrato.getImovel().getIdImovel(), contrato.getImovel());
             return contrato;
 
         } catch (BancoDeDadosException e) {

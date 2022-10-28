@@ -12,8 +12,8 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 public class Apartamento extends Imovel {
 
-    private boolean permiteAnimais;
-    private boolean salaoDeFesta;
+    private Tipo permiteAnimais;
+    private Tipo salaoDeFesta;
     private int numeroDeVagas;
 
 }
