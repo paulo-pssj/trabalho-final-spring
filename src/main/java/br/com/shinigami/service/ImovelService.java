@@ -45,7 +45,8 @@ public class ImovelService {
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
             log.info("Editando Imovel");
-            imovelRepository.update(id, objectMapper.convertValue(imovel,Imovel.class));
+            return imovelRepository.update(id, objectMapper.convertValue(imovel,Imovel.class));
+
     }
 
 

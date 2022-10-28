@@ -21,8 +21,8 @@ public class EnderecoService {
     private final ObjectMapper objectMapper;
 
     public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException, BancoDeDadosException {
-        Endereco enderecoNovo = objectMapper.convertValue(endereco, Endereco.class);
-        Endereco enderecoCriado = enderecoRepository.create(enderecoNovo);
+
+        Endereco enderecoCriado = enderecoRepository.create(objectMapper.convertValue(endereco, Endereco.class));
         log.info("Endereco criado com sucesso!");
         return objectMapper.convertValue(enderecoCriado, EnderecoDTO.class);
     }
@@ -36,20 +36,18 @@ public class EnderecoService {
 
 
     public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException, BancoDeDadosException {
-        Endereco enderecoDTO = enderecoRepository.list().stream()
-                .filter(endereco -> endereco.getIdEndereco().equals(enderecoAtualizar))
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Endereco não encontrado"));
-        enderecoDTO.setCep(enderecoAtualizar.getCep());
-        enderecoDTO.setCidade(enderecoAtualizar.getCidade());
-        enderecoDTO.setComplemento(enderecoAtualizar.getComplemento());
-        enderecoDTO.setEstado(enderecoAtualizar.getEstado());
-        enderecoDTO.setPais(enderecoAtualizar.getPais());
-        enderecoDTO.setRua(enderecoAtualizar.getRua());
-        enderecoDTO.setNumero(enderecoAtualizar.getNumero());
+        Endereco endereco = enderecoRepository.buscarEndereco(id);
 
+        endereco.setCep(enderecoAtualizar.getCep());
+        endereco.setCidade(enderecoAtualizar.getCidade());
+        endereco.setComplemento(enderecoAtualizar.getComplemento());
+        endereco.setEstado(enderecoAtualizar.getEstado());
+        endereco.setPais(enderecoAtualizar.getPais());
+        endereco.setRua(enderecoAtualizar.getRua());
+        endereco.setNumero(enderecoAtualizar.getNumero());
+        enderecoRepository.update(id, endereco);
         log.info("Endereço atualizado com sucesso!");
-        return objectMapper.convertValue(enderecoDTO, EnderecoDTO.class);
+        return objectMapper.convertValue(endereco, EnderecoDTO.class);
     }
 
 
@@ -60,11 +58,12 @@ public class EnderecoService {
                 .toList();
     }
 
-    public EnderecoDTO findById(Integer idEndereco) throws BancoDeDadosException, RegraDeNegocioException {
-        return list().stream()
-                .filter(endereco -> endereco.getIdEndereco().equals(idEndereco))
-                .findFirst()
-                .orElseThrow(() -> new RegraDeNegocioException("Endereço não encontrada"));
+    public EnderecoDTO findById(Integer idEndereco) throws  BancoDeDadosException {
+        try{
+            return objectMapper.convertValue(enderecoRepository.buscarEndereco(idEndereco), EnderecoDTO.class);
+        }catch (BancoDeDadosException bd){
+            throw new BancoDeDadosException("Endereço não encontrado!");
+        }
     }
 
 }

@@ -111,8 +111,8 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
                     " CIDADE = ?," +
                     " ESTADO = ?, " +
                     " PAIS = ?, " +
-                    " COMPLEMENTO = ? " +
-                    " NUMERO = ? " +
+                    " COMPLEMENTO = ?, " +
+                    " NUMERO = ?, " +
                     " CEP = ? " +
                     " WHERE ID_ENDERECO = ?";
 
@@ -127,7 +127,7 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
             stmt.setString(7, endereco.getCep());
             stmt.setInt(8, id);
 
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
             return endereco;
 
         } catch (SQLException e) {
@@ -209,7 +209,7 @@ public class EnderecoRepository implements Repositorio<Integer, Endereco> {
 
             return endereco;
         } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause().getMessage());
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {

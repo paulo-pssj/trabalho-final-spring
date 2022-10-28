@@ -11,13 +11,13 @@ import lombok.Setter;
 @Setter
 public class Endereco{
 
+    private Integer idEndereco;
     private String rua;
     private String cidade;
     private String estado;
     private String pais;
     private String cep;
     private String complemento;
-    private Integer idEndereco;
-    private int numero;
+    private Integer numero;
 
 }

@@ -41,18 +41,18 @@ public class EnderecoController {
     }
 
     @GetMapping("/{idEndereco}")
-         public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException,BancoDeDadosException{
-             return objectMapper.convertValue(enderecoService.findById(id),EnderecoDTO.class);
+         public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws BancoDeDadosException{
+             return objectMapper.convertValue(enderecoService.findById(id), EnderecoDTO.class);
          }
 
     @PutMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
                                               @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws BancoDeDadosException, RegraDeNegocioException {
-        log.info("Atualizado Endereco...");
-        EnderecoDTO e = enderecoService.update(id, enderecoAtualizar);
+        log.info("Atualizando Endereco...");
+        EnderecoDTO endereco = enderecoService.update(id, enderecoAtualizar);
         log.info("Endereco Atualizado!!");
 
-        return new ResponseEntity<>(e,HttpStatus.OK);
+        return new ResponseEntity<>(endereco,HttpStatus.OK);
     }
 
     @DeleteMapping("/{idEndereco}")
