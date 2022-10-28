@@ -39,12 +39,13 @@ public class ContratoService {
     }
 
 
-    public void update(Integer id, ContratoCreateDTO contrato) throws RegraDeNegocioException, BancoDeDadosException {
+    public ContratoDTO update(Integer id, ContratoCreateDTO contrato) throws RegraDeNegocioException, BancoDeDadosException {
         if(contratoRepository.buscarContrato(id)==null){
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
-        contratoRepository.update(id, objectMapper.convertValue(contrato,Contrato.class));
+        Contrato contratoett = contratoRepository.update(id, objectMapper.convertValue(contrato,Contrato.class));
         log.info("Contrato Editado!");
+        return objectMapper.convertValue(contratoett,ContratoDTO.class);
     }
 
 

@@ -40,7 +40,7 @@ public class ImovelService {
     }
 
 
-    public void editar(Integer id, ImovelCreateDTO imovel) throws RegraDeNegocioException, BancoDeDadosException {
+    public Imovel editar(Integer id, ImovelCreateDTO imovel) throws RegraDeNegocioException, BancoDeDadosException {
             if(imovelRepository.buscarImovel(id)==null){
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
