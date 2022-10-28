@@ -24,8 +24,6 @@ public class ContratoCreateDTO {
     private LocalDate dataVencimento;
     @NotEmpty
     private Imovel imovel;
-    @NotEmpty
-    private int idContrato;
     @NotBlank
     @Size(max=1)
     private boolean ativo;

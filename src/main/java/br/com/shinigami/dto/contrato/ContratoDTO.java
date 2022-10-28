@@ -6,15 +6,15 @@ import lombok.Data;
 
 import java.time.LocalDate;
 @Data
-public class ContratoDTO extends ContratoCreateDTO {
+public class ContratoDTO {
 
+    private int idContrato;
     private Cliente locador;
     private Cliente locatario;
     private double valorAluguel;
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;
     private Imovel imovel;
-    private int idContrato;
     private boolean ativo;
 
 }

@@ -4,11 +4,11 @@ import br.com.shinigami.model.TipoCliente;
 import lombok.Data;
 @Data
 public class ClienteDTO extends ClienteCreateDTO {
+    private int idCliente;
     private String nome;
     private String cpf;
     private String email;
     private String telefone;
-    private int idCliente;
     private boolean ativo;
     private TipoCliente tipoCliente;
 }

@@ -26,8 +26,6 @@ public class ImovelCreateDTO {
     private boolean alugado;
     @NotBlank
     private TipoImovel tipoImovel;
-    @NotEmpty
-    private int idEndereco;
     private boolean areaDeLazer = false;
     private boolean garagem = false;
     private boolean permiteAnimais = false;
