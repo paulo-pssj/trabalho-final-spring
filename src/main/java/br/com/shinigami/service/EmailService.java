@@ -1,6 +1,8 @@
 package br.com.shinigami.service;
 
 import br.com.shinigami.dto.cliente.ClienteDTO;
+import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.exceptions.RegraDeNegocioException;
 import freemarker.template.Template;
 import freemarker.template.TemplateException;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +31,7 @@ public class EmailService {
     private String from;
 
     private static final String TO = "lucas.vieira@dbccompany.com.br";
-
+    private final ClienteService clienteService;
     private final JavaMailSender emailSender;
 
     public void sendSimpleMessage() {
@@ -68,7 +70,7 @@ public class EmailService {
 
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(cliente.getEmail());
-            mimeMessageHelper.setSubject("subject");
+            mimeMessageHelper.setSubject("Seu cadastro foi concluido com sucesso!");
             mimeMessageHelper.setText(createFromTemplate(cliente,"email-template.ftl",base), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
@@ -77,7 +79,14 @@ public class EmailService {
         }
     }
 
-    public String createFromTemplate(ClienteDTO cliente) throws IOException, TemplateException {
+    public void sendEmail(ContratoDTO contrato, String base) throws RegraDeNegocioException {
+        ClienteDTO locador = clienteService.buscarCliente(contrato.getLocador().getIdCliente());
+        ClienteDTO locatario = clienteService.buscarCliente(contrato.getLocatario().getIdCliente());
+        sendEmail(locador,base);
+        sendEmail(locatario,base);
+    }
+
+    public String createFromTemplate(ClienteDTO cliente,String emailTemplate,String base) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", cliente.getNome());
         dados.put("from", from);

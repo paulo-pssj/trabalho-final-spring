@@ -392,12 +392,10 @@ public class ImovelRepository {
         }
     }
 
-    public void alugarImovel(Integer idImovel) throws BancoDeDadosException{
+    public void updateAlugado(Integer idImovel,Tipo tipo) throws BancoDeDadosException{
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-
-
 
             StringBuilder sql = new StringBuilder();
 
@@ -406,7 +404,7 @@ public class ImovelRepository {
             sql.append(" WHERE = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
-            stmt.setString(1, "S");
+            stmt.setString(1, tipo.toString());
             stmt.setInt(2, idImovel);
 
             ResultSet res = stmt.executeQuery();

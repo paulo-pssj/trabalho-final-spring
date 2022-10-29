@@ -3,6 +3,7 @@ package br.com.shinigami.repository;
 import br.com.shinigami.config.ConexaoBancoDeDados;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.model.Cliente;
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoCliente;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -51,7 +52,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             stmt.setString(4, cliente.getTelefone());
             stmt.setString(5, cliente.getEmail());
             stmt.setInt(6, cliente.getTipoCliente().ordinal());
-            stmt.setString(7, "T");
+            stmt.setString(7, Tipo.S.toString());
 
             stmt.executeUpdate();
             return cliente;
@@ -69,7 +70,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
     }
 
     @Override
-    public boolean delete(Integer id) throws BancoDeDadosException {
+    public void delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -78,13 +79,11 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setString(1, "F");
+            stmt.setString(1, Tipo.N.toString());
             stmt.setInt(2, id);
 
-            // Executa-se a consulta
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
 
-            return res > 0;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
         } finally {
@@ -146,9 +145,8 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             con = conexaoBancoDeDados.getConnection();
             Statement stmt = con.createStatement();
 
-            String sql = "SELECT * FROM CLIENTE WHERE ATIVO LIKE 'T'";
+            String sql = "SELECT * FROM CLIENTE WHERE ATIVO LIKE 'S'";
 
-            // Executa-se a consulta
             ResultSet res = stmt.executeQuery(sql);
 
             while (res.next()) {
@@ -158,7 +156,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
                 cliente.setTelefone(res.getString("telefone"));
                 cliente.setCpf(res.getString("cpf"));
                 cliente.setEmail(res.getString("email"));
-                cliente.setTipoCliente(res.getInt("tipo_cliente") == 0 ? TipoCliente.LOCADOR : TipoCliente.LOCATARIO);
+                cliente.setTipoCliente(TipoCliente.values()[res.getInt("tipo_cliente")]);
                 clientes.add(cliente);
             }
         } catch (SQLException e) {
@@ -193,7 +191,7 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
                 cliente.setTelefone(res.getString("telefone"));
                 cliente.setCpf(res.getString("cpf"));
                 cliente.setEmail(res.getString("email"));
-                cliente.setTipoCliente(res.getInt("tipo_cliente") == 0 ? TipoCliente.LOCADOR : TipoCliente.LOCATARIO);
+                cliente.setTipoCliente(TipoCliente.values()[res.getInt("tipo_cliente")]);
             }
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());

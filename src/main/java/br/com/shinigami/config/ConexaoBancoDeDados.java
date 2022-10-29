@@ -26,8 +26,6 @@ public class ConexaoBancoDeDados {
     private String schema;
 
     public Connection getConnection() throws SQLException {
-        //  String url = "jdbc:oracle:thin:@" + SERVER + ":" + PORT + ":" + DATABASE;
-        // jdbc:oracle:thin:@localhost:1521:xe
         Connection con = DriverManager.getConnection(jdbcString, user, pass);
 
         con.createStatement().execute("alter session set current_schema=" + schema);

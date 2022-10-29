@@ -20,7 +20,6 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final ImovelRepository imovelRepository;
     private final ClienteRepository clienteRepository;
-    private final ImovelService imovelService;
 
 
     @Override
@@ -61,9 +60,8 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setInt(7, contrato.getImovel().getIdImovel());
             stmt.setString(8, contrato.getAtivo().toString());
 
-            int res = stmt.executeUpdate();
-            contrato.getImovel().setAlugado(Tipo.S);
-            imovelService.update(contrato.getImovel().getIdImovel(), contrato.getImovel());
+            stmt.executeUpdate();
+            imovelRepository.updateAlugado(contrato.getImovel().getIdImovel(),Tipo.S);
             return contrato;
 
         } catch (BancoDeDadosException e) {
@@ -83,7 +81,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
     }
 
     @Override
-    public boolean delete(Integer id) throws BancoDeDadosException {
+    public void delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -95,11 +93,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setString(1, "F");
             stmt.setInt(2, id);
 
-            int res = stmt.executeUpdate();
-            Imovel imovel = buscarContrato(id).getImovel();
-            imovel.setAlugado(false);
-            imovelRepository.update(buscarContrato(id).getImovel().getIdImovel(), imovel);
-            return res > 0;
+            imovelRepository.updateAlugado(id,Tipo.N);
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -135,7 +129,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setInt(4, contrato.getLocador().getIdCliente());
             stmt.setInt(5, id);
 
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
             return contrato;
 
         } catch (SQLException e) {
@@ -175,7 +169,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
                 contrato.setLocatario(clienteRepository.buscarCliente(res.getInt("id_locatario")));
                 contrato.setLocador(clienteRepository.buscarCliente(res.getInt("id_locador")));
                 contrato.setImovel(imovelRepository.buscarImovel(res.getInt("id_imovel")));
-                contrato.setAtivo(converteCharPraBoolean(res.getString("ativo")));
+                contrato.setAtivo(Tipo.valueOf(res.getString("ativo")));
                 contratos.add(contrato);
             }
             return contratos;
@@ -213,7 +207,7 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             contrato.setLocatario(clienteRepository.buscarCliente(res.getInt("id_locatario")));
             contrato.setLocador(clienteRepository.buscarCliente(res.getInt("id_locador")));
             contrato.setImovel(imovelRepository.buscarImovel(res.getInt("id_imovel")));
-            contrato.setAtivo(converteCharPraBoolean(res.getString("ativo")));
+            contrato.setAtivo(Tipo.valueOf(res.getString("ativo")));
 
             return contrato;
 
@@ -228,10 +222,6 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
                 e.printStackTrace();
             }
         }
-    }
-
-    private boolean converteCharPraBoolean(String valor) {
-        return valor.equalsIgnoreCase("T");
     }
 
 }

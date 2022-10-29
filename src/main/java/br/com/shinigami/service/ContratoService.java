@@ -25,17 +25,20 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
     private final ContratoRepository contratoRepository;
     private final ImovelService imovelService;
     private final ObjectMapper objectMapper;
+    private final EmailService emailService;
 
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
         try {
             Contrato contratoNovo = objectMapper.convertValue(contrato, Contrato.class);
             ImovelDTO imovel = imovelService.buscarImovel(contrato.getIdImovel());
-
-
             Contrato contratoAdicionado = contratoRepository.create(contratoNovo);
             log.info("Contrato criado com sucesso!");
-            return objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
+            ContratoDTO contratoDto = objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
+            String emailBase = "Contrato Criado com sucesso! <br> Contrato entre locador: "+contratoDto.getLocador().getNome()+" e locatario: "+contratoDto.getLocatario().getNome()+"<br>"+
+                                "Valor Mensal: R$"+contratoDto.getValorAluguel();
+                    emailService.sendEmail(contratoDto,emailBase);
+            return contratoDto;
         } catch(BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao criar um contrato!");
         }

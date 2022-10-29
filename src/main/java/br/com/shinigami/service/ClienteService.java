@@ -21,6 +21,8 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     private final ClienteRepository clienteRepository;
     private final ObjectMapper objectMapper;
 
+    private final EmailService emailService;
+
     @Override
     public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException {
         try {
@@ -28,7 +30,10 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             log.info("criando cliente...");
             Cliente pessoaAdicionada = clienteRepository.create(clienteNovo);
             log.info("Cliente criado com sucesso!");
-            return objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
+            ClienteDTO clienteDto = objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
+            String EmailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: "+clienteDto.getIdCliente();
+            emailService.sendEmail(clienteDto,EmailBase);
+            return clienteDto;
         }catch (BancoDeDadosException e){
             throw new RegraDeNegocioException("Erro ao criar cliente");
         }
