@@ -59,7 +59,7 @@ public class ImovelRepository {
             stmt.setInt(6, imovel.getQntdBanheiros());
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
             stmt.setInt(8, imovel.getEndereco().getIdEndereco());
-            stmt.setInt(9, imovel.getDono().getIdCliente());
+            stmt.setInt(9, imovel.getIdDono());
             stmt.setString(10, ("N"));
             stmt.setString(11, ("N"));
             stmt.setString(12, (imovel.getAreaDeLazer().toString()));
@@ -110,7 +110,7 @@ public class ImovelRepository {
             stmt.setInt(6, imovel.getQntdBanheiros());
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
             stmt.setInt(8, imovel.getEndereco().getIdEndereco());
-            stmt.setInt(9, imovel.getDono().getIdCliente());
+            stmt.setInt(9, imovel.getIdDono());
             stmt.setString(10, imovel.getPermiteAnimais().toString());
             stmt.setString(11, imovel.getSalaoDeFesta().toString());
             stmt.setString(12, ("N"));
@@ -187,7 +187,7 @@ public class ImovelRepository {
             stmt.setInt(4, imovel.getQntdBanheiros());
             stmt.setString(5, imovel.getAlugado().toString());
             stmt.setString(6, imovel.getAreaDeLazer().toString());
-            stmt.setInt(7, imovel.getDono().getIdCliente());
+            stmt.setInt(7, imovel.getIdDono());
             stmt.setString(8, imovel.getGaragem().toString());
 
             stmt.setInt(9, id);
@@ -238,7 +238,7 @@ public class ImovelRepository {
             stmt.setString(6, imovel.getPermiteAnimais().toString());
             stmt.setString(7, imovel.getSalaoDeFesta().toString());
             stmt.setInt(8, imovel.getNumeroDeVagas());
-            stmt.setInt(9, imovel.getDono().getIdCliente());
+            stmt.setInt(9, imovel.getIdDono());
             stmt.setInt(10, id);
 
             //Executa-se a consulta
@@ -283,7 +283,7 @@ public class ImovelRepository {
                 ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
                 ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
                 ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
-                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
 
                 imoveis.add(imovel);
@@ -325,7 +325,7 @@ public class ImovelRepository {
                 ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
                 ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
                 ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
-                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
                 imoveis.add(imovel);
             }
@@ -372,7 +372,7 @@ public class ImovelRepository {
                 ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
                 ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
                 ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
-                imovel.setDono(clienteRepository.buscarCliente(res.getInt("id_cliente")));
+                imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
                 return imovel;
 

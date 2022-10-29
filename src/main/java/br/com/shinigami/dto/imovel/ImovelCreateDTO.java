@@ -14,6 +14,8 @@ import javax.validation.constraints.Size;
 public class ImovelCreateDTO {
     @NotNull
     private Integer idEndereco;
+    @NotNull
+    private Integer idDono;
     @NotEmpty
     private int qntdQuartos;
     @NotEmpty
@@ -32,6 +34,5 @@ public class ImovelCreateDTO {
     private boolean permiteAnimais;
     private boolean salaoDeFesta;
     private int numeroDeVagas;
-    private Cliente dono;
 
 }

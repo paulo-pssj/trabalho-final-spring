@@ -40,7 +40,7 @@ public class ContratoController {
         return new ResponseEntity<>(contratoDTO, HttpStatus.OK);
     }
 
-    @PutMapping("/{idContrato")
+    @PutMapping("/{idContrato}")
     public ResponseEntity<ContratoDTO> update(@PathVariable("idContrato") Integer idContrato,
                                               @Valid @RequestBody ContratoCreateDTO contratoUpdate) throws RegraDeNegocioException {
         ContratoDTO contratoUpdated = contratoService.update(idContrato, contratoUpdate);

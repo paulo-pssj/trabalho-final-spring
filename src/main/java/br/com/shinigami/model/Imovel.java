@@ -24,8 +24,8 @@ public class Imovel {
     private Tipo alugado;
     private Tipo ativo;
     private TipoImovel tipoImovel;
-    private int idEndereco;
-    private Cliente dono;
+    private Integer idEndereco;
+    private Integer idDono;
 
 
 }

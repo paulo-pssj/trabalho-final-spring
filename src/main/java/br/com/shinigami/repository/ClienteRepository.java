@@ -40,9 +40,9 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             Integer proximoId = this.getProximoId(con);
             cliente.setIdCliente(proximoId);
 
-            String sql = "INSERT INTO CLIENTE\n" +
-                    "(id_cliente, nome , cpf , telefone , email , tipo_cliente,ativo)\n" +
-                    "VALUES(?, ?, ?, ?, ?, ?, ?)\n";
+            String sql = "INSERT INTO CLIENTE " +
+                    "(id_cliente, nome , cpf , telefone , email , tipo_cliente, ativo) " +
+                    "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
