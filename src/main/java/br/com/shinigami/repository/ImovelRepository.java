@@ -32,7 +32,7 @@ public class ImovelRepository {
         return null;
     }
 
-    public Casa create(Casa imovel) throws BancoDeDadosException {
+    public Imovel create(Imovel imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -83,7 +83,7 @@ public class ImovelRepository {
         }
     }
 
-    public Apartamento create(Apartamento imovel) throws BancoDeDadosException {
+    /*public Apartamento create(Apartamento imovel) throws BancoDeDadosException {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
@@ -109,7 +109,7 @@ public class ImovelRepository {
             stmt.setInt(5, imovel.getQntdQuartos());
             stmt.setInt(6, imovel.getQntdBanheiros());
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
-            stmt.setInt(8, imovel.getEndereco().getIdEndereco());
+            stmt.setInt(8, imovel.getIdEndereco());
             stmt.setInt(9, imovel.getIdDono());
             stmt.setString(10, imovel.getPermiteAnimais().toString());
             stmt.setString(11, imovel.getSalaoDeFesta().toString());
@@ -132,7 +132,7 @@ public class ImovelRepository {
                 e.printStackTrace();
             }
         }
-    }
+    }*/
 
     public void delete(Integer id) throws BancoDeDadosException {
         Connection con = null;
@@ -272,17 +272,17 @@ public class ImovelRepository {
                 Imovel imovel = new Imovel();
 
                 imovel.setIdImovel(res.getInt("id_imovel"));
-                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setIdEndereco(res.getInt("id_endereco"));
                 imovel.setValorMensal(res.getDouble("valor_mensal"));
                 imovel.setCondominio(res.getDouble("condominio"));
                 imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
                 imovel.setQntdQuartos(res.getInt("qntd_quartos"));
                 imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
-                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
-                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
-                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                imovel.setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                imovel.setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                imovel.setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                imovel.setGaragem(Tipo.valueOf(res.getString("garagem")));
                 imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
 
@@ -314,17 +314,17 @@ public class ImovelRepository {
             while (res.next()) {
                 Imovel imovel = new Imovel();
                 imovel.setIdImovel(res.getInt("id_imovel"));
-                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setIdEndereco(res.getInt("id_endereco"));
                 imovel.setValorMensal(res.getDouble("valor_mensal"));
                 imovel.setCondominio(res.getDouble("condominio"));
                 imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
                 imovel.setQntdQuartos(res.getInt("qntd_quartos"));
                 imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
-                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
-                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
-                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                imovel.setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                imovel.setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                imovel.setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                imovel.setGaragem(Tipo.valueOf(res.getString("garagem")));
                 imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
                 imoveis.add(imovel);
@@ -361,17 +361,17 @@ public class ImovelRepository {
                 Imovel imovel = new Imovel();
 
                 imovel.setIdImovel(res.getInt("id_imovel"));
-                imovel.setEndereco(enderecoRepository.buscarEndereco(res.getInt("id_endereco")));
+                imovel.setIdEndereco(res.getInt("id_endereco"));
                 imovel.setValorMensal(res.getDouble("valor_mensal"));
                 imovel.setCondominio(res.getDouble("condominio"));
                 imovel.setAlugado(Tipo.valueOf(res.getString("alugado")));
                 imovel.setQntdQuartos(res.getInt("qntd_quartos"));
                 imovel.setQntdBanheiros(res.getInt("qntd_banheiros"));
-                ((Apartamento) imovel).setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
-                ((Apartamento) imovel).setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
-                ((Apartamento) imovel).setNumeroDeVagas(res.getInt("numero_de_vagas"));
-                ((Casa) imovel).setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
-                ((Casa) imovel).setGaragem(Tipo.valueOf(res.getString("garagem")));
+                imovel.setPermiteAnimais(Tipo.valueOf(res.getString("permite_animais")));
+                imovel.setSalaoDeFesta(Tipo.valueOf(res.getString("salao_de_festas")));
+                imovel.setNumeroDeVagas(res.getInt("numero_de_vagas"));
+                imovel.setAreaDeLazer(Tipo.valueOf(res.getString("area_de_lazer")));
+                imovel.setGaragem(Tipo.valueOf(res.getString("garagem")));
                 imovel.setIdDono(res.getInt("id_cliente"));
                 imovel.setTipoImovel(TipoImovel.values()[(res.getInt("tipo_imovel"))]);
                 return imovel;
