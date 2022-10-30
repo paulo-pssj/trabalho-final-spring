@@ -37,7 +37,7 @@ public class ClienteController implements ClienteControllerInterface{
     @PostMapping
     public ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO cliente)throws RegraDeNegocioException{
         ClienteDTO clienteDTO = clienteService.create(cliente);
-        return  new ResponseEntity<>(clienteDTO, HttpStatus.OK);
+        return new ResponseEntity<>(clienteDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{idCliente}")

@@ -64,6 +64,9 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             clienteRecovery.setNome(clienteUpdate.getNome());
             clienteRecovery.setCpf(clienteUpdate.getCpf());
             clienteRecovery.setEmail(clienteUpdate.getEmail());
+            clienteRecovery.setTelefone(clienteUpdate.getTelefone());
+            clienteRecovery.setTipoCliente(clienteUpdate.getTipoCliente());
+            clienteRepository.update(id, clienteRecovery);
             log.info("Cliente atualizado com sucesso!");
             return objectMapper.convertValue(clienteRecovery, ClienteDTO.class);
         }catch (BancoDeDadosException e){

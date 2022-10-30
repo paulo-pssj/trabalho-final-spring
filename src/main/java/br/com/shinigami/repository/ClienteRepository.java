@@ -39,9 +39,10 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
 
             Integer proximoId = this.getProximoId(con);
             cliente.setIdCliente(proximoId);
+            cliente.setAtivo(Tipo.S);
 
-            String sql = "INSERT INTO CLIENTE " +
-                    "(id_cliente, nome , cpf , telefone , email , tipo_cliente, ativo) " +
+            String sql = "INSERT INTO CLIENTE\n" +
+                    "(ID_CLIENTE, NOME, CPF, TELEFONE, EMAIL, TIPO_CLIENTE, ATIVO)\n" +
                     "VALUES(?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -52,9 +53,10 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             stmt.setString(4, cliente.getTelefone());
             stmt.setString(5, cliente.getEmail());
             stmt.setInt(6, cliente.getTipoCliente().ordinal());
-            stmt.setString(7, Tipo.S.toString());
+            stmt.setString(7, cliente.getAtivo().toString());
 
             stmt.executeUpdate();
+
             return cliente;
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -118,10 +120,9 @@ public class ClienteRepository implements Repositorio<Integer, Cliente> {
             stmt.setString(3, cliente.getTelefone());
             stmt.setString(4, cliente.getEmail());
             stmt.setInt(5, cliente.getTipoCliente().ordinal());
-            stmt.setInt(6, id.intValue());
+            stmt.setInt(6, id);
 
-            // Executa-se a consulta
-            int res = stmt.executeUpdate();
+            stmt.executeUpdate();
 
             return cliente;
         } catch (SQLException e) {

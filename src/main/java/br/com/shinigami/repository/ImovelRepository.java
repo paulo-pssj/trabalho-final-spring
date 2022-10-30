@@ -37,11 +37,11 @@ public class ImovelRepository {
         try {
             con = conexaoBancoDeDados.getConnection();
 
-            enderecoRepository.create(imovel.getEndereco());
             imovel.setAtivo(Tipo.S);
 
             Integer imovelProxId = this.getProximoId(con);
             imovel.setIdImovel(imovelProxId);
+            imovel.setAlugado(Tipo.N);
 
             String sql = "INSERT INTO IMOVEL\n" +
                     "(id_imovel, valor_mensal, condominio, alugado, qntd_quartos, qntd_banheiros, tipo_imovel," +
@@ -58,12 +58,12 @@ public class ImovelRepository {
             stmt.setInt(5, imovel.getQntdQuartos());
             stmt.setInt(6, imovel.getQntdBanheiros());
             stmt.setInt(7, imovel.getTipoImovel().ordinal());
-            stmt.setInt(8, imovel.getEndereco().getIdEndereco());
+            stmt.setInt(8, imovel.getIdEndereco());
             stmt.setInt(9, imovel.getIdDono());
             stmt.setString(10, ("N"));
             stmt.setString(11, ("N"));
-            stmt.setString(12, (imovel.getAreaDeLazer().toString()));
-            stmt.setString(13, (imovel.getGaragem().toString()));
+            stmt.setString(12, imovel.getAreaDeLazer().toString());
+            stmt.setString(13, imovel.getGaragem().toString());
             stmt.setString(14, imovel.getAtivo().toString());
             stmt.setInt(15, 0);
 
@@ -264,9 +264,9 @@ public class ImovelRepository {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-            String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'T'";
+            String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'S'";
             Statement stmt = con.createStatement();
-            // Executa-se a consulta
+
             ResultSet res = stmt.executeQuery(sql);
             while (res.next()) {
                 Imovel imovel = new Imovel();

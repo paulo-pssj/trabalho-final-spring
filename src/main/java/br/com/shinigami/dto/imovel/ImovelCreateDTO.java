@@ -2,6 +2,7 @@ package br.com.shinigami.dto.imovel;
 
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Endereco;
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoImovel;
 import lombok.Data;
 
@@ -16,23 +17,20 @@ public class ImovelCreateDTO {
     private Integer idEndereco;
     @NotNull
     private Integer idDono;
-    @NotEmpty
+    @NotNull
     private int qntdQuartos;
-    @NotEmpty
+    @NotNull
     private int qntdBanheiros;
-    @NotEmpty
+    @NotNull
     private double valorMensal;
-    @NotEmpty
+    @NotNull
     private double condominio;
-    @NotBlank
-    @Size(max=1)
-    private boolean alugado;
-    @NotBlank
+    @NotNull
     private TipoImovel tipoImovel;
-    private boolean areaDeLazer;
-    private boolean garagem;
-    private boolean permiteAnimais;
-    private boolean salaoDeFesta;
+    private Tipo areaDeLazer;
+    private Tipo garagem;
+    private Tipo permiteAnimais;
+    private Tipo salaoDeFesta;
     private int numeroDeVagas;
 
 }

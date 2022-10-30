@@ -10,6 +10,5 @@ public class ClienteDTO extends ClienteCreateDTO {
     private String cpf;
     private String email;
     private String telefone;
-    private Tipo ativo;
     private TipoCliente tipoCliente;
 }

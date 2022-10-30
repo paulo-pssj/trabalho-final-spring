@@ -30,8 +30,6 @@ public class EmailService {
 
     @Value("${spring.mail.username}")
     private String from;
-
-    private static final String TO = "lucas.vieira@dbccompany.com.br";
     private final JavaMailSender emailSender;
 
 
