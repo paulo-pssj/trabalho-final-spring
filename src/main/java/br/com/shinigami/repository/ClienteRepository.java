@@ -14,7 +14,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ClienteRepository implements Repositorio<Integer, Cliente> {
+public class ClienteRepository implements Repositorio<Cliente> {
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     @Override

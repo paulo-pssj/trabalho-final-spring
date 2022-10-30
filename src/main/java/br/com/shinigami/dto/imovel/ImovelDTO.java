@@ -23,6 +23,6 @@ public class ImovelDTO  {
     private Tipo permiteAnimais;
     private Tipo salaoDeFesta;
     private Tipo alugado;
-    private EnderecoDTO endereco;
-    private ClienteDTO dono;
+    private int idEndereco;
+    private int idDono;
 }

@@ -15,7 +15,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class ContratoRepository implements Repositorio<Integer, Contrato> {
+public class ContratoRepository implements Repositorio<Contrato> {
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
     private final ImovelRepository imovelRepository;
@@ -55,13 +55,15 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             stmt.setDouble(2, contrato.getValorAluguel());
             stmt.setDate(3, Date.valueOf(contrato.getDataEntrada()));
             stmt.setDate(4, Date.valueOf(contrato.getDataVencimento()));
-            stmt.setInt(5, contrato.getLocatario().getIdCliente());
-            stmt.setInt(6, contrato.getLocador().getIdCliente());
-            stmt.setInt(7, contrato.getImovel().getIdImovel());
+            stmt.setInt(5, contrato.getIdLocatario());
+            stmt.setInt(6, contrato.getIdLocador());
+            stmt.setInt(7, contrato.getIdImovel());
             stmt.setString(8, contrato.getAtivo().toString());
 
             stmt.executeUpdate();
-            imovelRepository.updateAlugado(contrato.getImovel().getIdImovel(),Tipo.S);
+            Imovel imovel = imovelRepository.buscarImovel(contrato.getIdImovel());
+            imovel.setAlugado(Tipo.S);
+            imovelRepository.update(imovel.getIdImovel(),imovel);
             return contrato;
 
         } catch (BancoDeDadosException e) {
@@ -92,8 +94,10 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
 
             stmt.setString(1, "F");
             stmt.setInt(2, id);
-
-            imovelRepository.updateAlugado(id,Tipo.N);
+            Contrato contrato = buscarContrato(id);
+            Imovel imovel = imovelRepository.buscarImovel(contrato.getIdImovel());
+            imovel.setAlugado(Tipo.N);
+            imovelRepository.update(imovel.getIdImovel(),imovel);
 
         } catch (SQLException e) {
             throw new BancoDeDadosException(e.getCause().getMessage());
@@ -125,8 +129,8 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
 
             stmt.setDate(1, Date.valueOf(contrato.getDataEntrada()));
             stmt.setDate(2, Date.valueOf(contrato.getDataVencimento()));
-            stmt.setInt(3, contrato.getLocatario().getIdCliente());
-            stmt.setInt(4, contrato.getLocador().getIdCliente());
+            stmt.setInt(3, contrato.getIdLocatario());
+            stmt.setInt(4, contrato.getIdLocador());
             stmt.setInt(5, id);
 
             stmt.executeUpdate();
@@ -166,9 +170,9 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
                 contrato.setValorAluguel(res.getDouble("valor_aluguel"));
                 contrato.setDataEntrada(res.getDate("data_entrada").toLocalDate());
                 contrato.setDataVencimento(res.getDate("data_vencimento").toLocalDate());
-                contrato.setLocatario(clienteRepository.buscarCliente(res.getInt("id_locatario")));
-                contrato.setLocador(clienteRepository.buscarCliente(res.getInt("id_locador")));
-                contrato.setImovel(imovelRepository.buscarImovel(res.getInt("id_imovel")));
+                contrato.setIdLocatario(res.getInt("id_locatario"));
+                contrato.setIdLocador(res.getInt("id_locador"));
+                contrato.setIdImovel(res.getInt("id_imovel"));
                 contrato.setAtivo(Tipo.valueOf(res.getString("ativo")));
                 contratos.add(contrato);
             }
@@ -204,9 +208,9 @@ public class ContratoRepository implements Repositorio<Integer, Contrato> {
             contrato.setValorAluguel(res.getDouble("valor_aluguel"));
             contrato.setDataEntrada(res.getDate("data_entrada").toLocalDate());
             contrato.setDataVencimento(res.getDate("data_vencimento").toLocalDate());
-            contrato.setLocatario(clienteRepository.buscarCliente(res.getInt("id_locatario")));
-            contrato.setLocador(clienteRepository.buscarCliente(res.getInt("id_locador")));
-            contrato.setImovel(imovelRepository.buscarImovel(res.getInt("id_imovel")));
+            contrato.setIdLocatario(res.getInt("id_locatario"));
+            contrato.setIdLocador(res.getInt("id_locador"));
+            contrato.setIdImovel(res.getInt("id_imovel"));
             contrato.setAtivo(Tipo.valueOf(res.getString("ativo")));
 
             return contrato;

@@ -31,7 +31,9 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             Cliente pessoaAdicionada = clienteRepository.create(clienteNovo);
             log.info("Cliente criado com sucesso!");
             ClienteDTO clienteDto = objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
-            emailService.sendEmail(clienteDto);
+            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: "+clienteDto.getIdCliente();
+            String assunto = "Seu cadastro foi concluido com sucesso!";
+            emailService.sendEmail(clienteDto,emailBase,assunto);
             return clienteDto;
         }catch (BancoDeDadosException e){
             throw new RegraDeNegocioException("Erro ao criar cliente");

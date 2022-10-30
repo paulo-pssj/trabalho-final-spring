@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 public class Imovel {
 
     private int idImovel;
+    private int idEndereco;
+    private int idDono;
     private int qntdQuartos;
     private int qntdBanheiros;
     private double valorMensal;
@@ -28,8 +30,6 @@ public class Imovel {
     private Tipo salaoDeFesta;
     private Tipo ativo;
     private int numeroDeVagas;
-    private int idEndereco;
-    private int idDono;
 
 
 }

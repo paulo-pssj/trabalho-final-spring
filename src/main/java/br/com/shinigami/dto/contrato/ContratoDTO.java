@@ -10,8 +10,8 @@ import java.time.LocalDate;
 public class ContratoDTO {
 
     private int idContrato;
-    private Cliente locador;
-    private Cliente locatario;
+    private int idLocador;
+    private int idlocatario;
     private double valorAluguel;
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;

@@ -13,7 +13,7 @@ import java.util.List;
 
 @Repository
 @RequiredArgsConstructor
-public class EnderecoRepository implements Repositorio<Integer, Endereco> {
+public class EnderecoRepository implements Repositorio<Endereco> {
 
     private final ConexaoBancoDeDados conexaoBancoDeDados;
 

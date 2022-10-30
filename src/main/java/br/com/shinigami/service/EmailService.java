@@ -33,15 +33,14 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
 
-    public void sendEmail(ClienteDTO cliente) {
+    public void sendEmail(ClienteDTO cliente,String emailBase,String assunto) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
-            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: "+cliente.getIdCliente();
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
 
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(cliente.getEmail());
-            mimeMessageHelper.setSubject("Seu cadastro foi concluido com sucesso!");
+            mimeMessageHelper.setSubject(assunto);
             mimeMessageHelper.setText(createFromTemplate(cliente,"email-template.ftl", emailBase), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
@@ -50,32 +49,6 @@ public class EmailService {
         }
     }
 
-    public void sendEmailContrato(ContratoDTO contrato) throws RegraDeNegocioException {
-        MimeMessage mimeMessage = emailSender.createMimeMessage();
-        try {
-            String emailBase = "Contrato Criado com sucesso! <br> Contrato entre locador: "+contrato.getLocador().getNome()+" e locatario: "+contrato.getLocatario().getNome()+"<br>"+
-                    "Valor Mensal: R$"+contrato.getValorAluguel();
-            MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-
-            mimeMessageHelper.setFrom(from);
-            mimeMessageHelper.setTo(new String[]{contrato.getLocador().getEmail(), contrato.getLocatario().getEmail()});
-            mimeMessageHelper.setSubject("Seu contrato foi gerado com sucesso!!");
-            mimeMessageHelper.setText(createFromTemplate("email-template.ftl", emailBase), true);
-
-            emailSender.send(mimeMessageHelper.getMimeMessage());
-        } catch (MessagingException | IOException | TemplateException e) {
-            e.printStackTrace();
-        }
-
-    }
-    public String createFromTemplate(String emailTemplate,String base) throws IOException, TemplateException {
-        Map<String, Object> dados = new HashMap<>();
-        dados.put("base", base);
-        dados.put("from", from);
-        Template template = fmConfiguration.getTemplate(emailTemplate);
-        String html = FreeMarkerTemplateUtils.processTemplateIntoString(template, dados);
-        return html;
-    }
 
     public String createFromTemplate(ClienteDTO cliente,String emailTemplate,String base) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();

@@ -1,6 +1,7 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
@@ -26,6 +27,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
     private final ImovelService imovelService;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
+    private final ClienteService clienteService;
 
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
@@ -35,8 +37,13 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             Contrato contratoAdicionado = contratoRepository.create(contratoNovo);
             log.info("Contrato criado com sucesso!");
             ContratoDTO contratoDto = objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
-
-            emailService.sendEmailContrato(contratoDto);
+            ClienteDTO locador = clienteService.buscarCliente(contrato.getIdLocador());
+            ClienteDTO locatario = clienteService.buscarCliente(contrato.getIdlocatario());
+            String emailBase = "Contrato Criado com sucesso! <br> Contrato entre locador: "+locador.getNome()+" e locatario: "+locatario.getNome()+"<br>"+
+                    "Valor Mensal: R$"+contrato.getValorAluguel();
+            String assunto ="Seu contrato foi gerado com sucesso!!";
+            emailService.sendEmail(locador,emailBase,assunto);
+            emailService.sendEmail(locatario,emailBase,assunto);
             return contratoDto;
         } catch(BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao criar um contrato!");
