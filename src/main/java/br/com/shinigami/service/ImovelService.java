@@ -75,7 +75,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             if (imovelRepository.buscarImovel(id) == null) {
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
-            imovelEntity = imovelRepository.create(objectMapper.convertValue(imovel, Imovel.class));
+            imovelEntity = imovelRepository.update(id,objectMapper.convertValue(imovel, Imovel.class));
 
             log.info("Editando Imovel");
 
