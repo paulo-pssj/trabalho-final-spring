@@ -11,7 +11,7 @@ import java.time.LocalDate;
 @Data
 public class ContratoDTO {
 
-    private int Contrato;
+    private int idContrato;
     private double valorAluguel;
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;

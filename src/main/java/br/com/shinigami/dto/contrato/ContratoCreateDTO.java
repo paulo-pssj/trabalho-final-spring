@@ -19,8 +19,6 @@ public class ContratoCreateDTO {
     @NotNull
     private Integer idImovel;
     @NotNull
-    private double valorAluguel;
-    @NotNull
     private LocalDate dataEntrada;
     @NotNull
     private LocalDate dataVencimento;

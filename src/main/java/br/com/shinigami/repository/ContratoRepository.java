@@ -122,7 +122,8 @@ public class ContratoRepository implements Repositorio<Contrato> {
                     "DATA_ENTRADA = ?, " +
                     "DATA_VENCIMENTO = ?, " +
                     "ID_LOCATARIO = ?, " +
-                    "ID_LOCADOR = ? " +
+                    "ID_LOCADOR = ?, " +
+                    "ID_IMOVEL = ? "+
                     "WHERE ID_CONTRATO = ?";
 
             PreparedStatement stmt = con.prepareStatement(sql);
@@ -131,7 +132,8 @@ public class ContratoRepository implements Repositorio<Contrato> {
             stmt.setDate(2, Date.valueOf(contrato.getDataVencimento()));
             stmt.setInt(3, contrato.getIdLocatario());
             stmt.setInt(4, contrato.getIdLocador());
-            stmt.setInt(5, id);
+            stmt.setInt(5, contrato.getIdImovel());
+            stmt.setInt(6, id);
 
             stmt.executeUpdate();
             return contrato;
@@ -159,7 +161,7 @@ public class ContratoRepository implements Repositorio<Contrato> {
 
             Statement stmt = con.createStatement();
 
-            String sql = "SELECT * FROM CONTRATO WHERE ativo LIKE 'T'";
+            String sql = "SELECT * FROM CONTRATO WHERE ativo LIKE 'S'";
 
             ResultSet res = stmt.executeQuery(sql);
 
@@ -216,7 +218,7 @@ public class ContratoRepository implements Repositorio<Contrato> {
             return contrato;
 
         } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause().getMessage());
+            throw new BancoDeDadosException(e.getMessage());
         } finally {
             try {
                 if (con != null) {

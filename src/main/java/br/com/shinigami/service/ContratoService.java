@@ -48,7 +48,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             contratoDto.setImovel(imovel);
 
             String emailBase = "Contrato Criado com sucesso! <br> Contrato entre locador: "+locador.getNome()+" e locatario: "+locatario.getNome()+"<br>"+
-                    "Valor Mensal: R$"+contrato.getValorAluguel();
+                    "Valor Mensal: R$"+contratoDto.getValorAluguel();
             String assunto ="Seu contrato foi gerado com sucesso!!";
             emailService.sendEmail(locador,emailBase,assunto);
             emailService.sendEmail(locatario,emailBase,assunto);
@@ -72,14 +72,27 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
     }
 
     @Override
-    public ContratoDTO update(Integer id, ContratoCreateDTO contrato) throws RegraDeNegocioException {
+    public ContratoDTO update(Integer id, ContratoCreateDTO contratoAtualizar) throws RegraDeNegocioException {
         try {
-            if (contratoRepository.buscarContrato(id) == null) {
+            Contrato contrato = contratoRepository.buscarContrato(id);
+            if (contrato == null) {
                 throw new RegraDeNegocioException("Contrato não encontrado!");
             }
-            Contrato contratoett = contratoRepository.update(id, objectMapper.convertValue(contrato, Contrato.class));
-            log.info("Contrato Editado!");
-            return objectMapper.convertValue(contratoett, ContratoDTO.class);
+            ImovelDTO imovelDTO = imovelService.buscarImovel(contratoAtualizar.getIdImovel());
+
+            contrato.setIdImovel(contratoAtualizar.getIdImovel());
+            contrato.setIdLocador(imovelDTO.getDono().getIdCliente());
+            contrato.setIdLocatario(contratoAtualizar.getIdLocatario());
+            contrato.setDataEntrada(contratoAtualizar.getDataEntrada());
+            contrato.setDataVencimento(contratoAtualizar.getDataVencimento());
+
+            ContratoDTO contratoDto = objectMapper.convertValue(contratoRepository.update(id, contrato), ContratoDTO.class);
+
+            contratoDto.setImovel(imovelDTO);
+            contratoDto.setLocador(clienteService.buscarCliente(imovelDTO.getDono().getIdCliente()));
+            contratoDto.setLocatario(clienteService.buscarCliente(contratoAtualizar.getIdLocatario()));
+
+            return contratoDto;
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao atualizar o contrato!");
         }
