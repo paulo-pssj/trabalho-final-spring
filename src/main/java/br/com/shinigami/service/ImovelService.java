@@ -28,7 +28,16 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         try {
             List<Imovel> listar = imovelRepository.list();
             return listar.stream()
-                    .map(imovel -> objectMapper.convertValue(imovel, ImovelDTO.class))
+                    .map(imovel ->{
+                        try {
+                            ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+                            imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
+                            imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
+                            return imovelDTO;
+                        }catch (RegraDeNegocioException e){
+                            throw new RuntimeException(e);
+                        }
+                    })
                     .toList();
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao listar imoveis!");
@@ -44,6 +53,8 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             }
             log.info("Imovel encontrado!!");
             ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+            imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
+            imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
 
             return imovelDTO;
         } catch (BancoDeDadosException e) {
@@ -60,6 +71,8 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             log.info("Imovel Criado!!");
 
             ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
+            imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
+            imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
 
             return imovelDTO;
 
@@ -75,11 +88,13 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             if (imovelRepository.buscarImovel(id) == null) {
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
+            log.info("Editando Imovel");
             imovelEntity = imovelRepository.update(id,objectMapper.convertValue(imovel, Imovel.class));
 
-            log.info("Editando Imovel");
 
             ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
+            imovelDTO.setEndereco(enderecoService.findById(imovelEntity.getIdEndereco()));
+            imovelDTO.setDono(clienteService.buscarCliente(imovelEntity.getIdDono()));
             return imovelDTO;
 
         } catch (BancoDeDadosException e) {
@@ -105,7 +120,16 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         try {
             List<Imovel> listar = imovelRepository.listarImoveisDisponiveis();
             return listar.stream()
-                    .map(imovel -> objectMapper.convertValue(imovel, ImovelDTO.class))
+                    .map(imovel -> {
+                                try {
+                                    ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+                                    imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
+                                    imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
+                                    return imovelDTO;
+                                }catch (RegraDeNegocioException e){
+                                    throw new RuntimeException(e);
+                                }
+                    })
                     .toList();
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao listar imoveis disponiveis!");

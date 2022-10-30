@@ -27,6 +27,8 @@ public class ImovelCreateDTO {
     private double condominio;
     @NotNull
     private TipoImovel tipoImovel;
+    @NotNull
+    private Tipo alugado;
     private Tipo areaDeLazer;
     private Tipo garagem;
     private Tipo permiteAnimais;

@@ -131,7 +131,7 @@ public class ImovelRepository implements Repositorio<Imovel>{
             sql.append(" garagem = ?,");
             sql.append(" permite_animais = ?,");
             sql.append(" salao_de_festas = ?,");
-            sql.append(" numero_de_vagas = ?,");
+            sql.append(" numero_de_vagas = ?");
             sql.append(" WHERE id_imovel = ?");
 
             PreparedStatement stmt = con.prepareStatement(sql.toString());
@@ -219,7 +219,7 @@ public class ImovelRepository implements Repositorio<Imovel>{
             con = conexaoBancoDeDados.getConnection();
             String sql = "SELECT * FROM IMOVEL WHERE ATIVO LIKE 'S' and ALUGADO LIKE 'N'";
             Statement stmt = con.createStatement();
-            // Executa-se a consulta
+
             ResultSet res = stmt.executeQuery(sql);
             while (res.next()) {
                 Imovel imovel = new Imovel();
