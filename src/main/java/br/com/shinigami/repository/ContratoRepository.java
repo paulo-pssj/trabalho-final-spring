@@ -41,18 +41,20 @@ public class ContratoRepository implements Repositorio<Contrato> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
+            Imovel imovel = imovelRepository.buscarImovel(contrato.getIdImovel());
 
             Integer idProxContrato = getProximoId(con);
             contrato.setIdContrato(idProxContrato);
 
             String sql = "INSERT INTO CONTRATO\n" +
-                    " (ID_CONTRATO, VALOR_ALUGUEL, DATA_ENTRADA, DATA_VENCIMENTO, ID_LOCATARIO, ID_LOCADOR, ID_IMOVEL, ATIVO)" +
+                    " (ID_CONTRATO, VALOR_ALUGUEL, DATA_ENTRADA, DATA_VENCIMENTO, ID_LOCATARIO, ID_LOCADOR, ID_IMOVEL, ATIVO)\n" +
                     "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
+
             stmt.setInt(1, contrato.getIdContrato());
-            stmt.setDouble(2, contrato.getValorAluguel());
+            stmt.setDouble(2, (imovel.getValorMensal() + imovel.getCondominio()));
             stmt.setDate(3, Date.valueOf(contrato.getDataEntrada()));
             stmt.setDate(4, Date.valueOf(contrato.getDataVencimento()));
             stmt.setInt(5, contrato.getIdLocatario());
@@ -61,9 +63,7 @@ public class ContratoRepository implements Repositorio<Contrato> {
             stmt.setString(8, contrato.getAtivo().toString());
 
             stmt.executeUpdate();
-            Imovel imovel = imovelRepository.buscarImovel(contrato.getIdImovel());
-            imovel.setAlugado(Tipo.S);
-            imovelRepository.update(imovel.getIdImovel(),imovel);
+
             return contrato;
 
         } catch (BancoDeDadosException e) {

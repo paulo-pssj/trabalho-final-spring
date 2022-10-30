@@ -15,16 +15,14 @@ import java.time.LocalDate;
 public class ContratoCreateDTO {
 
     @NotNull
-    private Integer idLocador;
-    @NotNull
-    private Integer idlocatario;
-    @NotNull
-    private double valorAluguel;
-    @NotBlank
-    private LocalDate dataEntrada;
-    @NotBlank
-    private LocalDate dataVencimento;
+    private Integer idLocatario;
     @NotNull
     private Integer idImovel;
+    @NotNull
+    private double valorAluguel;
+    @NotNull
+    private LocalDate dataEntrada;
+    @NotNull
+    private LocalDate dataVencimento;
 
 }
