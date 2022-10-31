@@ -24,7 +24,6 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCre
     public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException {
         try{
             Endereco enderecoCriado = enderecoRepository.create(objectMapper.convertValue(endereco, Endereco.class));
-            log.info("Endereco criado com sucesso!");
             return objectMapper.convertValue(enderecoCriado, EnderecoDTO.class);
         }catch(BancoDeDadosException e){
             throw new RegraDeNegocioException("Erro ao criar endereço");
@@ -46,17 +45,7 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCre
     @Override
     public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
         try {
-            Endereco endereco = enderecoRepository.buscarEndereco(id);
-
-            endereco.setCep(enderecoAtualizar.getCep());
-            endereco.setCidade(enderecoAtualizar.getCidade());
-            endereco.setComplemento(enderecoAtualizar.getComplemento());
-            endereco.setEstado(enderecoAtualizar.getEstado());
-            endereco.setPais(enderecoAtualizar.getPais());
-            endereco.setRua(enderecoAtualizar.getRua());
-            endereco.setNumero(enderecoAtualizar.getNumero());
-            enderecoRepository.update(id, endereco);
-            log.info("Endereço atualizado com sucesso!");
+            Endereco endereco = enderecoRepository.update(id, objectMapper.convertValue(enderecoAtualizar,Endereco.class));
             return objectMapper.convertValue(endereco, EnderecoDTO.class);
         }catch (BancoDeDadosException e){
             throw new RegraDeNegocioException("Erro ao atualizar endereço");

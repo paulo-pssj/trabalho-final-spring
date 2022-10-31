@@ -1,6 +1,7 @@
 package br.com.shinigami.controller;
 
 
+import br.com.shinigami.controller.controllerInterface.EnderecoControllerInterface;
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
@@ -22,13 +23,13 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 @RequestMapping("/endereco")
-public class EnderecoController {
+public class EnderecoController implements EnderecoControllerInterface {
 
     private final EnderecoService enderecoService;
     private final ObjectMapper objectMapper;
 
     @PostMapping
-    public ResponseEntity<EnderecoDTO> create(@RequestBody @Valid EnderecoCreateDTO endereco) throws RegraDeNegocioException{
+    public ResponseEntity<EnderecoDTO> create(@RequestBody @Valid EnderecoCreateDTO endereco) throws RegraDeNegocioException {
         log.info("Criando Endereco...");
         EnderecoDTO e = enderecoService.create(endereco);
         log.info("Endereco Criado!!");
@@ -36,31 +37,36 @@ public class EnderecoController {
     }
 
     @GetMapping
-    public List<EnderecoDTO> list() throws RegraDeNegocioException {
-        return enderecoService.list();
+    public ResponseEntity<List<EnderecoDTO>> list() throws RegraDeNegocioException {
+        log.info("Buscando Enderecos...");
+        List<EnderecoDTO> lista = enderecoService.list();
+        log.info("Lista de endereços encontrada!");
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     @GetMapping("/{idEndereco}")
-         public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException{
-             return objectMapper.convertValue(enderecoService.findById(id), EnderecoDTO.class);
-         }
+    public ResponseEntity<EnderecoDTO> findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException {
+        log.info("Buscando endereço...");
+        EnderecoDTO enderecoDTO = objectMapper.convertValue(enderecoService.findById(id), EnderecoDTO.class);
+        log.info("Endereço encontrado!");
+        return new ResponseEntity<>(enderecoDTO, HttpStatus.OK);
+    }
 
     @PutMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
-                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws  RegraDeNegocioException {
+                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
         log.info("Atualizando Endereco...");
         EnderecoDTO endereco = enderecoService.update(id, enderecoAtualizar);
         log.info("Endereco Atualizado!!");
 
-        return new ResponseEntity<>(endereco,HttpStatus.OK);
+        return new ResponseEntity<>(endereco, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idEndereco}")
-    public void delete(@PathVariable("idEndereco") Integer id) throws  RegraDeNegocioException {
+    public ResponseEntity<Void> delete(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException {
         log.info("deletando Endereco...");
         enderecoService.delete(id);
         log.info("Endereco Deletado!!");
-
-        new ResponseEntity<>(ResponseEntity.noContent().build(),HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }

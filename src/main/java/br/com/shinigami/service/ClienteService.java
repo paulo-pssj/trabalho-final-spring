@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreateDTO>{
+public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreateDTO> {
 
     private final ClienteRepository clienteRepository;
     private final ObjectMapper objectMapper;
@@ -27,15 +27,13 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException {
         try {
             Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
-            log.info("criando cliente...");
             Cliente pessoaAdicionada = clienteRepository.create(clienteNovo);
-            log.info("Cliente criado com sucesso!");
             ClienteDTO clienteDto = objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
-            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: "+clienteDto.getIdCliente();
+            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
             String assunto = "Seu cadastro foi concluido com sucesso!";
-            emailService.sendEmail(clienteDto,emailBase,assunto);
+            emailService.sendEmail(clienteDto, emailBase, assunto);
             return clienteDto;
-        }catch (BancoDeDadosException e){
+        } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao criar cliente");
         }
     }
@@ -43,14 +41,12 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
         try {
-            log.info("Deletando cliente...");
             Cliente clienteRecovery = clienteRepository.buscarCliente(id);
             if (clienteRecovery == null) {
                 throw new RegraDeNegocioException("Cliente não encontrado!");
             }
             clienteRepository.delete(clienteRecovery.getIdCliente());
-            log.info("Cliente deletado com sucesso!");
-        }catch (BancoDeDadosException e){
+        } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro deletar o Cliente");
         }
     }
@@ -58,20 +54,13 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     @Override
     public ClienteDTO update(Integer id, ClienteCreateDTO clienteUpdate) throws RegraDeNegocioException {
         try {
-            log.info("Atualizando cliente...");
             Cliente clienteRecovery = clienteRepository.buscarCliente(id);
             if (clienteRecovery == null) {
                 throw new RegraDeNegocioException("Cliente não encontrado!");
             }
-            clienteRecovery.setNome(clienteUpdate.getNome());
-            clienteRecovery.setCpf(clienteUpdate.getCpf());
-            clienteRecovery.setEmail(clienteUpdate.getEmail());
-            clienteRecovery.setTelefone(clienteUpdate.getTelefone());
-            clienteRecovery.setTipoCliente(clienteUpdate.getTipoCliente());
-            clienteRepository.update(id, clienteRecovery);
-            log.info("Cliente atualizado com sucesso!");
-            return objectMapper.convertValue(clienteRecovery, ClienteDTO.class);
-        }catch (BancoDeDadosException e){
+            Cliente cliente = clienteRepository.update(id, objectMapper.convertValue(clienteUpdate, Cliente.class));
+            return objectMapper.convertValue(cliente, ClienteDTO.class);
+        } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao atualizar no banco de dados.");
         }
     }
@@ -83,7 +72,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             return listar.stream()
                     .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                     .toList();
-        }catch (BancoDeDadosException e){
+        } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao buscar no banco de dados");
         }
     }
@@ -91,7 +80,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public ClienteDTO buscarCliente(Integer idCliente) throws RegraDeNegocioException {
         try {
             return objectMapper.convertValue(clienteRepository.buscarCliente(idCliente), ClienteDTO.class);
-        }catch (BancoDeDadosException e){
+        } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao buscar no banco de dados");
         }
     }

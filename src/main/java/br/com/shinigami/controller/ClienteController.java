@@ -20,36 +20,44 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RequestMapping("/cliente")
-public class ClienteController implements ClienteControllerInterface{
+public class ClienteController implements ClienteControllerInterface {
 
     private final ClienteService clienteService;
 
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException {
-        return new ResponseEntity<>( clienteService.list(), HttpStatus.OK);
+        log.info("Listando clientes...");
+        return new ResponseEntity<>(clienteService.list(), HttpStatus.OK);
     }
 
     @GetMapping("/{idCliente}")
-    public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException{
+    public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException {
+        log.info("Buscando cliente...");
         return new ResponseEntity<>(clienteService.buscarCliente(idCliente), HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO cliente)throws RegraDeNegocioException{
+    public ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO cliente) throws RegraDeNegocioException {
+        log.info("Criando cliente");
         ClienteDTO clienteDTO = clienteService.create(cliente);
+        log.info("Cliente criado com sucesso!");
         return new ResponseEntity<>(clienteDTO, HttpStatus.OK);
     }
 
     @PutMapping("/{idCliente}")
     public ResponseEntity<ClienteDTO> update(@PathVariable("idCliente") Integer idCliente,
-                                             @RequestBody @Valid ClienteCreateDTO clienteAtualizar)throws RegraDeNegocioException{
-        ClienteDTO clienteAtualizado = clienteService.update(idCliente,clienteAtualizar);
+                                             @RequestBody @Valid ClienteCreateDTO clienteAtualizar) throws RegraDeNegocioException {
+        log.info("Atualizando cliente...");
+        ClienteDTO clienteAtualizado = clienteService.update(idCliente, clienteAtualizar);
+        log.info("Cliente atualizado com sucesso!");
         return new ResponseEntity<>(clienteAtualizado, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idCliente}")
-    public ResponseEntity<Void> delete(@PathVariable("idCliente") Integer idCliente)throws RegraDeNegocioException{
+    public ResponseEntity<Void> delete(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException {
+        log.info("Deletando cliente...");
         clienteService.delete(idCliente);
+        log.info("Cliente deletado com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 }

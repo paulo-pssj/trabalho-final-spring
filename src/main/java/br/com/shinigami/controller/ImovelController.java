@@ -27,33 +27,51 @@ public class ImovelController implements ImovelControllerInterface {
 
     @GetMapping
     public ResponseEntity<List<ImovelDTO>> list() throws RegraDeNegocioException {
-        return new ResponseEntity<>(imovelService.list(), HttpStatus.OK);
+        log.info("Listando imóveis...");
+        List<ImovelDTO> listaImoveis = imovelService.list();
+        log.info("Imoveis listados!");
+
+        return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
     }
 
     @GetMapping("/listar-disponiveis")
     public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException{
-        return new ResponseEntity<>(imovelService.listarImoveisDisponiveis(), HttpStatus.OK);
+        log.info("Listando imóveis disponíveis...");
+        List<ImovelDTO> listaImoveis = imovelService.listarImoveisDisponiveis();
+        log.info("Imoveis listados!");
+        return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
     }
 
     @GetMapping("/{idImovel}")
     public ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idEndereco) throws RegraDeNegocioException{
-        return new ResponseEntity<>(imovelService.buscarImovel(idEndereco), HttpStatus.OK);
+        log.info("Buscando imovel...");
+        ImovelDTO imovel = imovelService.buscarImovel(idEndereco);
+        log.info("Imovel encontrado!!");
+        return new ResponseEntity<>(imovel, HttpStatus.OK);
     }
 
     @PostMapping
-    public ResponseEntity<ImovelDTO> create(@RequestBody @Valid ImovelCreateDTO imovel) throws RegraDeNegocioException{
-        return new ResponseEntity<>(imovelService.create(imovel), HttpStatus.OK);
+    public ResponseEntity<ImovelDTO> create(@RequestBody @Valid ImovelCreateDTO imovelCreate) throws RegraDeNegocioException{
+        log.info("Criando Imovel...");
+        ImovelDTO imovel = imovelService.create(imovelCreate);
+        log.info("Imovel Criado!!");
+        return new ResponseEntity<>(imovel, HttpStatus.OK);
     }
 
     @PutMapping("/{idImovel}")
     public ResponseEntity<ImovelDTO> update(@PathVariable("idImovel") Integer idImovel,
                                             @RequestBody @Valid ImovelCreateDTO imovelAtualizar) throws RegraDeNegocioException{
-        return new ResponseEntity<>(imovelService.update(idImovel, imovelAtualizar), HttpStatus.OK);
+        log.info("Atualizando Imovel...");
+        ImovelDTO imovel = imovelService.update(idImovel, imovelAtualizar);
+        log.info("Imóvel atualizado com sucesso!");
+        return new ResponseEntity<>(imovel, HttpStatus.OK);
     }
 
     @DeleteMapping("/{idImovel}")
     public ResponseEntity<Void> delete(@PathVariable("idImovel") Integer idImovel) throws RegraDeNegocioException{
+        log.info("Deletando Imovel...");
         imovelService.delete(idImovel);
+        log.info("Imovel Deletado!!");
         return new ResponseEntity<>(HttpStatus.OK);
     }
 

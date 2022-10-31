@@ -28,13 +28,13 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         try {
             List<Imovel> listar = imovelRepository.list();
             return listar.stream()
-                    .map(imovel ->{
+                    .map(imovel -> {
                         try {
                             ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
                             imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
                             imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
                             return imovelDTO;
-                        }catch (RegraDeNegocioException e){
+                        } catch (RegraDeNegocioException e) {
                             throw new RuntimeException(e);
                         }
                     })
@@ -46,16 +46,13 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     public ImovelDTO buscarImovel(Integer id) throws RegraDeNegocioException {
         try {
-            log.info("Buscando imovel...");
             Imovel imovel = imovelRepository.buscarImovel(id);
             if (imovel == null) {
                 throw new RegraDeNegocioException("Imovel não encontrando!");
             }
-            log.info("Imovel encontrado!!");
             ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
             imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
             imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
-
             return imovelDTO;
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Imovel não encontrado!");
@@ -65,17 +62,11 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     @Override
     public ImovelDTO create(ImovelCreateDTO imovel) throws RegraDeNegocioException {
         try {
-            log.info("Criando Imovel...");
             Imovel imovelEntity = imovelRepository.create(objectMapper.convertValue(imovel, Imovel.class));
-
-            log.info("Imovel Criado!!");
-
             ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
             imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
             imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
-
             return imovelDTO;
-
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao criar Imovel");
         }
@@ -88,15 +79,9 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             if (imovelRepository.buscarImovel(id) == null) {
                 throw new RegraDeNegocioException("Imovel Não Encontrado");
             }
-            log.info("Editando Imovel");
-            imovelEntity = imovelRepository.update(id,objectMapper.convertValue(imovel, Imovel.class));
-
-
+            imovelEntity = imovelRepository.update(id, objectMapper.convertValue(imovel, Imovel.class));
             ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
-            imovelDTO.setEndereco(enderecoService.findById(imovelEntity.getIdEndereco()));
-            imovelDTO.setDono(clienteService.buscarCliente(imovelEntity.getIdDono()));
             return imovelDTO;
-
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao atualizar imovel!");
         }
@@ -108,9 +93,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             if (imovelRepository.buscarImovel(id) == null) {
                 throw new RegraDeNegocioException("Imovel não Encontrado!");
             }
-            log.info("Deletando Imovel...");
             imovelRepository.delete(id);
-            log.info("Imovel Deletado!!");
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao deletar imovel!");
         }
@@ -121,14 +104,14 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
             List<Imovel> listar = imovelRepository.listarImoveisDisponiveis();
             return listar.stream()
                     .map(imovel -> {
-                                try {
-                                    ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
-                                    imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
-                                    imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
-                                    return imovelDTO;
-                                }catch (RegraDeNegocioException e){
-                                    throw new RuntimeException(e);
-                                }
+                        try {
+                            ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+                            imovelDTO.setEndereco(enderecoService.findById(imovel.getIdEndereco()));
+                            imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
+                            return imovelDTO;
+                        } catch (RegraDeNegocioException e) {
+                            throw new RuntimeException(e);
+                        }
                     })
                     .toList();
         } catch (BancoDeDadosException e) {

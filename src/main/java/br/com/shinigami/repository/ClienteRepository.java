@@ -104,7 +104,7 @@ public class ClienteRepository implements Repositorio<Cliente> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-
+            cliente.setIdCliente(id);
             String sql = "UPDATE CLIENTE SET " +
                     " cpf = ?," +
                     " nome = ?," +
@@ -208,42 +208,4 @@ public class ClienteRepository implements Repositorio<Cliente> {
         return cliente;
     }
 
-    public Cliente buscarCliente(String txt) throws BancoDeDadosException {
-        Cliente cliente = new Cliente();
-        Connection con = null;
-        try {
-            con = conexaoBancoDeDados.getConnection();
-
-            String sql = "SELECT * FROM CLIENTE WHERE UPPER(nome) = ? or UPPER(telefone) = ? or UPPER(cpf) = ? or UPPER(email) = ?";
-
-            PreparedStatement stmt = con.prepareStatement(sql);
-            txt = txt.toUpperCase();
-            stmt.setString(1, txt);
-            stmt.setString(2, txt);
-            stmt.setString(3, txt);
-            stmt.setString(4, txt);
-
-
-            ResultSet res = stmt.executeQuery();
-            if (res.next()) {
-                cliente.setIdCliente(res.getInt("id_cliente"));
-                cliente.setNome(res.getString("nome"));
-                cliente.setTelefone(res.getString("telefone"));
-                cliente.setCpf(res.getString("cpf"));
-                cliente.setEmail(res.getString("email"));
-                cliente.setTipoCliente(res.getInt("tipo_cliente") == 0 ? TipoCliente.LOCADOR : TipoCliente.LOCATARIO);
-            }
-        } catch (SQLException e) {
-            throw new BancoDeDadosException(e.getCause().getMessage());
-        } finally {
-            try {
-                if (con != null) {
-                    con.close();
-                }
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-        return cliente;
-    }
 }

@@ -32,7 +32,7 @@ public interface EnderecoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    public EnderecoDTO findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException;
+    public ResponseEntity<EnderecoDTO> findByIdEndereco(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException;
 
     @Operation(summary = "Criar endereco", description = "Cria o endereço no banco de dados")
     @ApiResponses(
@@ -53,7 +53,7 @@ public interface EnderecoControllerInterface {
             }
     )
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
-                                               @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws  RegraDeNegocioException;
+                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar endereço", description = "Deleta o endereço do banco de dados")
     @ApiResponses(
@@ -63,5 +63,5 @@ public interface EnderecoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    public void delete(@PathVariable("idEndereco") Integer id) throws  RegraDeNegocioException;
+    ResponseEntity<Void> delete(@PathVariable("idEndereco") Integer id) throws RegraDeNegocioException;
 }

@@ -1,7 +1,7 @@
 package br.com.shinigami.controller.controllerInterface;
 
-import br.com.shinigami.dto.cliente.ClienteCreateDTO;
-import br.com.shinigami.dto.cliente.ClienteDTO;
+import br.com.shinigami.dto.contrato.ContratoCreateDTO;
+import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -23,7 +23,7 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException;
+    ResponseEntity<List<ContratoDTO>> list() throws RegraDeNegocioException;
 
     @Operation(summary = "Buscar contrato", description = "Busca o contrato pelo id do banco de dados")
     @ApiResponses(
@@ -33,7 +33,7 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ClienteDTO> buscarContrato(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException;
+    ResponseEntity<ContratoDTO> buscarContrato(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException;
 
     @Operation(summary = "Criar contrato", description = "Cria o contrato no banco de dados")
     @ApiResponses(
@@ -43,7 +43,7 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ClienteDTO> create(@RequestBody @Valid ClienteCreateDTO contrato) throws RegraDeNegocioException;
+    ResponseEntity<ContratoDTO> create(@RequestBody @Valid ContratoCreateDTO contrato) throws RegraDeNegocioException;
 
     @Operation(summary = "Atualizar contrato", description = "Atualiza o contrato do banco de dados com base no id e o body informado")
     @ApiResponses(
@@ -53,8 +53,8 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ClienteDTO> update(@PathVariable("idContrato") Integer idContrato,
-                                      @RequestBody @Valid ClienteCreateDTO contratoCreate) throws RegraDeNegocioException;
+    ResponseEntity<ContratoDTO> update(@PathVariable("idContrato") Integer idContrato,
+                                       @RequestBody @Valid ContratoCreateDTO contratoCreate) throws RegraDeNegocioException;
 
     @Operation(summary = "Deletar contrato", description = "Deleta o contrato do banco de dados")
     @ApiResponses(

@@ -9,11 +9,11 @@ import lombok.*;
 @NoArgsConstructor
 public class Cliente{
 
+    private Integer idCliente;
     private String nome;
     private String cpf;
     private String email;
     private String telefone;
-    private Integer idCliente;
     private Tipo ativo;
     private TipoCliente tipoCliente;
 

@@ -15,7 +15,6 @@ public class ContratoDTO {
     private double valorAluguel;
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;
-    private Tipo ativo;
     private ImovelDTO imovel;
     private ClienteDTO Locador;
     private ClienteDTO locatario;

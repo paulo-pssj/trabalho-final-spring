@@ -102,9 +102,10 @@ public class EnderecoRepository implements Repositorio<Endereco> {
     @Override
     public Endereco update(Integer id, Endereco endereco) throws BancoDeDadosException {
         Connection con = null;
+        endereco.setIdEndereco(id);
         try {
             con = conexaoBancoDeDados.getConnection();
-
+            endereco.setIdEndereco(id);
             String sql = "UPDATE ENDERECO SET " +
                     " RUA = ?," +
                     " CIDADE = ?," +

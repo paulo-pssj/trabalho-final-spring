@@ -58,7 +58,7 @@ public class ContratoRepository implements Repositorio<Contrato> {
             stmt.setDate(3, Date.valueOf(contrato.getDataEntrada()));
             stmt.setDate(4, Date.valueOf(contrato.getDataVencimento()));
             stmt.setInt(5, contrato.getIdLocatario());
-            stmt.setInt(6, contrato.getIdLocador());
+            stmt.setInt(6, imovel.getIdDono());
             stmt.setInt(7, contrato.getIdImovel());
             stmt.setString(8, contrato.getAtivo().toString());
 
@@ -92,8 +92,9 @@ public class ContratoRepository implements Repositorio<Contrato> {
 
             PreparedStatement stmt = con.prepareStatement(sql);
 
-            stmt.setString(1, "F");
+            stmt.setString(1, "N");
             stmt.setInt(2, id);
+            stmt.executeUpdate();
             Contrato contrato = buscarContrato(id);
             Imovel imovel = imovelRepository.buscarImovel(contrato.getIdImovel());
             imovel.setAlugado(Tipo.N);
@@ -117,7 +118,7 @@ public class ContratoRepository implements Repositorio<Contrato> {
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-
+            contrato.setIdContrato(id);
             String sql = "UPDATE CONTRATO SET " +
                     "DATA_ENTRADA = ?, " +
                     "DATA_VENCIMENTO = ?, " +

@@ -9,13 +9,13 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Contrato{
 
-    private int idLocador;
-    private int idLocatario;
-    private int idImovel;
     private int idContrato;
     private double valorAluguel;
     private LocalDate dataEntrada;
     private LocalDate dataVencimento;
     private Tipo ativo;
+    private int idLocador;
+    private int idLocatario;
+    private int idImovel;
 
 }

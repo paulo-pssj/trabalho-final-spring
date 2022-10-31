@@ -8,7 +8,6 @@ import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Contrato;
-import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -33,22 +32,19 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
         try {
             Contrato contratoNovo = objectMapper.convertValue(contrato, Contrato.class);
-            ImovelDTO imovel = imovelService.buscarImovel(contrato.getIdImovel());
-            contratoNovo.setIdLocador(imovel.getDono().getIdCliente());
             contratoNovo.setAtivo(Tipo.S);
             Contrato contratoAdicionado = contratoRepository.create(contratoNovo);
-            log.info("Contrato criado com sucesso!");
-
             ContratoDTO contratoDto = objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
-            ClienteDTO locador = clienteService.buscarCliente(imovel.getDono().getIdCliente());
-            ClienteDTO locatario = clienteService.buscarCliente(contrato.getIdLocatario());
+            ImovelDTO imovelDTO = imovelService.buscarImovel(contratoAdicionado.getIdImovel());
+            contratoDto.setLocador(imovelDTO.getDono());
+            contratoDto.setLocatario(clienteService.buscarCliente(contratoAdicionado.getIdLocatario()));
+            contratoDto.setImovel(imovelDTO);
 
-            contratoDto.setLocador(locador);
-            contratoDto.setLocatario(locatario);
-            contratoDto.setImovel(imovel);
+            ClienteDTO locador = imovelDTO.getDono();
+            ClienteDTO locatario = contratoDto.getLocatario();
 
-            String emailBase = "Contrato Criado com sucesso! <br> Contrato entre locador: "+locador.getNome()+" e locatario: "+locatario.getNome()+"<br>"+
-                    "Valor Mensal: R$"+contratoDto.getValorAluguel();
+            String emailBase = "Contrato criado com sucesso! <br> Contrato entre locador: "+locador.getNome()+" e locatario: "+locatario.getNome()+"<br>"+
+                    "Valor Mensal: R$"+imovelDTO.getValorMensal();
             String assunto ="Seu contrato foi gerado com sucesso!!";
             emailService.sendEmail(locador,emailBase,assunto);
             emailService.sendEmail(locatario,emailBase,assunto);
@@ -65,7 +61,6 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
                 throw new RegraDeNegocioException("Contrato não encontrado!");
             }
             contratoRepository.delete(id);
-            log.info("Contrato Removido!");
         }catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao deletar o contrato!");
         }
@@ -78,21 +73,17 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             if (contrato == null) {
                 throw new RegraDeNegocioException("Contrato não encontrado!");
             }
+            Contrato contratoEntity = objectMapper.convertValue(contratoAtualizar,Contrato.class);
+            contratoEntity.setIdLocador(imovelService.buscarImovel(contratoAtualizar.getIdImovel()).getDono().getIdCliente());
+
+            ContratoDTO contratoDTO = objectMapper.convertValue(contratoRepository.update(id, contratoEntity), ContratoDTO.class);
             ImovelDTO imovelDTO = imovelService.buscarImovel(contratoAtualizar.getIdImovel());
+            contratoDTO.setLocador(imovelDTO.getDono());
+            contratoDTO.setLocatario(clienteService.buscarCliente(contratoAtualizar.getIdLocatario()));
+            contratoDTO.setImovel(imovelDTO);
 
-            contrato.setIdImovel(contratoAtualizar.getIdImovel());
-            contrato.setIdLocador(imovelDTO.getDono().getIdCliente());
-            contrato.setIdLocatario(contratoAtualizar.getIdLocatario());
-            contrato.setDataEntrada(contratoAtualizar.getDataEntrada());
-            contrato.setDataVencimento(contratoAtualizar.getDataVencimento());
 
-            ContratoDTO contratoDto = objectMapper.convertValue(contratoRepository.update(id, contrato), ContratoDTO.class);
-
-            contratoDto.setImovel(imovelDTO);
-            contratoDto.setLocador(clienteService.buscarCliente(imovelDTO.getDono().getIdCliente()));
-            contratoDto.setLocatario(clienteService.buscarCliente(contratoAtualizar.getIdLocatario()));
-
-            return contratoDto;
+            return contratoDTO;
         } catch (BancoDeDadosException e) {
             throw new RegraDeNegocioException("Erro ao atualizar o contrato!");
         }
@@ -103,7 +94,17 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
         try {
             List<Contrato> listar = contratoRepository.list();
             return listar.stream()
-                    .map(contrato -> objectMapper.convertValue(contrato, ContratoDTO.class))
+                    .map(contrato -> {
+                        ContratoDTO contratoDto = objectMapper.convertValue(contrato, ContratoDTO.class);
+                        try {
+                            contratoDto.setLocador(clienteService.buscarCliente(contrato.getIdLocador()));
+                            contratoDto.setLocatario(clienteService.buscarCliente(contrato.getIdLocatario()));
+                            contratoDto.setImovel(imovelService.buscarImovel(contrato.getIdImovel()));
+                        } catch (RegraDeNegocioException e) {
+                            throw new RuntimeException(e);
+                        }
+                        return contratoDto;
+                    })
                     .toList();
         }catch (BancoDeDadosException e){
             throw new RegraDeNegocioException("Erro ao listar os contratos!");
@@ -116,8 +117,11 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             if (contrato == null) {
                 throw new RegraDeNegocioException("Contrato não encontrado!");
             }
-            log.info("Contrato encontrado!!");
-            return objectMapper.convertValue(contrato, ContratoDTO.class);
+            ContratoDTO contratoDto = objectMapper.convertValue(contrato, ContratoDTO.class);
+            contratoDto.setLocador(clienteService.buscarCliente(contrato.getIdLocador()));
+            contratoDto.setLocatario(clienteService.buscarCliente(contrato.getIdLocatario()));
+            contratoDto.setImovel(imovelService.buscarImovel(contrato.getIdImovel()));
+            return contratoDto;
         } catch(BancoDeDadosException e) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }

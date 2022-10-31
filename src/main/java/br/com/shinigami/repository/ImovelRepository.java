@@ -116,7 +116,7 @@ public class ImovelRepository implements Repositorio<Imovel>{
         Connection con = null;
         try {
             con = conexaoBancoDeDados.getConnection();
-
+            imovel.setIdImovel(id);
             StringBuilder sql = new StringBuilder();
 
 
