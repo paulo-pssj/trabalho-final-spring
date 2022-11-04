@@ -57,10 +57,10 @@ public class Imovel {
     @Column(name = "ATIVO")
     private Tipo ativo;
 
-    @Column(name = "ID_CLIENTE")
+    @Column(name = "ID_CLIENTE", insertable = false, updatable = false)
     private Integer idDono;
 
-    @Column(name = "ID_ENDERECO")
+    @Column(name = "ID_ENDERECO", insertable = false, updatable = false)
     private Integer idEndereco;
 
 

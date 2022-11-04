@@ -18,9 +18,6 @@ public class Endereco{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENDERECO_SEQ")
     @SequenceGenerator(name = "ENDERECO_SEQ", sequenceName = "seq_endereco", allocationSize = 1)
-    @Column(name = "id_contrato")
-    private int idContrato;
-
     @Column(name = "ID_ENDERECO")
     private Integer idEndereco;
 

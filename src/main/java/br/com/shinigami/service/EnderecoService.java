@@ -22,54 +22,39 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCre
 
     @Override
     public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException {
-        try{
-            Endereco enderecoCriado = enderecoRepository.create(objectMapper.convertValue(endereco, Endereco.class));
-            return objectMapper.convertValue(enderecoCriado, EnderecoDTO.class);
-        }catch(BancoDeDadosException e){
-            throw new RegraDeNegocioException("Erro ao criar endereço");
-        }
+        Endereco enderecoCriado = enderecoRepository.save(objectMapper.convertValue(endereco, Endereco.class));
+        return objectMapper.convertValue(enderecoCriado, EnderecoDTO.class);
     }
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        try{
-            if(enderecoRepository.buscarEndereco(id)==null){
-                throw new RegraDeNegocioException("Endereco não encontrado!");
-            }
-            enderecoRepository.delete(id);
-        }catch (BancoDeDadosException e){
-            throw new RegraDeNegocioException("Erro ao deletar Endereço");
+        Endereco endereco = findById(id);
+        if(endereco == null){
+            throw new RegraDeNegocioException("Endereco não encontrado!");
         }
+        enderecoRepository.delete(endereco);
     }
 
     @Override
     public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
-        try {
-            Endereco endereco = enderecoRepository.update(id, objectMapper.convertValue(enderecoAtualizar,Endereco.class));
-            return objectMapper.convertValue(endereco, EnderecoDTO.class);
-        }catch (BancoDeDadosException e){
-            throw new RegraDeNegocioException("Erro ao atualizar endereço");
-        }
+        Endereco endereco = enderecoRepository.save(objectMapper.convertValue(enderecoAtualizar,Endereco.class));
+        return objectMapper.convertValue(endereco, EnderecoDTO.class);
     }
 
     @Override
     public List<EnderecoDTO> list() throws RegraDeNegocioException {
-        try {
-            List<Endereco> listar = enderecoRepository.list();
-            return listar.stream()
-                    .map(endereco -> objectMapper.convertValue(endereco, EnderecoDTO.class))
-                    .toList();
-        }catch (BancoDeDadosException e){
-            throw new RegraDeNegocioException("Erro ao buscar endereço no banco");
-        }
+        List<Endereco> listar = enderecoRepository.findAll();
+        return listar.stream()
+                .map(endereco -> objectMapper.convertValue(endereco, EnderecoDTO.class))
+                .toList();
     }
 
-    public EnderecoDTO findById(Integer idEndereco) throws  RegraDeNegocioException {
-        try{
-            return objectMapper.convertValue(enderecoRepository.buscarEndereco(idEndereco), EnderecoDTO.class);
-        }catch (BancoDeDadosException bd){
-            throw new RegraDeNegocioException("Endereço não encontrado!");
-        }
+    public Endereco findById(Integer idEndereco) throws  RegraDeNegocioException {
+        return objectMapper.convertValue(enderecoRepository.findById(idEndereco), Endereco.class);
+    }
+
+    public EnderecoDTO findByIdDto(Integer idEndereco) throws  RegraDeNegocioException {
+        return objectMapper.convertValue(enderecoRepository.findById(idEndereco), EnderecoDTO.class);
     }
 
 }

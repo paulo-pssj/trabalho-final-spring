@@ -44,7 +44,6 @@ public class Cliente{
     // ver a relação
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente")
-    @JoinColumn(name = "id_imovel", referencedColumnName = "id_imovel")
     private Set<Imovel> imoveis;
 
     @JsonIgnore

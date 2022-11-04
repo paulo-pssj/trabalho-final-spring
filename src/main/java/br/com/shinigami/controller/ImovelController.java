@@ -34,13 +34,13 @@ public class ImovelController implements ImovelControllerInterface {
         return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
     }
 
-    @GetMapping("/listar-disponiveis")
-    public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException {
-        log.info("Listando imóveis disponíveis...");
-        List<ImovelDTO> listaImoveis = imovelService.listarImoveisDisponiveis();
-        log.info("Imoveis listados!");
-        return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
-    }
+//    @GetMapping("/listar-disponiveis")
+//    public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException {
+//        log.info("Listando imóveis disponíveis...");
+//        List<ImovelDTO> listaImoveis = imovelService.listarImoveisDisponiveis();
+//        log.info("Imoveis listados!");
+//        return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
+//    }
 
     @GetMapping("/{idImovel}")
     public ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idEndereco) throws RegraDeNegocioException {

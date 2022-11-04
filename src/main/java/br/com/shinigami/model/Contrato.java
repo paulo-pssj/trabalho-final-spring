@@ -33,13 +33,13 @@ public class Contrato{
     @Column(name = "ativo")
     private Tipo ativo;
 
-    @Column(name = "ID_LOCADOR")
+    @Column(name = "ID_LOCADOR", insertable = false, updatable = false)
     private int idLocador;
 
-    @Column(name = "ID_LOCATARIO")
+    @Column(name = "ID_LOCATARIO", insertable = false, updatable = false)
     private int idLocatario;
 
-    @Column(name = "ID_IMOVEL")
+    @Column(name = "ID_IMOVEL", insertable = false, updatable = false)
     private int idImovel;
 
     // referenciando o id do imovel e fazendo um mapeamento de muitos para um(ManyToOne) com imovel
