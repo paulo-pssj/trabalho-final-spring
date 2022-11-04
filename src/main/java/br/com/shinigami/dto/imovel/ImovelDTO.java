@@ -2,14 +2,12 @@ package br.com.shinigami.dto.imovel;
 
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.model.Cliente;
-import br.com.shinigami.model.Endereco;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoImovel;
 import lombok.Data;
 
 @Data
-public class ImovelDTO  {
+public class ImovelDTO {
 
     private int idImovel;
     private int qntdQuartos;

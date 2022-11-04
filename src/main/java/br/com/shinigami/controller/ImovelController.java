@@ -35,7 +35,7 @@ public class ImovelController implements ImovelControllerInterface {
     }
 
     @GetMapping("/listar-disponiveis")
-    public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException{
+    public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException {
         log.info("Listando imóveis disponíveis...");
         List<ImovelDTO> listaImoveis = imovelService.listarImoveisDisponiveis();
         log.info("Imoveis listados!");
@@ -43,7 +43,7 @@ public class ImovelController implements ImovelControllerInterface {
     }
 
     @GetMapping("/{idImovel}")
-    public ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idEndereco) throws RegraDeNegocioException{
+    public ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idEndereco) throws RegraDeNegocioException {
         log.info("Buscando imovel...");
         ImovelDTO imovel = imovelService.buscarImovel(idEndereco);
         log.info("Imovel encontrado!!");
@@ -51,7 +51,7 @@ public class ImovelController implements ImovelControllerInterface {
     }
 
     @PostMapping
-    public ResponseEntity<ImovelDTO> create(@RequestBody @Valid ImovelCreateDTO imovelCreate) throws RegraDeNegocioException{
+    public ResponseEntity<ImovelDTO> create(@RequestBody @Valid ImovelCreateDTO imovelCreate) throws RegraDeNegocioException {
         log.info("Criando Imovel...");
         ImovelDTO imovel = imovelService.create(imovelCreate);
         log.info("Imovel Criado!!");
@@ -60,7 +60,7 @@ public class ImovelController implements ImovelControllerInterface {
 
     @PutMapping("/{idImovel}")
     public ResponseEntity<ImovelDTO> update(@PathVariable("idImovel") Integer idImovel,
-                                            @RequestBody @Valid ImovelCreateDTO imovelAtualizar) throws RegraDeNegocioException{
+                                            @RequestBody @Valid ImovelCreateDTO imovelAtualizar) throws RegraDeNegocioException {
         log.info("Atualizando Imovel...");
         ImovelDTO imovel = imovelService.update(idImovel, imovelAtualizar);
         log.info("Imóvel atualizado com sucesso!");
@@ -68,7 +68,7 @@ public class ImovelController implements ImovelControllerInterface {
     }
 
     @DeleteMapping("/{idImovel}")
-    public ResponseEntity<Void> delete(@PathVariable("idImovel") Integer idImovel) throws RegraDeNegocioException{
+    public ResponseEntity<Void> delete(@PathVariable("idImovel") Integer idImovel) throws RegraDeNegocioException {
         log.info("Deletando Imovel...");
         imovelService.delete(idImovel);
         log.info("Imovel Deletado!!");

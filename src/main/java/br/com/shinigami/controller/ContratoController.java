@@ -50,8 +50,7 @@ public class ContratoController implements ContratoControllerInterface {
     }
 
     @PutMapping("/{idContrato}")
-    public ResponseEntity<ContratoDTO> update(@PathVariable("idContrato") Integer idContrato,
-                                              @Valid @RequestBody ContratoCreateDTO contratoUpdate) throws RegraDeNegocioException {
+    public ResponseEntity<ContratoDTO> update(@PathVariable("idContrato") Integer idContrato, @Valid @RequestBody ContratoCreateDTO contratoUpdate) throws RegraDeNegocioException {
         log.info("Atualizando contrato...");
         ContratoDTO contratoUpdated = contratoService.update(idContrato, contratoUpdate);
         log.info("Contrato atualizado com sucesso!");

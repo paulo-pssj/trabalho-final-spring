@@ -39,13 +39,16 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             contratoDto.setLocador(imovelDTO.getDono());
             contratoDto.setLocatario(clienteService.buscarCliente(contratoAdicionado.getIdLocatario()));
             contratoDto.setImovel(imovelDTO);
-
             ClienteDTO locador = imovelDTO.getDono();
             ClienteDTO locatario = contratoDto.getLocatario();
 
-            String emailBase = "Contrato criado com sucesso! <br> Contrato entre:<br> locador: "+locador.getNome()+"<br> locatario: "+locatario.getNome()+"<br>"+
-                    "Valor Mensal: R$"+imovelDTO.getValorMensal();
-            String assunto ="Seu contrato foi gerado com sucesso!!";
+            String emailBase = "Contrato criado com sucesso! <br> Contrato entre: " +
+                    "<br> locador: " + locador.getNome() +
+                    "<br> locatario: " + locatario.getNome() +
+                    "<br>" + "Valor Mensal: R$" + imovelDTO.getValorMensal();
+
+            String assunto = "Seu contrato foi gerado com sucesso!!";
+
             emailService.sendEmail(locador,emailBase,assunto);
             emailService.sendEmail(locatario,emailBase,assunto);
             return contratoDto;

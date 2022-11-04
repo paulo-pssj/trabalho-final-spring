@@ -1,13 +1,12 @@
 package br.com.shinigami.dto.imovel;
 
-import br.com.shinigami.model.Cliente;
-import br.com.shinigami.model.Endereco;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoImovel;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 
-import javax.validation.constraints.*;
+import javax.validation.constraints.Min;
+import javax.validation.constraints.NotNull;
 
 @Data
 public class ImovelCreateDTO {
@@ -39,20 +38,20 @@ public class ImovelCreateDTO {
     @Schema(description = "Alugado S/N", defaultValue = "N")
     private Tipo alugado;
     @NotNull
-    @Schema(description = "Tem area de lazer S/N",defaultValue = "S")
+    @Schema(description = "Tem area de lazer S/N", defaultValue = "S")
     private Tipo areaDeLazer;
     @NotNull
-    @Schema(description = "Contem Garagem S/N",defaultValue = "S")
+    @Schema(description = "Contem Garagem S/N", defaultValue = "S")
     private Tipo garagem;
     @NotNull
-    @Schema(description = "Permite animais S/N",defaultValue = "N")
+    @Schema(description = "Permite animais S/N", defaultValue = "N")
     private Tipo permiteAnimais;
     @NotNull
-    @Schema(description = "Contem salão de festa S/N",defaultValue = "N")
+    @Schema(description = "Contem salão de festa S/N", defaultValue = "N")
     private Tipo salaoDeFesta;
     @Min(0)
     @NotNull
-    @Schema(description = "Numero de Vagas",defaultValue = "0")
+    @Schema(description = "Numero de Vagas", defaultValue = "0")
     private int numeroDeVagas;
 
 }

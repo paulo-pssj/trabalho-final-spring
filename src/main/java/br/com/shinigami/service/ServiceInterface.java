@@ -1,8 +1,6 @@
 package br.com.shinigami.service;
 
-import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.model.Imovel;
 
 import java.util.List;
 
