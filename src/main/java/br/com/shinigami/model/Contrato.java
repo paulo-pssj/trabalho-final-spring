@@ -1,5 +1,6 @@
 package br.com.shinigami.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -12,6 +13,7 @@ import java.time.LocalDate;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Contrato")
 public class Contrato{
 
@@ -31,6 +33,7 @@ public class Contrato{
     private LocalDate dataVencimento;
 
     @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo ativo;
 
     @Column(name = "ID_LOCADOR", insertable = false, updatable = false)

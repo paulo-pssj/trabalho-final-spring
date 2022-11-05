@@ -1,6 +1,7 @@
 package br.com.shinigami.dto.cliente;
 
 import br.com.shinigami.model.TipoCliente;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 @Data
 public class ClienteDTO extends ClienteCreateDTO {

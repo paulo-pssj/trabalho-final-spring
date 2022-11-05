@@ -11,10 +11,10 @@ import javax.validation.constraints.NotNull;
 @Data
 public class ImovelCreateDTO {
     @NotNull
-    @Schema(description = "ID do endereço", defaultValue = "0")
+    @Schema(description = "ID do endereço", defaultValue = "1")
     private Integer idEndereco;
     @NotNull
-    @Schema(description = "ID do dono", defaultValue = "0")
+    @Schema(description = "ID do dono", defaultValue = "1")
     private Integer idDono;
     @NotNull
     @Min(0)

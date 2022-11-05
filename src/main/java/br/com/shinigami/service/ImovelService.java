@@ -3,9 +3,9 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
-import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Imovel;
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.ImovelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -52,22 +52,30 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     }
 
     @Override
-    public ImovelDTO create(ImovelCreateDTO imovel) throws RegraDeNegocioException {
-        Imovel imovelEntity = imovelRepository.save(objectMapper.convertValue(imovel, Imovel.class));
-        ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
+    public ImovelDTO create(ImovelCreateDTO imovelNovo) throws RegraDeNegocioException {
+        Imovel imovel = objectMapper.convertValue(imovelNovo, Imovel.class);
+        imovel.setEndereco(enderecoService.findById(imovelNovo.getIdEndereco()));
+        imovel.setCliente(clienteService.findById(imovelNovo.getIdDono()));
+        imovel.setAtivo(Tipo.S);
+        imovelRepository.save(imovel);
+        ImovelDTO imovelDTO = objectMapper.convertValue(imovelNovo, ImovelDTO.class);
         imovelDTO.setEndereco(enderecoService.findByIdDto(imovel.getIdEndereco()));
         imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
         return imovelDTO;
     }
 
     @Override
-    public ImovelDTO update(Integer id, ImovelCreateDTO imovel) throws RegraDeNegocioException {
-        Imovel imovelEntity = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
-        if ( imovelEntity == null) {
+    public ImovelDTO update(Integer id, ImovelCreateDTO imovelNovo) throws RegraDeNegocioException {
+        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+        if (imovel == null) {
             throw new RegraDeNegocioException("Imovel Não Encontrado");
         }
-        imovelRepository.save(imovelEntity);
-        ImovelDTO imovelDTO = objectMapper.convertValue(imovelEntity, ImovelDTO.class);
+        imovel.setEndereco(enderecoService.findById(imovelNovo.getIdEndereco()));
+        imovel.setCliente(clienteService.findById(imovelNovo.getIdDono()));
+        imovelRepository.save(imovel);
+        ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+        imovelDTO.setEndereco(enderecoService.findByIdDto(imovel.getIdEndereco()));
+        imovelDTO.setDono(clienteService.buscarCliente(imovel.getIdDono()));
         return imovelDTO;
     }
 

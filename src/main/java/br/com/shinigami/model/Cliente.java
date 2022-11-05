@@ -1,6 +1,7 @@
 package br.com.shinigami.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "CLIENTE")
 public class Cliente{
 
@@ -36,9 +38,11 @@ public class Cliente{
     private String telefone;
 
     @Column(name = "ATIVO")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo ativo;
 
     @Column(name = "TIPO_CLIENTE")
+    @Enumerated(EnumType.ORDINAL)
     private TipoCliente tipoCliente;
 
     // ver a relação

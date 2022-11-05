@@ -23,4 +23,5 @@ public class ImovelDTO {
     private Tipo alugado;
     private EnderecoDTO endereco;
     private ClienteDTO dono;
+    private Integer idEndereco;
 }

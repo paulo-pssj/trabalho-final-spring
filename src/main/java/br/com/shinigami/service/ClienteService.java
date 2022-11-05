@@ -5,6 +5,7 @@ import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
+import br.com.shinigami.model.Endereco;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -27,11 +28,12 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException {
         Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
         clienteNovo.setAtivo(Tipo.S);
-        Cliente pessoaAdicionada = clienteRepository.save(clienteNovo);
-        ClienteDTO clienteDto = objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
-        String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
-        String assunto = "Seu cadastro foi concluido com sucesso!";
-        emailService.sendEmail(clienteDto, emailBase, assunto);
+        clienteRepository.save(clienteNovo);
+
+        ClienteDTO clienteDto = objectMapper.convertValue(clienteNovo, ClienteDTO.class);
+//        String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
+//        String assunto = "Seu cadastro foi concluido com sucesso!";
+//        emailService.sendEmail(clienteDto, emailBase, assunto);
         return clienteDto;
     }
 
@@ -59,13 +61,16 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public List<ClienteDTO> list() throws RegraDeNegocioException {
         List<Cliente> listar = clienteRepository.findAll();
         return listar.stream()
-                .filter(cliente -> cliente.getAtivo().equals("S"))
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
     }
 
     public ClienteDTO buscarCliente(Integer idCliente) throws RegraDeNegocioException {
         return objectMapper.convertValue(clienteRepository.findById(idCliente), ClienteDTO.class);
+    }
+
+    public Cliente findById(Integer idCliente) throws  RegraDeNegocioException {
+        return objectMapper.convertValue(clienteRepository.findById(idCliente), Cliente.class);
     }
 
 }

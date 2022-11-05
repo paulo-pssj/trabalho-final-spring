@@ -1,6 +1,7 @@
 package br.com.shinigami.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,6 +15,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity(name = "ENDERECO")
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Endereco{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENDERECO_SEQ")
@@ -44,5 +46,5 @@ public class Endereco{
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "endereco")
-    private Set<Imovel> imoveis;
+    private Set<Imovel> imovel;
 }

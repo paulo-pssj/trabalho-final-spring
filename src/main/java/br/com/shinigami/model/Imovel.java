@@ -1,6 +1,7 @@
 package br.com.shinigami.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.util.Set;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "IMOVEL")
 public class Imovel {
     @Id
@@ -34,27 +36,34 @@ public class Imovel {
     private double condominio;
 
     @Column(name = "TIPO_IMOVEL")
+    @Enumerated(EnumType.ORDINAL)
     private TipoImovel tipoImovel;
 
     @Column(name = "ALUGADO")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo alugado;
 
     @Column(name = "AREA_DE_LAZER")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo areaDeLazer;
 
     @Column(name = "GARAGEM")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo garagem;
 
     @Column(name = "PERMITE_ANIMAIS")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo permiteAnimais;
 
     @Column(name = "SALAO_DE_FESTAS")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo salaoDeFesta;
 
     @Column(name = "NUMERO_DE_VAGAS")
     private int numeroDeVagas;
 
     @Column(name = "ATIVO")
+    @Enumerated(EnumType.ORDINAL)
     private Tipo ativo;
 
     @Column(name = "ID_CLIENTE", insertable = false, updatable = false)
@@ -73,7 +82,7 @@ public class Imovel {
     @JoinColumn(name = "id_endereco", referencedColumnName = "id_endereco")
     private Endereco endereco;
 
-    @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "imovel")
-    private Set<Contrato> contratos;
+//    @JsonIgnore
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "")
+//    private Set<Contrato> contratos;
 }
