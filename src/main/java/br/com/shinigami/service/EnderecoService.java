@@ -3,7 +3,6 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Endereco;
 import br.com.shinigami.repository.EnderecoRepository;

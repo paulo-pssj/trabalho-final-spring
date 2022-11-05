@@ -4,6 +4,7 @@ import br.com.shinigami.controller.controllerInterface.ClienteControllerInterfac
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
+import br.com.shinigami.model.TipoCliente;
 import br.com.shinigami.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,6 +35,14 @@ public class ClienteController implements ClienteControllerInterface {
     public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException {
         log.info("Buscando cliente...");
         return new ResponseEntity<>(clienteService.buscarCliente(idCliente), HttpStatus.OK);
+    }
+
+    @GetMapping("/cliente-por-tipo")
+    public ResponseEntity<List<ClienteDTO>> listByLocadorLocatario(@RequestParam("tipo") TipoCliente tipo)throws RegraDeNegocioException{
+        log.info("Listando clientes por tipo...");
+        List<ClienteDTO> lista = clienteService.listByLocadorLocataio(tipo);
+        log.info("Listado com sucesso.");
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     @PostMapping

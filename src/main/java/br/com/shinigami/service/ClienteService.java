@@ -7,6 +7,7 @@ import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
 import br.com.shinigami.model.Endereco;
 import br.com.shinigami.model.Tipo;
+import br.com.shinigami.model.TipoCliente;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -39,17 +40,18 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        Cliente clienteRecovery = objectMapper.convertValue(clienteRepository.findById(id), Cliente.class);
-        if (clienteRecovery == null) {
+        Cliente cliente = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), Cliente.class);
+        if (cliente== null) {
             throw new RegraDeNegocioException("Cliente não encontrado!");
 
         }
-        clienteRecovery.setAtivo(Tipo.N);
+        cliente.setAtivo(Tipo.N);
+        clienteRepository.save(cliente);
     }
 
     @Override
     public ClienteDTO update(Integer id, ClienteCreateDTO clienteUpdate) throws RegraDeNegocioException {
-        Cliente clienteRecovery = objectMapper.convertValue(clienteRepository.findById(id), Cliente.class);
+        Cliente clienteRecovery = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), Cliente.class);
         if (clienteRecovery == null) {
             throw new RegraDeNegocioException("Cliente não encontrado!");
         }
@@ -59,7 +61,14 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
 
     @Override
     public List<ClienteDTO> list() throws RegraDeNegocioException {
-        List<Cliente> listar = clienteRepository.findAll();
+        List<Cliente> listar = clienteRepository.findAllByAtivo(Tipo.S);
+        return listar.stream()
+                .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
+                .toList();
+    }
+
+    public List<ClienteDTO> listByLocadorLocataio(TipoCliente tipo) throws RegraDeNegocioException{
+        List<Cliente> listar = clienteRepository.findByTipoClienteAndAtivo(tipo, Tipo.S);
         return listar.stream()
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
