@@ -5,6 +5,7 @@ import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     @Override
     public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException {
         Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
+        clienteNovo.setAtivo(Tipo.S);
         Cliente pessoaAdicionada = clienteRepository.save(clienteNovo);
         ClienteDTO clienteDto = objectMapper.convertValue(pessoaAdicionada, ClienteDTO.class);
         String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
@@ -38,8 +40,9 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
         Cliente clienteRecovery = objectMapper.convertValue(clienteRepository.findById(id), Cliente.class);
         if (clienteRecovery == null) {
             throw new RegraDeNegocioException("Cliente não encontrado!");
+
         }
-        clienteRepository.delete(clienteRecovery);
+        clienteRecovery.setAtivo(Tipo.N);
     }
 
     @Override
@@ -56,6 +59,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public List<ClienteDTO> list() throws RegraDeNegocioException {
         List<Cliente> listar = clienteRepository.findAll();
         return listar.stream()
+                .filter(cliente -> cliente.getAtivo().equals("S"))
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
     }
