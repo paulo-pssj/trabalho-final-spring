@@ -12,10 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCreateDTO> {
+public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCreateDTO> {
     private final EnderecoRepository enderecoRepository;
     private final ObjectMapper objectMapper;
 
@@ -27,8 +28,8 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCre
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        Endereco endereco = findById(id);
-        if(endereco == null){
+        Endereco endereco = objectMapper.convertValue(enderecoRepository.findById(id), Endereco.class);
+        if (endereco == null) {
             throw new RegraDeNegocioException("Endereco não encontrado!");
         }
         enderecoRepository.delete(endereco);
@@ -36,24 +37,28 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO,EnderecoCre
 
     @Override
     public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
-        Endereco endereco = enderecoRepository.save(objectMapper.convertValue(enderecoAtualizar,Endereco.class));
+        Endereco enderecoRecovery = objectMapper.convertValue(enderecoRepository.findById(id), Endereco.class);
+        if (enderecoRecovery == null) {
+            throw new RegraDeNegocioException("Endereço não encontrado!");
+        }
+        Endereco endereco = enderecoRepository.save(objectMapper.convertValue(enderecoAtualizar, Endereco.class));
         return objectMapper.convertValue(endereco, EnderecoDTO.class);
     }
 
-    @Override
     public List<EnderecoDTO> list() throws RegraDeNegocioException {
         List<Endereco> listar = enderecoRepository.findAll();
         return listar.stream()
                 .map(endereco -> objectMapper.convertValue(endereco, EnderecoDTO.class))
                 .toList();
+
     }
 
-    public Endereco findById(Integer idEndereco) throws  RegraDeNegocioException {
+    public Endereco findById(Integer idEndereco) throws RegraDeNegocioException {
         return objectMapper.convertValue(enderecoRepository.findById(idEndereco), Endereco.class);
     }
 
-    public EnderecoDTO findByIdDto(Integer idEndereco) throws  RegraDeNegocioException {
+    public EnderecoDTO findByIdEnderecoDto(Integer idEndereco) {
         return objectMapper.convertValue(enderecoRepository.findById(idEndereco), EnderecoDTO.class);
-    }
 
+    }
 }

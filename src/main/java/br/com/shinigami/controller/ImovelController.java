@@ -2,6 +2,7 @@ package br.com.shinigami.controller;
 
 
 import br.com.shinigami.controller.controllerInterface.ImovelControllerInterface;
+import br.com.shinigami.dto.PageDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
@@ -26,9 +27,9 @@ public class ImovelController implements ImovelControllerInterface {
     private final ImovelService imovelService;
 
     @GetMapping
-    public ResponseEntity<List<ImovelDTO>> list() throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<ImovelDTO>> list(@RequestParam("page") Integer page) throws RegraDeNegocioException {
         log.info("Listando imóveis...");
-        List<ImovelDTO> listaImoveis = imovelService.list();
+        PageDTO<ImovelDTO> listaImoveis = imovelService.list(page);
         log.info("Imoveis listados!");
 
         return new ResponseEntity<>(listaImoveis, HttpStatus.OK);
@@ -45,8 +46,14 @@ public class ImovelController implements ImovelControllerInterface {
     @GetMapping("/{idImovel}")
     public ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idEndereco) throws RegraDeNegocioException {
         log.info("Buscando imovel...");
-        ImovelDTO imovel = imovelService.buscarImovel(idEndereco);
+        ImovelDTO imovel = imovelService.findByIdImovel(idEndereco);
         log.info("Imovel encontrado!!");
+        return new ResponseEntity<>(imovel, HttpStatus.OK);
+    }
+
+    @GetMapping("/listar-disponiveis")
+    public ResponseEntity<List<ImovelDTO>> findByDisponiveis() throws RegraDeNegocioException {
+        List<ImovelDTO> imovel = imovelService.listarImoveisDisponiveis();
         return new ResponseEntity<>(imovel, HttpStatus.OK);
     }
 

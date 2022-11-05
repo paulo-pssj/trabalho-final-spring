@@ -28,13 +28,17 @@ public class ClienteController implements ClienteControllerInterface {
     @GetMapping
     public ResponseEntity<List<ClienteDTO>> list() throws RegraDeNegocioException {
         log.info("Listando clientes...");
-        return new ResponseEntity<>(clienteService.list(), HttpStatus.OK);
+        List<ClienteDTO> lista = clienteService.list();
+        log.info("Listado com sucesso.");
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
     @GetMapping("/{idCliente}")
     public ResponseEntity<ClienteDTO> buscarCliente(@PathVariable("idCliente") Integer idCliente) throws RegraDeNegocioException {
         log.info("Buscando cliente...");
-        return new ResponseEntity<>(clienteService.buscarCliente(idCliente), HttpStatus.OK);
+        ClienteDTO clienteDTO = clienteService.findByIdClienteDto(idCliente);
+        log.info("Busca realizada com sucesso.");
+        return new ResponseEntity<>(clienteDTO, HttpStatus.OK);
     }
 
     @GetMapping("/cliente-por-tipo")

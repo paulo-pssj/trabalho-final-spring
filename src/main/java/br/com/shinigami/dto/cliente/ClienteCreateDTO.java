@@ -1,7 +1,6 @@
 package br.com.shinigami.dto.cliente;
 
 import br.com.shinigami.model.TipoCliente;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Data;
 import org.hibernate.validator.constraints.br.CPF;
@@ -14,10 +13,10 @@ import javax.validation.constraints.Size;
 @Data
 public class ClienteCreateDTO {
     @NotBlank
-    @Size(max=100)
+    @Size(max = 100)
     @Schema(description = "Nome do cliente", defaultValue = "Example")
     private String nome;
-    @CPF
+    @CPF()
     @Schema(description = "CPF do cliente", defaultValue = "111.222.333-45")
     private String cpf;
     @NotBlank
@@ -25,7 +24,7 @@ public class ClienteCreateDTO {
     @Schema(description = "E-mail do cliente", defaultValue = "example@gmail.com")
     private String email;
     @NotBlank
-    @Size(max=14)
+    @Size(max = 14)
     @Schema(description = "Telefone do cliente", defaultValue = "(DDD)940028922")
     private String telefone;
     @NotNull

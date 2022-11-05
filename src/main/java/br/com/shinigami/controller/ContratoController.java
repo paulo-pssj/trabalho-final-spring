@@ -36,7 +36,7 @@ public class ContratoController implements ContratoControllerInterface {
     @GetMapping("/{idContrato}")
     public ResponseEntity<ContratoDTO> buscarContrato(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException {
         log.info("Buscando contrato...");
-        ContratoDTO contrato = contratoService.buscarContrato(idContrato);
+        ContratoDTO contrato = contratoService.findByIdContrato(idContrato);
         log.info("Contrato Encontrado!");
         return new ResponseEntity<>(contrato, HttpStatus.OK);
     }

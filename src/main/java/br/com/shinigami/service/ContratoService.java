@@ -34,9 +34,9 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
         contratoNovo.setAtivo(Tipo.S);
         Contrato contratoAdicionado = contratoRepository.save(contratoNovo);
         ContratoDTO contratoDto = objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
-        ImovelDTO imovelDTO = imovelService.buscarImovel(contratoAdicionado.getIdImovel());
+        ImovelDTO imovelDTO = imovelService.findByIdImovel(contratoAdicionado.getIdImovel());
         contratoDto.setLocador(imovelDTO.getDono());
-        contratoDto.setLocatario(clienteService.buscarCliente(contratoAdicionado.getIdLocatario()));
+        contratoDto.setLocatario(clienteService.findByIdClienteDto(contratoAdicionado.getIdLocatario()));
         contratoDto.setImovel(imovelDTO);
         ClienteDTO locador = imovelDTO.getDono();
         ClienteDTO locatario = contratoDto.getLocatario();
@@ -69,28 +69,28 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
         Contrato contratoEntity = objectMapper.convertValue(contratoAtualizar,Contrato.class);
-        contratoEntity.setIdLocador(imovelService.buscarImovel(contratoAtualizar.getIdImovel()).getDono().getIdCliente());
+        contratoEntity.setIdLocador(imovelService.findByIdImovel(contratoAtualizar.getIdImovel()).getDono().getIdCliente());
 
         ContratoDTO contratoDTO = objectMapper.convertValue(contratoRepository.save(contratoEntity), ContratoDTO.class);
-        ImovelDTO imovelDTO = imovelService.buscarImovel(contratoAtualizar.getIdImovel());
+        ImovelDTO imovelDTO = imovelService.findByIdImovel(contratoAtualizar.getIdImovel());
         contratoDTO.setLocador(imovelDTO.getDono());
-        contratoDTO.setLocatario(clienteService.buscarCliente(contratoAtualizar.getIdLocatario()));
+        contratoDTO.setLocatario(clienteService.findByIdClienteDto(contratoAtualizar.getIdLocatario()));
         contratoDTO.setImovel(imovelDTO);
 
 
         return contratoDTO;
     }
 
-    @Override
+
     public List<ContratoDTO> list() throws RegraDeNegocioException {
         List<Contrato> listar = contratoRepository.findAll();
         return listar.stream()
                 .map(contrato -> {
                     ContratoDTO contratoDto = objectMapper.convertValue(contrato, ContratoDTO.class);
                     try {
-                        contratoDto.setLocador(clienteService.buscarCliente(contrato.getIdLocador()));
-                        contratoDto.setLocatario(clienteService.buscarCliente(contrato.getIdLocatario()));
-                        contratoDto.setImovel(imovelService.buscarImovel(contrato.getIdImovel()));
+                        contratoDto.setLocador(clienteService.findByIdClienteDto(contrato.getIdLocador()));
+                        contratoDto.setLocatario(clienteService.findByIdClienteDto(contrato.getIdLocatario()));
+                        contratoDto.setImovel(imovelService.findByIdImovel(contrato.getIdImovel()));
                     } catch (RegraDeNegocioException e) {
                         throw new RuntimeException(e);
                     }
@@ -99,15 +99,15 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
                 .toList();
     }
 
-    public ContratoDTO buscarContrato(int id) throws RegraDeNegocioException {
+    public ContratoDTO findByIdContrato(int id) throws RegraDeNegocioException {
         Contrato contrato = objectMapper.convertValue(contratoRepository.findById(id), Contrato.class);
         if (contrato == null) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
         ContratoDTO contratoDto = objectMapper.convertValue(contrato, ContratoDTO.class);
-        contratoDto.setLocador(clienteService.buscarCliente(contrato.getIdLocador()));
-        contratoDto.setLocatario(clienteService.buscarCliente(contrato.getIdLocatario()));
-        contratoDto.setImovel(imovelService.buscarImovel(contrato.getIdImovel()));
+        contratoDto.setLocador(clienteService.findByIdClienteDto(contrato.getIdLocador()));
+        contratoDto.setLocatario(clienteService.findByIdClienteDto(contrato.getIdLocatario()));
+        contratoDto.setImovel(imovelService.findByIdImovel(contrato.getIdImovel()));
         return contratoDto;
     }
 }
