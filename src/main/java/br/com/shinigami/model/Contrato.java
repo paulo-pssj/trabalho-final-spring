@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Contrato")
-public class Contrato{
+public class Contrato {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTRATO_SEQ")

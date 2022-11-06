@@ -1,4 +1,5 @@
 package br.com.shinigami.model;
+
 public enum TipoCliente {
     LOCADOR("LOCADOR"),
     LOCATARIO("LOCATARIO");

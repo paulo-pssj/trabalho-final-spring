@@ -5,6 +5,7 @@ import br.com.shinigami.dto.imovel.ImovelDTO;
 import lombok.Data;
 
 import java.time.LocalDate;
+
 @Data
 public class ContratoDTO {
 

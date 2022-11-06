@@ -1,6 +1,6 @@
 package br.com.shinigami.repository;
 
-import br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO;
+import br.com.shinigami.dto.RelatorioImovelEnderecoDTO;
 import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.Tipo;
 import feign.Param;
@@ -17,22 +17,23 @@ public interface ImovelRepository extends JpaRepository<Imovel, Integer> {
 
     Page<Imovel> findAllByAtivo(Tipo ativo, Pageable pageable);
 
+
     Imovel findByIdImovelAndAtivo(Integer idImovel, Tipo ativo);
 
     List<Imovel> findAllByAlugadoAndAtivo(Tipo alugado, Tipo ativo);
 
-    @Query(" select new br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO(" +
-            "c.idCliente , " +
-            "c.nome , " +
-            "c.email , " +
-            "i.idImovel , " +
-            "i.tipoImovel , " +
-            "i.valorMensal , " +
-            "e.endereco.cidade , " +
-            "e.endereco.estado , " +
-            "e.endereco.pais" +
+    @Query(" select new br.com.shinigami.dto.RelatorioImovelEnderecoDTO(" +
+            "c.idCliente, " +
+            "c.nome, " +
+            "c.email, " +
+            "i.idImovel, " +
+            "i.tipoImovel, " +
+            "i.valorMensal, " +
+            "e.cidade, " +
+            "e.estado, " +
+            "e.pais " +
             ")" +
-            "from Imovel i " +
+            " from IMOVEL i " +
             " join i.cliente c " +
             " join i.endereco e " +
             "where(:id is null or i.idImovel = :id )")

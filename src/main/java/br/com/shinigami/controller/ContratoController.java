@@ -2,8 +2,10 @@ package br.com.shinigami.controller;
 
 
 import br.com.shinigami.controller.controllerInterface.ContratoControllerInterface;
+import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.service.ContratoService;
 import lombok.RequiredArgsConstructor;
@@ -26,9 +28,9 @@ public class ContratoController implements ContratoControllerInterface {
     private final ContratoService contratoService;
 
     @GetMapping
-    public ResponseEntity<List<ContratoDTO>> list() throws RegraDeNegocioException {
+    public ResponseEntity<PageDTO<ContratoDTO>> list(@RequestParam("page") Integer page) throws RegraDeNegocioException {
         log.info("Listando contratos...");
-        List<ContratoDTO> lista = contratoService.list();
+        PageDTO<ContratoDTO> lista = contratoService.list(page);
         log.info("Lista de contratos encontrada!");
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
@@ -63,6 +65,14 @@ public class ContratoController implements ContratoControllerInterface {
         contratoService.delete(idContrato);
         log.info("Contrato deletado com sucesso!");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @GetMapping("/relatorio-contrato-cliente")
+    public ResponseEntity<List<RelatorioContratoClienteDTO>> relatorioContratoCliente(@RequestParam(required = false, name = "idContrato") Integer idContrato){
+        log.info("Gerando relatorio...");
+        List<RelatorioContratoClienteDTO>  lista = contratoService.relatorioContratoCliente(idContrato);
+        log.info("Relatorio gerado  com sucesso.");
+        return new ResponseEntity<>(lista, HttpStatus.OK);
     }
 
 }

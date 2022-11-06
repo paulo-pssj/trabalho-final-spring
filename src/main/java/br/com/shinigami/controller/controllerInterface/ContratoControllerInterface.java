@@ -2,6 +2,7 @@ package br.com.shinigami.controller.controllerInterface;
 
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -9,6 +10,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -23,7 +25,7 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<List<ContratoDTO>> list() throws RegraDeNegocioException;
+    ResponseEntity<PageDTO<ContratoDTO>> list(@RequestParam("page") Integer page) throws RegraDeNegocioException;
 
     @Operation(summary = "Buscar contrato", description = "Busca o contrato pelo id do banco de dados")
     @ApiResponses(

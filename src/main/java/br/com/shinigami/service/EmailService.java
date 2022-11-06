@@ -27,7 +27,7 @@ public class EmailService {
     private final JavaMailSender emailSender;
 
 
-    public void sendEmail(ClienteDTO cliente,String emailBase,String assunto) {
+    public void sendEmail(ClienteDTO cliente, String emailBase, String assunto) {
         MimeMessage mimeMessage = emailSender.createMimeMessage();
         try {
             MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
@@ -35,7 +35,7 @@ public class EmailService {
             mimeMessageHelper.setFrom(from);
             mimeMessageHelper.setTo(cliente.getEmail());
             mimeMessageHelper.setSubject(assunto);
-            mimeMessageHelper.setText(createFromTemplate(cliente,"email-template.ftl", emailBase), true);
+            mimeMessageHelper.setText(createFromTemplate(cliente, "email-template.ftl", emailBase), true);
 
             emailSender.send(mimeMessageHelper.getMimeMessage());
         } catch (MessagingException | IOException | TemplateException e) {
@@ -44,7 +44,7 @@ public class EmailService {
     }
 
 
-    public String createFromTemplate(ClienteDTO cliente,String emailTemplate,String base) throws IOException, TemplateException {
+    public String createFromTemplate(ClienteDTO cliente, String emailTemplate, String base) throws IOException, TemplateException {
         Map<String, Object> dados = new HashMap<>();
         dados.put("nome", cliente.getNome());
         dados.put("from", from);

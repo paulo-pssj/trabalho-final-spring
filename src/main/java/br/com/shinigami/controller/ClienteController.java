@@ -42,7 +42,7 @@ public class ClienteController implements ClienteControllerInterface {
     }
 
     @GetMapping("/cliente-por-tipo")
-    public ResponseEntity<List<ClienteDTO>> listByLocadorLocatario(@RequestParam("tipo") TipoCliente tipo)throws RegraDeNegocioException{
+    public ResponseEntity<List<ClienteDTO>> listByLocadorLocatario(@RequestParam("tipo") TipoCliente tipo) throws RegraDeNegocioException {
         log.info("Listando clientes por tipo...");
         List<ClienteDTO> lista = clienteService.listByLocadorLocataio(tipo);
         log.info("Listado com sucesso.");

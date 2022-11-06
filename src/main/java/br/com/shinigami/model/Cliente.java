@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "CLIENTE")
-public class Cliente{
+public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CLIENTE_SEQ")

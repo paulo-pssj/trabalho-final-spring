@@ -2,12 +2,8 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
-import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO;
-import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Cliente;
-import br.com.shinigami.model.Endereco;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.model.TipoCliente;
 import br.com.shinigami.repository.ClienteRepository;
@@ -16,9 +12,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+
 
 @RequiredArgsConstructor
 @Slf4j

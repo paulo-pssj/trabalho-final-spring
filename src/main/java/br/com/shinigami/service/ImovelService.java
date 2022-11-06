@@ -1,12 +1,12 @@
 package br.com.shinigami.service;
 
 
-import br.com.shinigami.dto.page.PageDTO;
+import br.com.shinigami.dto.RelatorioImovelEnderecoDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
-import br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.Tipo;
@@ -42,12 +42,12 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     }
 
     public ImovelDTO findByIdImovel(Integer id) throws RegraDeNegocioException {
-           Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
-           if (imovel == null) {
-               throw new RegraDeNegocioException("Imovel não encontrando!");
-           }
-           ImovelDTO imovelDTO = converteParaImovelDTO(imovel);
-           return imovelDTO;
+        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+        if (imovel == null) {
+            throw new RegraDeNegocioException("Imovel não encontrando!");
+        }
+        ImovelDTO imovelDTO = converteParaImovelDTO(imovel);
+        return imovelDTO;
     }
 
     @Override
@@ -93,10 +93,10 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     private ImovelDTO converteParaImovelDTO(Imovel imovel) {
 
-            ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
-            imovelDTO.setEndereco(objectMapper.convertValue(imovel.getEndereco(), EnderecoDTO.class));
-            imovelDTO.setDono(objectMapper.convertValue(imovel.getCliente(), ClienteDTO.class));
-            return imovelDTO;
+        ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
+        imovelDTO.setEndereco(objectMapper.convertValue(imovel.getEndereco(), EnderecoDTO.class));
+        imovelDTO.setDono(objectMapper.convertValue(imovel.getCliente(), ClienteDTO.class));
+        return imovelDTO;
 
     }
 
@@ -108,17 +108,17 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         return imovel;
     }
 
-    public void alugarImovel(Imovel imovel) throws RegraDeNegocioException{
+    public void alugarImovel(Imovel imovel) throws RegraDeNegocioException {
         imovel.setCliente(clienteService.findById(imovel.getIdDono()));
-        if(imovel.getAlugado().equals(Tipo.N)){
+        if (imovel.getAlugado().equals(Tipo.N)) {
             imovel.setAlugado(Tipo.S);
-        }else{
+        } else {
             imovel.setAlugado(Tipo.N);
         }
         imovelRepository.save(imovel);
     }
 
-    public List<RelatorioImovelEnderecoDTO> relatorioImovelEndereco(Integer idImovel){
+    public List<RelatorioImovelEnderecoDTO> relatorioImovelEndereco(Integer idImovel) {
         return imovelRepository.retornarRelatorioImovelEnderecoDTO(idImovel);
 
     }

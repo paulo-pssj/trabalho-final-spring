@@ -1,11 +1,12 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
-import br.com.shinigami.exceptions.BancoDeDadosException;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Contrato;
 import br.com.shinigami.model.Imovel;
@@ -14,6 +15,8 @@ import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -74,7 +77,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         }
         Imovel imovelAntigo = imovelService.findById(contratoBusca.getIdImovel());
         imovelService.alugarImovel(imovelAntigo);
-        Imovel imovelNovo =  imovelService.findById(contratoAtualizar.getIdImovel());
+        Imovel imovelNovo = imovelService.findById(contratoAtualizar.getIdImovel());
         imovelService.alugarImovel(imovelNovo);
 
         Contrato contratoEntity = objectMapper.convertValue(contratoBusca, Contrato.class);
@@ -87,11 +90,22 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     }
 
 
-    public List<ContratoDTO> list() throws RegraDeNegocioException {
-        List<Contrato> listar = contratoRepository.findAll();
-        return listar.stream()
+    public PageDTO<ContratoDTO> list(Integer page) throws RegraDeNegocioException {
+        PageRequest pageRequest = PageRequest.of(page, 1);
+        Page<Contrato>  pageContrato = contratoRepository.findAllByAtivo(Tipo.S, pageRequest);
+        List<ContratoDTO> listar = pageContrato.getContent()
+                .stream()
                 .map(contrato -> converteParaContratoDTO(contrato))
                 .toList();
+
+        return new PageDTO<>(pageContrato.getTotalElements(),
+                             pageContrato.getTotalPages(),
+                             page, pageRequest.getPageSize(),
+                             listar);
+    }
+
+    public List<RelatorioContratoClienteDTO> relatorioContratoCliente(Integer idContrato){
+        return contratoRepository.RelatorioContratoCliente(idContrato);
     }
 
     public ContratoDTO findByIdContrato(int id) throws RegraDeNegocioException {
