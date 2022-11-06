@@ -8,6 +8,7 @@ import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.exceptions.BancoDeDadosException;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Contrato;
+import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,8 +32,13 @@ public class ContratoService implements ServiceInterface<ContratoDTO,ContratoCre
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
         Contrato contratoNovo = objectMapper.convertValue(contrato, Contrato.class);
+        Imovel imovel = imovelService.findById(contrato.getIdImovel());
         contratoNovo.setAtivo(Tipo.S);
+        contratoNovo.setImovel(imovel);
+        contratoNovo.setLocador(clienteService.findById(imovel.getIdDono()));
+        contratoNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
         Contrato contratoAdicionado = contratoRepository.save(contratoNovo);
+
         ContratoDTO contratoDto = objectMapper.convertValue(contratoAdicionado, ContratoDTO.class);
         ImovelDTO imovelDTO = imovelService.findByIdImovel(contratoAdicionado.getIdImovel());
         contratoDto.setLocador(imovelDTO.getDono());

@@ -97,5 +97,13 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     }
 
+    public Imovel findById(Integer id) throws RegraDeNegocioException {
+        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+        if (imovel == null) {
+            throw new RegraDeNegocioException("Imovel não encontrando!");
+        }
+        return imovel;
+    }
+
 }
 
