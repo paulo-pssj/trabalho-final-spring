@@ -32,9 +32,9 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             clienteRepository.save(clienteNovo);
 
             ClienteDTO clienteDto = objectMapper.convertValue(clienteNovo, ClienteDTO.class);
-            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
-            String assunto = "Seu cadastro foi concluido com sucesso!";
-            emailService.sendEmail(clienteDto, emailBase, assunto);
+//            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
+//            String assunto = "Seu cadastro foi concluido com sucesso!";
+//            emailService.sendEmail(clienteDto, emailBase, assunto);
             return clienteDto;
 
     }

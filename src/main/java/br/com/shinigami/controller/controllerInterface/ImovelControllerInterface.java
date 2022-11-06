@@ -35,15 +35,15 @@ public interface ImovelControllerInterface {
     )
     ResponseEntity<ImovelDTO> findById(@PathVariable("idImovel") Integer idImovel) throws RegraDeNegocioException;
 
-//    @Operation(summary = "listar imoveis disponiveis", description = "Listar todos os imoveis disponiveis para aluguel do banco de dados")
-//    @ApiResponses(
-//            value = {
-//                    @ApiResponse(responseCode = "200", description = "Retorna a lista de imoveis disponiveis para aluguel"),
-//                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
-//                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
-//            }
-//    )
-//    public ResponseEntity<List<ImovelDTO>> listarDisponiveis() throws RegraDeNegocioException;
+    @Operation(summary = "listar imoveis disponiveis", description = "Listar todos os imoveis disponiveis para aluguel do banco de dados")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Retorna a lista de imoveis disponiveis para aluguel"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    public ResponseEntity<List<ImovelDTO>> findByDisponiveis() throws RegraDeNegocioException;
 
     @Operation(summary = "Criar imovel", description = "Cria o imovel no banco de dados")
     @ApiResponses(

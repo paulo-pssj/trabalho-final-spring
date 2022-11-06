@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @Entity(name = "ENDERECO")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Endereco{
+public class Endereco {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENDERECO_SEQ")
     @SequenceGenerator(name = "ENDERECO_SEQ", sequenceName = "seq_endereco", allocationSize = 1)
@@ -43,6 +43,10 @@ public class Endereco{
 
     @Column(name = "CEP")
     private String cep;
+
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Tipo ativo;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "endereco")

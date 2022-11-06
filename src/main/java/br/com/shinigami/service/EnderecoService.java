@@ -5,6 +5,7 @@ import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Endereco;
+import br.com.shinigami.model.Tipo;
 import br.com.shinigami.repository.EnderecoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -22,7 +23,9 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
 
     @Override
     public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException {
-        Endereco enderecoCriado = enderecoRepository.save(objectMapper.convertValue(endereco, Endereco.class));
+        Endereco enderecoCriado = objectMapper.convertValue(endereco, Endereco.class);
+        enderecoCriado.setAtivo(Tipo.S);
+        enderecoRepository.save(enderecoCriado);
         return objectMapper.convertValue(enderecoCriado, EnderecoDTO.class);
     }
 
@@ -32,7 +35,8 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         if (endereco == null) {
             throw new RegraDeNegocioException("Endereco não encontrado!");
         }
-        enderecoRepository.delete(endereco);
+        endereco.setAtivo(Tipo.N);
+        enderecoRepository.save(endereco);
     }
 
     @Override
@@ -57,7 +61,7 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         return objectMapper.convertValue(enderecoRepository.findById(idEndereco), Endereco.class);
     }
 
-    public EnderecoDTO findByIdEnderecoDto(Integer idEndereco) {
+    public EnderecoDTO findByIdEnderecoDto(Integer idEndereco) throws RegraDeNegocioException {
         return objectMapper.convertValue(enderecoRepository.findById(idEndereco), EnderecoDTO.class);
 
     }

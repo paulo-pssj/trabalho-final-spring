@@ -19,6 +19,7 @@ pais VARCHAR2(50) NOT NULL,
 complemento VARCHAR2(50),
 numero NUMBER NOT NULL,
 cep CHAR(9) NOT NULL,
+ativo CHAR(1) NOT NULL,
 PRIMARY KEY (id_endereco)
 );
 
