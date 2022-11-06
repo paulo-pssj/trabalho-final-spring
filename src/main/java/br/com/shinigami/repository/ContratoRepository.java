@@ -12,12 +12,4 @@ import java.util.List;
 public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
 
 
-//    @Query(" select c " +
-//            " from Cliente c "+
-//            " join c.Contrato e ")
-//    List<ClienteDTO> ClientesComContrato();
-
-//    @Query(" select new br.com.shinigami.dto.RelatorioImovelEnderecoDTO("+
-//            "c.idCliente "
-
 }

@@ -65,4 +65,5 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         return objectMapper.convertValue(enderecoRepository.findById(idEndereco), EnderecoDTO.class);
 
     }
+
 }

@@ -2,9 +2,10 @@ package br.com.shinigami.controller;
 
 
 import br.com.shinigami.controller.controllerInterface.ImovelControllerInterface;
-import br.com.shinigami.dto.PageDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
+import br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.service.ImovelService;
 import lombok.RequiredArgsConstructor;
@@ -82,4 +83,11 @@ public class ImovelController implements ImovelControllerInterface {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
+    @GetMapping("/relatorio-imovel-endereco")
+    public ResponseEntity<List<RelatorioImovelEnderecoDTO>> relatorioImovelEndereco(@RequestParam (required = false, name = "idImovel")Integer idImovel){
+        log.info("Gerando Relatorio...");
+        List<RelatorioImovelEnderecoDTO>lista=imovelService.relatorioImovelEndereco(idImovel);
+        log.info("Relatorio Gerado com sucesso.");
+        return new ResponseEntity<>(lista,HttpStatus.OK);
+    }
 }

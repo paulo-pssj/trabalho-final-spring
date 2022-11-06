@@ -1,11 +1,12 @@
 package br.com.shinigami.service;
 
 
-import br.com.shinigami.dto.PageDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
+import br.com.shinigami.dto.relatorio.RelatorioImovelEnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.model.Imovel;
 import br.com.shinigami.model.Tipo;
@@ -16,7 +17,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -118,5 +118,9 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         imovelRepository.save(imovel);
     }
 
+    public List<RelatorioImovelEnderecoDTO> relatorioImovelEndereco(Integer idImovel){
+        return imovelRepository.retornarRelatorioImovelEnderecoDTO(idImovel);
+
+    }
 }
 
