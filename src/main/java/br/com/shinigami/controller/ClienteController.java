@@ -4,7 +4,7 @@ import br.com.shinigami.controller.controllerInterface.ClienteControllerInterfac
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.model.TipoCliente;
+import br.com.shinigami.entity.TipoCliente;
 import br.com.shinigami.service.ClienteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

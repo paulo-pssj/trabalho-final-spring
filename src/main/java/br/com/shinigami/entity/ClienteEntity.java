@@ -1,4 +1,4 @@
-package br.com.shinigami.model;
+package br.com.shinigami.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "CLIENTE")
-public class Cliente {
+public class ClienteEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CLIENTE_SEQ")
@@ -48,14 +48,14 @@ public class Cliente {
     // ver a relação
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "cliente")
-    private Set<Imovel> imoveis;
+    private Set<ImovelEntity> imoveis;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "locador")
-    private Set<Contrato> contratosLocador;
+    private Set<ContratoEntity> contratosLocador;
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "locatario")
-    private Set<Contrato> contratosLocatario;
+    private Set<ContratoEntity> contratosLocatario;
 
 }

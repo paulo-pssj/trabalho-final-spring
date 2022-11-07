@@ -1,6 +1,6 @@
 package br.com.shinigami.dto;
 
-import br.com.shinigami.model.TipoImovel;
+import br.com.shinigami.entity.TipoImovel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

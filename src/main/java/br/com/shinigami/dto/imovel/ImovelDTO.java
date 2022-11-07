@@ -2,8 +2,8 @@ package br.com.shinigami.dto.imovel;
 
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.model.Tipo;
-import br.com.shinigami.model.TipoImovel;
+import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.TipoImovel;
 import lombok.Data;
 
 @Data
@@ -23,5 +23,4 @@ public class ImovelDTO {
     private Tipo alugado;
     private EnderecoDTO endereco;
     private ClienteDTO dono;
-    private Integer idEndereco;
 }

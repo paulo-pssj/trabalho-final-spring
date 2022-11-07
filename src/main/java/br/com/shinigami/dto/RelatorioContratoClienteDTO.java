@@ -1,6 +1,6 @@
 package br.com.shinigami.dto;
 
-import br.com.shinigami.model.TipoCliente;
+import br.com.shinigami.entity.TipoCliente;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

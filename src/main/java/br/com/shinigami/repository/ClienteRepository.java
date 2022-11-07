@@ -1,23 +1,23 @@
 package br.com.shinigami.repository;
 
 
-import br.com.shinigami.model.Cliente;
-import br.com.shinigami.model.Tipo;
-import br.com.shinigami.model.TipoCliente;
+import br.com.shinigami.entity.ClienteEntity;
+import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.TipoCliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
 @Repository
-public interface ClienteRepository extends JpaRepository<Cliente, Integer> {
+public interface ClienteRepository extends JpaRepository<ClienteEntity, Integer> {
 
 
-    List<Cliente> findByTipoClienteAndAtivo(TipoCliente tipo, Tipo ativo);
+    List<ClienteEntity> findByTipoClienteAndAtivo(TipoCliente tipo, Tipo ativo);
 
-    List<Cliente> findAllByAtivo(Tipo ativo);
+    List<ClienteEntity> findAllByAtivo(Tipo ativo);
 
-    Cliente findByIdClienteAndAtivo(Integer idCliente, Tipo ativo);
+    ClienteEntity findByIdClienteAndAtivo(Integer idCliente, Tipo ativo);
 
 
 }

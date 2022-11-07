@@ -1,12 +1,12 @@
-package br.com.shinigami.model;
+package br.com.shinigami.entity;
 
-public enum Tipo {
-    S("S"),
-    N("N");
+public enum TipoImovel {
+    CASA("Casa"),
+    APARTAMENTO("Apartamento");
 
     private final String descricao;
 
-    Tipo(String descricao) {
+    TipoImovel(String descricao) {
         this.descricao = descricao;
     }
 

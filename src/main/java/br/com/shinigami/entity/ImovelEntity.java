@@ -1,4 +1,4 @@
-package br.com.shinigami.model;
+package br.com.shinigami.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -17,7 +17,7 @@ import javax.persistence.*;
 @DynamicUpdate
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "IMOVEL")
-public class Imovel {
+public class ImovelEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "IMOVEL_SEQ")
     @SequenceGenerator(name = "IMOVEL_SEQ", sequenceName = "SEQ_IMOVEL", allocationSize = 1)
@@ -77,11 +77,11 @@ public class Imovel {
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cliente", referencedColumnName = "id_cliente")
-    private Cliente cliente;
+    private ClienteEntity cliente;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_endereco", referencedColumnName = "id_endereco")
-    private Endereco endereco;
+    private EnderecoEntity endereco;
 
 //    @JsonIgnore
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "")

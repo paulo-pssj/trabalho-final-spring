@@ -3,9 +3,9 @@ package br.com.shinigami.service;
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.model.Cliente;
-import br.com.shinigami.model.Tipo;
-import br.com.shinigami.model.TipoCliente;
+import br.com.shinigami.entity.ClienteEntity;
+import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.TipoCliente;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -25,15 +25,15 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     private final EmailService emailService;
 
     @Override
-    public ClienteDTO create(ClienteCreateDTO pessoa) throws RegraDeNegocioException {
-        Cliente clienteNovo = objectMapper.convertValue(pessoa, Cliente.class);
-        clienteNovo.setAtivo(Tipo.S);
-        clienteRepository.save(clienteNovo);
+    public ClienteDTO create(ClienteCreateDTO cliente) throws RegraDeNegocioException {
+        ClienteEntity clienteEntityNovo = objectMapper.convertValue(cliente, ClienteEntity.class);
+        clienteEntityNovo.setAtivo(Tipo.S);
+        clienteRepository.save(clienteEntityNovo);
 
-        ClienteDTO clienteDto = objectMapper.convertValue(clienteNovo, ClienteDTO.class);
-//            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
-//            String assunto = "Seu cadastro foi concluido com sucesso!";
-//            emailService.sendEmail(clienteDto, emailBase, assunto);
+        ClienteDTO clienteDto = objectMapper.convertValue(clienteEntityNovo, ClienteDTO.class);
+            String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
+            String assunto = "Seu cadastro foi concluido com sucesso!";
+            emailService.sendEmail(clienteDto, emailBase, assunto);
         return clienteDto;
 
     }
@@ -41,7 +41,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
         try {
-            Cliente cliente = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), Cliente.class);
+            ClienteEntity cliente = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), ClienteEntity.class);
             if (cliente == null) {
                 throw new RegraDeNegocioException("Cliente não encontrado!");
             }
@@ -55,11 +55,16 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     @Override
     public ClienteDTO update(Integer id, ClienteCreateDTO clienteUpdate) throws RegraDeNegocioException {
         try {
-            Cliente clienteRecovery = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), Cliente.class);
+            ClienteEntity clienteRecovery = objectMapper.convertValue(clienteRepository.findByIdClienteAndAtivo(id, Tipo.S), ClienteEntity.class);
             if (clienteRecovery == null) {
                 throw new RegraDeNegocioException("Cliente não encontrado!");
             }
-            Cliente cliente = clienteRepository.save(objectMapper.convertValue(clienteUpdate, Cliente.class));
+            clienteRecovery.setNome(clienteUpdate.getNome());
+            clienteRecovery.setCpf(clienteUpdate.getCpf());
+            clienteRecovery.setEmail(clienteUpdate.getEmail());
+            clienteRecovery.setTelefone(clienteUpdate.getTelefone());
+            clienteRecovery.setTipoCliente(clienteUpdate.getTipoCliente());
+            ClienteEntity cliente = clienteRepository.save(clienteRecovery);
             return objectMapper.convertValue(cliente, ClienteDTO.class);
         } catch (RegraDeNegocioException e) {
             throw new RegraDeNegocioException(e.getMessage());
@@ -68,7 +73,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
 
 
     public List<ClienteDTO> list() throws RegraDeNegocioException {
-        List<Cliente> listar = clienteRepository.findAllByAtivo(Tipo.S);
+        List<ClienteEntity> listar = clienteRepository.findAllByAtivo(Tipo.S);
         return listar.stream()
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
@@ -77,7 +82,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
 
     public List<ClienteDTO> listByLocadorLocataio(TipoCliente tipo) throws RegraDeNegocioException {
 
-        List<Cliente> listar = clienteRepository.findByTipoClienteAndAtivo(tipo, Tipo.S);
+        List<ClienteEntity> listar = clienteRepository.findByTipoClienteAndAtivo(tipo, Tipo.S);
         return listar.stream()
                 .map(cliente -> objectMapper.convertValue(cliente, ClienteDTO.class))
                 .toList();
@@ -87,7 +92,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
         return objectMapper.convertValue(clienteRepository.findById(idCliente), ClienteDTO.class);
     }
 
-    public Cliente findById(Integer idCliente) throws RegraDeNegocioException {
-        return objectMapper.convertValue(clienteRepository.findById(idCliente), Cliente.class);
+    public ClienteEntity findById(Integer idCliente) throws RegraDeNegocioException {
+        return objectMapper.convertValue(clienteRepository.findById(idCliente), ClienteEntity.class);
     }
 }

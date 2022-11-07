@@ -1,8 +1,8 @@
 package br.com.shinigami.repository;
 
 import br.com.shinigami.dto.RelatorioContratoClienteDTO;
-import br.com.shinigami.model.Contrato;
-import br.com.shinigami.model.Tipo;
+import br.com.shinigami.entity.ContratoEntity;
+import br.com.shinigami.entity.Tipo;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -13,9 +13,9 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 
 @Repository
-public interface ContratoRepository extends JpaRepository<Contrato, Integer> {
+public interface ContratoRepository extends JpaRepository<ContratoEntity, Integer> {
 
-    Page<Contrato> findAllByAtivo(Tipo ativo, Pageable pageable);
+    Page<ContratoEntity> findAllByAtivo(Tipo ativo, Pageable pageable);
 
     @Query(" select new br.com.shinigami.dto.RelatorioContratoClienteDTO( "+
             "c.idContrato, "+

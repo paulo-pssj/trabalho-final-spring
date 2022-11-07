@@ -1,4 +1,4 @@
-package br.com.shinigami.model;
+package br.com.shinigami.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Contrato")
-public class Contrato {
+public class ContratoEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "CONTRATO_SEQ")
@@ -48,14 +48,14 @@ public class Contrato {
     // referenciando o id do imovel e fazendo um mapeamento de muitos para um(ManyToOne) com imovel
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_imovel", referencedColumnName = "id_imovel")
-    private Imovel imovel;
+    private ImovelEntity imovel;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_locador", referencedColumnName = "id_cliente")
-    private Cliente locador;
+    private ClienteEntity locador;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_locatario", referencedColumnName = "id_cliente")
-    private Cliente locatario;
+    private ClienteEntity locatario;
 
 }

@@ -1,4 +1,4 @@
-package br.com.shinigami.model;
+package br.com.shinigami.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -16,7 +16,7 @@ import java.util.Set;
 @Setter
 @Entity(name = "ENDERECO")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
-public class Endereco {
+public class EnderecoEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ENDERECO_SEQ")
     @SequenceGenerator(name = "ENDERECO_SEQ", sequenceName = "seq_endereco", allocationSize = 1)
@@ -50,5 +50,5 @@ public class Endereco {
 
     @JsonIgnore
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "endereco")
-    private Set<Imovel> imovel;
+    private Set<ImovelEntity> imovel;
 }

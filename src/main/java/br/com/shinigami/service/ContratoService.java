@@ -8,9 +8,9 @@ import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.model.Contrato;
-import br.com.shinigami.model.Imovel;
-import br.com.shinigami.model.Tipo;
+import br.com.shinigami.entity.ContratoEntity;
+import br.com.shinigami.entity.ImovelEntity;
+import br.com.shinigami.entity.Tipo;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -34,17 +34,18 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
-        Contrato contratoNovo = objectMapper.convertValue(contrato, Contrato.class);
-        Imovel imovel = imovelService.findById(contrato.getIdImovel());
-        contratoNovo.setAtivo(Tipo.S);
-        contratoNovo.setImovel(imovel);
-        contratoNovo.setLocador(clienteService.findById(imovel.getIdDono()));
-        contratoNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
+        ContratoEntity contratoEntityNovo = objectMapper.convertValue(contrato, ContratoEntity.class);
+        ImovelEntity imovelEntity = imovelService.findById(contrato.getIdImovel());
+        contratoEntityNovo.setAtivo(Tipo.S);
+        contratoEntityNovo.setImovel(imovelEntity);
+        contratoEntityNovo.setLocador(clienteService.findById(imovelEntity.getIdDono()));
+        contratoEntityNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
+        contratoEntityNovo.setValorAluguel(imovelEntity.getValorMensal()+imovelEntity.getCondominio());
 
-        imovelService.alugarImovel(imovel);
-        Contrato contratoAdicionado = contratoRepository.save(contratoNovo);
+        imovelService.alugarImovel(imovelEntity);
+        ContratoEntity contratoEntityAdicionado = contratoRepository.save(contratoEntityNovo);
 
-        ContratoDTO contratoDTO = converteParaContratoDTO(contratoAdicionado);
+        ContratoDTO contratoDTO = converteParaContratoDTO(contratoEntityAdicionado);
 
         String emailBase = "Contrato criado com sucesso! <br> Contrato entre: " +
                 "<br> locador: " + contratoDTO.getLocador().getNome() +
@@ -60,28 +61,28 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        Contrato contrato = objectMapper.convertValue(contratoRepository.findById(id), Contrato.class);
-        if (contrato == null) {
+        ContratoEntity contratoEntity = objectMapper.convertValue(contratoRepository.findById(id), ContratoEntity.class);
+        if (contratoEntity == null) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
-        contrato.setAtivo(Tipo.N);
-        imovelService.alugarImovel(imovelService.findById(contrato.getIdImovel()));
-        contratoRepository.save(contrato);
+        contratoEntity.setAtivo(Tipo.N);
+        imovelService.alugarImovel(imovelService.findById(contratoEntity.getIdImovel()));
+        contratoRepository.save(contratoEntity);
     }
 
     @Override
     public ContratoDTO update(Integer id, ContratoCreateDTO contratoAtualizar) throws RegraDeNegocioException {
-        Contrato contratoBusca = objectMapper.convertValue(contratoRepository.findById(id), Contrato.class);
-        if (contratoBusca == null) {
+        ContratoEntity contratoEntityBusca = objectMapper.convertValue(contratoRepository.findById(id), ContratoEntity.class);
+        if (contratoEntityBusca == null) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
-        Imovel imovelAntigo = imovelService.findById(contratoBusca.getIdImovel());
-        imovelService.alugarImovel(imovelAntigo);
-        Imovel imovelNovo = imovelService.findById(contratoAtualizar.getIdImovel());
-        imovelService.alugarImovel(imovelNovo);
+        ImovelEntity imovelEntityAntigo = imovelService.findById(contratoEntityBusca.getIdImovel());
+        imovelService.alugarImovel(imovelEntityAntigo);
+        ImovelEntity imovelEntityNovo = imovelService.findById(contratoAtualizar.getIdImovel());
+        imovelService.alugarImovel(imovelEntityNovo);
 
-        Contrato contratoEntity = objectMapper.convertValue(contratoBusca, Contrato.class);
-        contratoEntity.setImovel(imovelNovo);
+        ContratoEntity contratoEntity = objectMapper.convertValue(contratoEntityBusca, ContratoEntity.class);
+        contratoEntity.setImovel(imovelEntityNovo);
         contratoEntity.setLocatario(clienteService.findById(contratoAtualizar.getIdLocatario()));
         contratoEntity.setDataEntrada(contratoEntity.getDataEntrada());
         contratoEntity.setDataVencimento(contratoAtualizar.getDataVencimento());
@@ -92,7 +93,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     public PageDTO<ContratoDTO> list(Integer page) throws RegraDeNegocioException {
         PageRequest pageRequest = PageRequest.of(page, 1);
-        Page<Contrato>  pageContrato = contratoRepository.findAllByAtivo(Tipo.S, pageRequest);
+        Page<ContratoEntity>  pageContrato = contratoRepository.findAllByAtivo(Tipo.S, pageRequest);
         List<ContratoDTO> listar = pageContrato.getContent()
                 .stream()
                 .map(contrato -> converteParaContratoDTO(contrato))
@@ -109,21 +110,21 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     }
 
     public ContratoDTO findByIdContrato(int id) throws RegraDeNegocioException {
-        Contrato contrato = objectMapper.convertValue(contratoRepository.findById(id), Contrato.class);
-        if (contrato == null) {
+        ContratoEntity contratoEntity = objectMapper.convertValue(contratoRepository.findById(id), ContratoEntity.class);
+        if (contratoEntity == null) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
 
-        return converteParaContratoDTO(contrato);
+        return converteParaContratoDTO(contratoEntity);
     }
 
-    public ContratoDTO converteParaContratoDTO(Contrato contrato) {
+    public ContratoDTO converteParaContratoDTO(ContratoEntity contratoEntity) {
 
-        ContratoDTO contratoDto = objectMapper.convertValue(contrato, ContratoDTO.class);
-        ImovelDTO imovelDTO = objectMapper.convertValue(contrato.getImovel(), ImovelDTO.class);
-        imovelDTO.setDono(clienteService.findByIdClienteDto(contrato.getImovel().getIdDono()));
-        contratoDto.setLocatario(clienteService.findByIdClienteDto(contrato.getIdLocatario()));
-        contratoDto.setLocador(objectMapper.convertValue(contrato.getLocador(), ClienteDTO.class));
+        ContratoDTO contratoDto = objectMapper.convertValue(contratoEntity, ContratoDTO.class);
+        ImovelDTO imovelDTO = objectMapper.convertValue(contratoEntity.getImovel(), ImovelDTO.class);
+        imovelDTO.setDono(clienteService.findByIdClienteDto(contratoEntity.getImovel().getIdDono()));
+        contratoDto.setLocatario(clienteService.findByIdClienteDto(contratoEntity.getIdLocatario()));
+        contratoDto.setLocador(objectMapper.convertValue(contratoEntity.getLocador(), ClienteDTO.class));
         contratoDto.setImovel(imovelDTO);
         return contratoDto;
 

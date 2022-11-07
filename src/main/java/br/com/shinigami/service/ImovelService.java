@@ -8,8 +8,8 @@ import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.model.Imovel;
-import br.com.shinigami.model.Tipo;
+import br.com.shinigami.entity.ImovelEntity;
+import br.com.shinigami.entity.Tipo;
 import br.com.shinigami.repository.ImovelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +32,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     public PageDTO<ImovelDTO> list(Integer page) throws RegraDeNegocioException {
 
         PageRequest pageRequest = PageRequest.of(page, 1);
-        Page<Imovel> pageImovel = imovelRepository.findAllByAtivo(Tipo.S, pageRequest);
+        Page<ImovelEntity> pageImovel = imovelRepository.findAllByAtivo(Tipo.S, pageRequest);
         List<ImovelDTO> listar = pageImovel.getContent().stream()
                 .map(imovel -> converteParaImovelDTO(imovel))
                 .toList();
@@ -42,7 +42,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     }
 
     public ImovelDTO findByIdImovel(Integer id) throws RegraDeNegocioException {
-        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
         if (imovel == null) {
             throw new RegraDeNegocioException("Imovel não encontrando!");
         }
@@ -52,7 +52,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     @Override
     public ImovelDTO create(ImovelCreateDTO imovelNovo) throws RegraDeNegocioException {
-        Imovel imovel = objectMapper.convertValue(imovelNovo, Imovel.class);
+        ImovelEntity imovel = objectMapper.convertValue(imovelNovo, ImovelEntity.class);
         imovel.setEndereco(enderecoService.findById(imovelNovo.getIdEndereco()));
         imovel.setCliente(clienteService.findById(imovelNovo.getIdDono()));
         imovel.setAtivo(Tipo.S);
@@ -63,7 +63,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     @Override
     public ImovelDTO update(Integer id, ImovelCreateDTO imovelNovo) throws RegraDeNegocioException {
-        Imovel imovel = objectMapper.convertValue(imovelRepository.findByIdImovelAndAtivo(id, Tipo.S), Imovel.class);
+        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findByIdImovelAndAtivo(id, Tipo.S), ImovelEntity.class);
         if (imovel == null) {
             throw new RegraDeNegocioException("Imovel Não Encontrado");
         }
@@ -76,22 +76,23 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
         if (imovel == null) {
             throw new RegraDeNegocioException("Imovel não Encontrado!");
         }
         imovel.setAtivo(Tipo.N);
+        imovel.setCliente(clienteService.findById(imovel.getIdDono()));
         imovelRepository.save(imovel);
     }
 
     public List<ImovelDTO> listarImoveisDisponiveis() throws RegraDeNegocioException {
-        List<Imovel> listar = imovelRepository.findAllByAlugadoAndAtivo(Tipo.N, Tipo.S);
+        List<ImovelEntity> listar = imovelRepository.findAllByAlugadoAndAtivo(Tipo.N, Tipo.S);
         return listar.stream()
                 .map(imovel -> converteParaImovelDTO(imovel))
                 .toList();
     }
 
-    private ImovelDTO converteParaImovelDTO(Imovel imovel) {
+    private ImovelDTO converteParaImovelDTO(ImovelEntity imovel) {
 
         ImovelDTO imovelDTO = objectMapper.convertValue(imovel, ImovelDTO.class);
         imovelDTO.setEndereco(objectMapper.convertValue(imovel.getEndereco(), EnderecoDTO.class));
@@ -100,15 +101,15 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     }
 
-    public Imovel findById(Integer id) throws RegraDeNegocioException {
-        Imovel imovel = objectMapper.convertValue(imovelRepository.findById(id), Imovel.class);
+    public ImovelEntity findById(Integer id) throws RegraDeNegocioException {
+        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
         if (imovel == null) {
             throw new RegraDeNegocioException("Imovel não encontrando!");
         }
         return imovel;
     }
 
-    public void alugarImovel(Imovel imovel) throws RegraDeNegocioException {
+    public void alugarImovel(ImovelEntity imovel) throws RegraDeNegocioException {
         imovel.setCliente(clienteService.findById(imovel.getIdDono()));
         if (imovel.getAlugado().equals(Tipo.N)) {
             imovel.setAlugado(Tipo.S);
