@@ -27,7 +27,7 @@ public class ContratoController implements ContratoControllerInterface {
 
     private final ContratoService contratoService;
 
-    @GetMapping
+    @GetMapping("/contrato-paginado")
     public ResponseEntity<PageDTO<ContratoDTO>> list(@RequestParam("page") Integer page) throws RegraDeNegocioException {
         log.info("Listando contratos...");
         PageDTO<ContratoDTO> lista = contratoService.list(page);

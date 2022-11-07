@@ -27,7 +27,7 @@ public class ImovelController implements ImovelControllerInterface {
 
     private final ImovelService imovelService;
 
-    @GetMapping
+    @GetMapping("/imovel-paginado")
     public ResponseEntity<PageDTO<ImovelDTO>> list(@RequestParam("page") Integer page) throws RegraDeNegocioException {
         log.info("Listando imóveis...");
         PageDTO<ImovelDTO> listaImoveis = imovelService.list(page);

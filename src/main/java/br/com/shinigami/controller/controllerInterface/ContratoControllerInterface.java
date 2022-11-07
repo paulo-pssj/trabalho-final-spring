@@ -1,5 +1,6 @@
 package br.com.shinigami.controller.controllerInterface;
 
+import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.page.PageDTO;
@@ -17,10 +18,10 @@ import java.util.List;
 
 public interface ContratoControllerInterface {
 
-    @Operation(summary = "listar contratos", description = "Listar todos os contratos do banco de dados")
+    @Operation(summary = "Listar contratos paginados", description = "listar contratos paginados do banco de dados")
     @ApiResponses(
             value = {
-                    @ApiResponse(responseCode = "200", description = "Retorna a lista de contratos"),
+                    @ApiResponse(responseCode = "200", description = "Contratos listados em páginas!"),
                     @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
@@ -68,4 +69,13 @@ public interface ContratoControllerInterface {
     )
     ResponseEntity<Void> delete(@PathVariable("idContrato") Integer idContrato) throws RegraDeNegocioException;
 
+    @Operation(summary = "Relatório de contrato", description = "Relatório do contrato")
+    @ApiResponses(
+            value = {
+                    @ApiResponse(responseCode = "200", description = "Relatório do contrato emitido com sucesso!"),
+                    @ApiResponse(responseCode = "403", description = "Você não tem permissão para acessar este recurso"),
+                    @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
+            }
+    )
+    ResponseEntity<List<RelatorioContratoClienteDTO>> relatorioContratoCliente(@RequestParam(required = false, name = "idContrato") Integer idContrato);
 }

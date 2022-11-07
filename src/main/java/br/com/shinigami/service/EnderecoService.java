@@ -3,9 +3,9 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.entity.EnderecoEntity;
 import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.EnderecoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;

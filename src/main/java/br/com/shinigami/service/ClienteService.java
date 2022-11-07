@@ -2,10 +2,10 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
-import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.Tipo;
 import br.com.shinigami.entity.TipoCliente;
+import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
