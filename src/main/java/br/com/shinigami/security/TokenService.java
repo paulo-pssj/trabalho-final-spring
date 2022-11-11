@@ -1,6 +1,5 @@
 package br.com.shinigami.security;
 
-import br.com.shinigami.entity.CargoEntity;
 import br.com.shinigami.entity.FuncionarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +12,8 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 @Service
 public class TokenService {
@@ -32,15 +32,13 @@ public class TokenService {
         Date hoje = Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date expira = Date.from(now.plusDays(Long.parseLong(expiration)).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        List<String> cargosDoFuncionario = funcionarioEntity.getCargos()
-                .stream()
-                .map(CargoEntity::getAuthority)
-                .toList();
+        String cargoDoFuncionario = funcionarioEntity.getCargo().getAuthority();
+
 
         String token = Jwts.builder()
                 .setIssuer("pessoa-api")
                 .claim(Claims.ID, String.valueOf(funcionarioEntity.getIdFuncionario()))
-                .claim(CARGO, cargosDoFuncionario)
+                .claim(CARGO, cargoDoFuncionario)
                 .setIssuedAt(hoje)
                 .setExpiration(expira).signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
@@ -62,11 +60,11 @@ public class TokenService {
 
         String idFuncionario = chaves.get(Claims.ID, String.class);
 
-        List<String> cargoFuncionario = chaves.get(CARGO, List.class);
+        String cargoFuncionario = chaves.get(CARGO, String.class);
 
-        List<SimpleGrantedAuthority> listaDeCargos = cargoFuncionario.stream()
-                .map(SimpleGrantedAuthority::new)
-                .toList();
+        Set<SimpleGrantedAuthority> listaDeCargos = new HashSet<>();
+
+        listaDeCargos.add(new SimpleGrantedAuthority(cargoFuncionario));
 
         UsernamePasswordAuthenticationToken userPassAuthToken =
                 new UsernamePasswordAuthenticationToken(idFuncionario, null, listaDeCargos);

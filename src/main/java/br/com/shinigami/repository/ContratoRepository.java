@@ -17,23 +17,23 @@ public interface ContratoRepository extends JpaRepository<ContratoEntity, Intege
 
     Page<ContratoEntity> findAllByAtivo(Tipo ativo, Pageable pageable);
 
-    @Query(" select new br.com.shinigami.dto.RelatorioContratoClienteDTO( "+
-            "c.idContrato, "+
-            "c.dataEntrada, "+
-            "c.dataVencimento, "+
-            "c.valorAluguel, "+
-            "l.nome, "+
-            "l.cpf, "+
-            "l.email, "+
-            "l.tipoCliente, "+
-            "cl.nome, "+
-            "cl.cpf, "+
+    @Query(" select new br.com.shinigami.dto.RelatorioContratoClienteDTO( " +
+            "c.idContrato, " +
+            "c.dataEntrada, " +
+            "c.dataVencimento, " +
+            "c.valorAluguel, " +
+            "l.nome, " +
+            "l.cpf, " +
+            "l.email, " +
+            "l.tipoCliente, " +
+            "cl.nome, " +
+            "cl.cpf, " +
             "cl.email, " +
-            "cl.tipoCliente "+
-            ")"+
-            "from Contrato c "+
-            "join c.locador l "+
-            "join c.locatario cl "+
+            "cl.tipoCliente " +
+            ")" +
+            "from Contrato c " +
+            "join c.locador l " +
+            "join c.locatario cl " +
             "where(:idContrato is null or c.idContrato = :idContrato)"
     )
     List<RelatorioContratoClienteDTO> RelatorioContratoCliente(@Param("idContrato") Integer idContrato);

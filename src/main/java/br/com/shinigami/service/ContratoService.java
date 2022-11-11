@@ -40,7 +40,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntityNovo.setImovel(imovelEntity);
         contratoEntityNovo.setLocador(clienteService.findById(imovelEntity.getIdDono()));
         contratoEntityNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
-        contratoEntityNovo.setValorAluguel(imovelEntity.getValorMensal()+imovelEntity.getCondominio());
+        contratoEntityNovo.setValorAluguel(imovelEntity.getValorMensal() + imovelEntity.getCondominio());
 
         imovelService.alugarImovel(imovelEntity);
         ContratoEntity contratoEntityAdicionado = contratoRepository.save(contratoEntityNovo);
@@ -93,19 +93,19 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     public PageDTO<ContratoDTO> list(Integer page) throws RegraDeNegocioException {
         PageRequest pageRequest = PageRequest.of(page, 1);
-        Page<ContratoEntity>  pageContrato = contratoRepository.findAllByAtivo(Tipo.S, pageRequest);
+        Page<ContratoEntity> pageContrato = contratoRepository.findAllByAtivo(Tipo.S, pageRequest);
         List<ContratoDTO> listar = pageContrato.getContent()
                 .stream()
                 .map(contrato -> converteParaContratoDTO(contrato))
                 .toList();
 
         return new PageDTO<>(pageContrato.getTotalElements(),
-                             pageContrato.getTotalPages(),
-                             page, pageRequest.getPageSize(),
-                             listar);
+                pageContrato.getTotalPages(),
+                page, pageRequest.getPageSize(),
+                listar);
     }
 
-    public List<RelatorioContratoClienteDTO> relatorioContratoCliente(Integer idContrato){
+    public List<RelatorioContratoClienteDTO> relatorioContratoCliente(Integer idContrato) {
         return contratoRepository.RelatorioContratoCliente(idContrato);
     }
 

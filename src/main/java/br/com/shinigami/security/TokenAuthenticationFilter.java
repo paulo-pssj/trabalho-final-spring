@@ -12,9 +12,10 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-public class TokenAuthenticationFilter  extends OncePerRequestFilter {
+public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     private final TokenService tokenService;
+
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
@@ -23,6 +24,6 @@ public class TokenAuthenticationFilter  extends OncePerRequestFilter {
 
         SecurityContextHolder.getContext().setAuthentication(userPassAuthToken);
 
-        filterChain.doFilter(request,response);
+        filterChain.doFilter(request, response);
     }
 }

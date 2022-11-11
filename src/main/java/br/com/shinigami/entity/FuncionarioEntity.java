@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.HashSet;
 import java.util.Set;
 
 @Getter
@@ -19,8 +20,6 @@ import java.util.Set;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Funcionario")
 public class FuncionarioEntity implements UserDetails {
-
-    Set<CargoEntity> cargos;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FUNCIONARIO_SEQ")
@@ -44,14 +43,15 @@ public class FuncionarioEntity implements UserDetails {
     @Column(name = "id_cargo", insertable = false, updatable = false)
     private String idCargo;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cargo", referencedColumnName = "id_cargo")
-    private Set<CargoEntity> cargo;
+    private CargoEntity cargo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return cargo;
+        Set<CargoEntity> cargos = new HashSet<>();
+        cargos.add(cargo);
+        return cargos;
     }
 
     @Override

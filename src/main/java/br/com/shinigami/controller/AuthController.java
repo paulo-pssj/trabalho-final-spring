@@ -3,7 +3,6 @@ package br.com.shinigami.controller;
 import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioDTO;
 import br.com.shinigami.dto.funcionario.LoginDTO;
-import br.com.shinigami.security.TokenService;
 import br.com.shinigami.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,11 +37,11 @@ public class AuthController {
         return new ResponseEntity<>(token, HttpStatus.OK);
     }
 
-    @PostMapping("/Cadastrar")
-    public ResponseEntity<FuncionarioDTO> create(@RequestBody @Valid FuncionarioCreateDTO funcionario){
+    @PostMapping("/cadastrar-funcionario")
+    public ResponseEntity<FuncionarioDTO> create(@RequestBody @Valid FuncionarioCreateDTO funcionario) {
         log.info("Criando funcionario....");
         FuncionarioDTO funcionarioDTO = funcionarioService.create(funcionario);
         log.info("Criando funcionario....");
-        return new ResponseEntity<>(funcionarioDTO,HttpStatus.OK);
+        return new ResponseEntity<>(funcionarioDTO, HttpStatus.OK);
     }
 }

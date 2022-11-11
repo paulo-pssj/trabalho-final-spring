@@ -68,9 +68,9 @@ public class ContratoController implements ContratoControllerInterface {
     }
 
     @GetMapping("/relatorio-contrato-cliente")
-    public ResponseEntity<List<RelatorioContratoClienteDTO>> relatorioContratoCliente(@RequestParam(required = false, name = "idContrato") Integer idContrato){
+    public ResponseEntity<List<RelatorioContratoClienteDTO>> relatorioContratoCliente(@RequestParam(required = false, name = "idContrato") Integer idContrato) {
         log.info("Gerando relatorio...");
-        List<RelatorioContratoClienteDTO>  lista = contratoService.relatorioContratoCliente(idContrato);
+        List<RelatorioContratoClienteDTO> lista = contratoService.relatorioContratoCliente(idContrato);
         log.info("Relatorio gerado  com sucesso.");
         return new ResponseEntity<>(lista, HttpStatus.OK);
     }
