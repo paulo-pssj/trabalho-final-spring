@@ -28,6 +28,7 @@ public class CargoEntity {
     private String nome;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "Funcionario")
-    private Set<CargoEntity> cargoFuncionario;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "cargo")
+    private Set<FuncionarioEntity> funcionarios;
+
 }
