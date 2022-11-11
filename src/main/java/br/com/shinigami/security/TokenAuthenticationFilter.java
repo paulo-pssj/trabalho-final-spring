@@ -1,6 +1,5 @@
 package br.com.shinigami.security;
 
-import br.com.shinigami.entity.FuncionarioEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -20,18 +19,10 @@ public class TokenAuthenticationFilter  extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         String headerAuthorization = request.getHeader("Authorization");
-        UsernamePasswordAuthenticationToken isValid = tokenService.isValid(headerAuthorization);
+        UsernamePasswordAuthenticationToken userPassAuthToken = tokenService.isValid(headerAuthorization);
 
-        if (isValid.isAuthenticated()) {
+        SecurityContextHolder.getContext().setAuthentication(userPassAuthToken);
 
-            FuncionarioEntity funcionarioEntity = isValid.getCredentials();
-            UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(funcionarioEntity.getLogin(), funcionarioEntity.getSenha());
-            SecurityContextHolder.getContext().setAuthentication(token);
-        }else {
-
-            SecurityContextHolder.getContext().setAuthentication(null);
-
-        }
         filterChain.doFilter(request,response);
     }
 }

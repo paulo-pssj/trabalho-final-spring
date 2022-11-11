@@ -5,7 +5,6 @@ import br.com.shinigami.entity.FuncionarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.ZoneId;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -28,18 +26,21 @@ public class TokenService {
     @Value("${jwt.expiration}")
     private String expiration;
 
-    public String getToken(FuncionarioEntity funcionarioEntity){
+    public String getToken(FuncionarioEntity funcionarioEntity) {
 
         LocalDate now = LocalDate.now();
         Date hoje = Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant());
         Date expira = Date.from(now.plusDays(Long.parseLong(expiration)).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        String cargo = String.valueOf(funcionarioEntity.getCargo());
+        List<String> cargosDoFuncionario = funcionarioEntity.getCargos()
+                .stream()
+                .map(CargoEntity::getAuthority)
+                .toList();
 
         String token = Jwts.builder()
                 .setIssuer("pessoa-api")
-                .claim(Claims.ID, funcionarioEntity.getIdFuncionario())
-                .claim(CARGO, cargo)
+                .claim(Claims.ID, String.valueOf(funcionarioEntity.getIdFuncionario()))
+                .claim(CARGO, cargosDoFuncionario)
                 .setIssuedAt(hoje)
                 .setExpiration(expira).signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
@@ -47,8 +48,8 @@ public class TokenService {
         return token;
     }
 
-    public UsernamePasswordAuthenticationToken isValid(String token){
-        if(token == null){
+    public UsernamePasswordAuthenticationToken isValid(String token) {
+        if (token == null) {
             return null;
         }
 
@@ -61,12 +62,14 @@ public class TokenService {
 
         String idFuncionario = chaves.get(Claims.ID, String.class);
 
-        String cargoFuncionario = chaves.get(CARGO, String.class);
+        List<String> cargoFuncionario = chaves.get(CARGO, List.class);
 
-        SimpleGrantedAuthority simpleGrantedAuthority = new SimpleGrantedAuthority(cargoFuncionario);
+        List<SimpleGrantedAuthority> listaDeCargos = cargoFuncionario.stream()
+                .map(SimpleGrantedAuthority::new)
+                .toList();
 
         UsernamePasswordAuthenticationToken userPassAuthToken =
-                new UsernamePasswordAuthenticationToken(idFuncionario, null, Collections.singleton(simpleGrantedAuthority));
+                new UsernamePasswordAuthenticationToken(idFuncionario, null, listaDeCargos);
 
         return userPassAuthToken;
     }

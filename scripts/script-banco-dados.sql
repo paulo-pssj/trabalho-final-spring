@@ -91,6 +91,7 @@ CREATE TABLE FUNCIONARIO(
     EMAIL VARCHAR2(255) UNIQUE NOT NULL,
     LOGIN VARCHAR2(512) UNIQUE NOT NULL,
     SENHA VARCHAR2(512) NOT NULL,
+    ATIVO CHAR(1) NOT NULL,
     ID_CARGO NUMBER NOT NULL,
     PRIMARY KEY (ID_FUNCIONARIO),
     CONSTRAINT FK_FUNCIONARIO_CARGO
@@ -142,6 +143,9 @@ CREATE SEQUENCE seq_imovel
 
    INSERT INTO CARGO(ID_CARGO, NOME)
    VALUES (seq_cargo.nextval, 'ROLE_ANALISTA');
+
+   INSERT INTO FUNCIONARIO(id_funcionario, email, login, senha, id_cargo)
+   VALUES (seq_funcionario.nextval, 'paulo.sergio@dbccompany.com.br', 'paulo', '$argon2id$v=19$m=4096,t=3,p=1$VejuwS+y79tYqdRgHj0tKA$tH+3dig+HEh8dp6e2noWUFR7iIJL1CJWAo/4i16eB2c', 1);
 
 
 

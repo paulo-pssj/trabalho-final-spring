@@ -10,6 +10,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import java.util.Collection;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -18,6 +19,8 @@ import java.util.Collection;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @Entity(name = "Funcionario")
 public class FuncionarioEntity implements UserDetails {
+
+    Set<CargoEntity> cargos;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FUNCIONARIO_SEQ")
@@ -34,16 +37,21 @@ public class FuncionarioEntity implements UserDetails {
     @Column(name = "senha")
     private String senha;
 
-    @Column(name = "id_cargo")
+    @Column(name = "ativo")
+    @Enumerated(EnumType.ORDINAL)
+    private Tipo ativo;
+
+    @Column(name = "id_cargo", insertable = false, updatable = false)
     private String idCargo;
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_cargo", referencedColumnName = "id_cargo")
-    private CargoEntity cargo;
+    private Set<CargoEntity> cargo;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return (Collection<? extends GrantedAuthority>) cargo;
+        return cargo;
     }
 
     @Override
@@ -73,6 +81,9 @@ public class FuncionarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        if (getAtivo().equals("S")) {
+            return true;
+        }
+        return false;
     }
 }
