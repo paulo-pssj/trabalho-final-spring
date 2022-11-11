@@ -1,6 +1,6 @@
 package br.com.shinigami.controller;
 
-import br.com.shinigami.dto.LoginDTO;
+import br.com.shinigami.dto.funcionario.LoginDTO;
 import br.com.shinigami.entity.FuncionarioEntity;
 import br.com.shinigami.security.TokenService;
 import br.com.shinigami.service.FuncionarioService;
