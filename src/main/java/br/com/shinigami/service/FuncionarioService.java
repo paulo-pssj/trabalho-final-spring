@@ -14,7 +14,7 @@ public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
 
-    public Optional<FuncionarioEntity> findByLoginAndSenha(String login, String senha) {
-        return funcionarioRepository.findByLoginAndSenha(login, senha);
+    public Optional<FuncionarioEntity> findByLogin(String login) {
+        return funcionarioRepository.findByLogin(login);
     }
 }

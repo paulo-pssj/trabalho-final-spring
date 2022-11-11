@@ -26,7 +26,7 @@ public class AuthController {
 
     @PostMapping
     public String autenticar(@RequestBody @Valid LoginDTO loginDTO) {
-        Optional<FuncionarioEntity> byLoginAndSenha = funcionarioService.findByLoginAndSenha(loginDTO.getLogin(), loginDTO.getSenha());
+        Optional<FuncionarioEntity> byLoginAndSenha = funcionarioService.findByLogin(loginDTO.getLogin());
 
         if (byLoginAndSenha.isPresent()) {
             return tokenService.getToken(byLoginAndSenha.get());
