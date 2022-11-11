@@ -1,5 +1,6 @@
 package br.com.shinigami.security;
 
+import br.com.shinigami.entity.FuncionarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -28,7 +29,8 @@ public class TokenService {
         Date expira = Date.from(now.plusDays(Long.parseLong(expiration)).atStartOfDay(ZoneId.systemDefault()).toInstant());
         String token = Jwts.builder()
                 .setIssuer("pessoa-api")
-                .claim(Claims.ID, funcionarioEntity.getIdFuncionario().toString())
+//                .claim(Claims.ID, funcionarioEntity.getIdFuncionario().toString())  com o to String tava reclamando
+                .claim(Claims.ID, funcionarioEntity.getIdFuncionario())
                 .setIssuedAt(hoje)
                 .setExpiration(expira).signWith(SignatureAlgorithm.HS256, secret)
                 .compact();
