@@ -18,7 +18,7 @@
                             <b>Olá ${nome},</b>
                         </div>
 
-                        <div style="font-size: 20px; color:whitesmoke;">
+                        <div style="font-size: 20px; color:whitesmoke;max-width: 300px; word-wrap: break-word;">
                             ${base}
                         </div>
                         <div >

@@ -1,5 +1,6 @@
 package br.com.shinigami.controller;
 
+import br.com.shinigami.dto.funcionario.AlterarSenhaDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioDTO;
 import br.com.shinigami.dto.funcionario.LoginDTO;
@@ -25,12 +26,13 @@ public class AuthController {
 
 
     @GetMapping("funcionario-logado")
-    public ResponseEntity<FuncionarioDTO> retornaFuncionarioLogado() throws RegraDeNegocioException{
+    public ResponseEntity<FuncionarioDTO> retornaFuncionarioLogado() throws RegraDeNegocioException {
         log.info("buscando usuario logado...");
         FuncionarioDTO funcionario = funcionarioService.getLoggedUser();
         log.info("Busca de funcionario realizada com sucesso.");
         return new ResponseEntity<>(funcionario, HttpStatus.OK);
     }
+
     @PostMapping
     public ResponseEntity<String> autenticar(@RequestBody @Valid LoginDTO loginDTO) {
         log.info("Logando funcionario....");
@@ -56,10 +58,18 @@ public class AuthController {
     }
 
     @PutMapping("/desativar-funcionario")
-    public ResponseEntity<Void> desativarFuncionario(String email)throws RegraDeNegocioException{
+    public ResponseEntity<Void> desativarFuncionario(String email) throws RegraDeNegocioException {
         log.info("desativando funcionario...");
         funcionarioService.desativarFuncionario(email);
         log.info("Funcionario desativado com sucesso.");
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PutMapping("/alterar-senha")
+    public ResponseEntity<String> alterarSenha(AlterarSenhaDTO senha) throws RegraDeNegocioException {
+        log.info("Alterando senha de funcionario...");
+        String info = funcionarioService.alterarSenha(senha);
+        log.info("Senha alterada com sucesso.");
+        return new ResponseEntity<>(info, HttpStatus.OK);
     }
 }

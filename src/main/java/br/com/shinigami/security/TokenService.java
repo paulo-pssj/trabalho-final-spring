@@ -1,6 +1,5 @@
 package br.com.shinigami.security;
 
-import br.com.shinigami.entity.CargoEntity;
 import br.com.shinigami.entity.FuncionarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -13,7 +12,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.util.*;
 
 @Service
@@ -89,8 +87,8 @@ public class TokenService {
         List<String> cargoFuncionario = chaves.get(CARGO, List.class);
 
         List<SimpleGrantedAuthority> listaDeCargos = cargoFuncionario.stream()
-                    .map(SimpleGrantedAuthority::new)
-                    .toList();
+                .map(SimpleGrantedAuthority::new)
+                .toList();
 
         UsernamePasswordAuthenticationToken userPassAuthToken =
                 new UsernamePasswordAuthenticationToken(idFuncionario, null, listaDeCargos);

@@ -28,9 +28,9 @@ public class SecurityConfiguration {
                 .cors().and()
                 .csrf().disable()
                 .authorizeHttpRequests((auth) ->
-                        auth.antMatchers("/auth/**").permitAll()
+                        auth.antMatchers("/auth", "/auth/recuperar-senha").permitAll()
                                 .antMatchers("/contrato/**").hasRole("CORRETOR")
-                                .antMatchers("/endereco").hasRole("RECUPERA")
+                                .antMatchers("/auth/alterar-senha").hasRole("RECUPERA")
                                 .antMatchers("/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );

@@ -81,9 +81,9 @@ public class FuncionarioEntity implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        if(ativo.ordinal() == 0){
+        if (ativo.ordinal() == 0) {
             return true;
-        }else{
+        } else {
             return false;
         }
     }

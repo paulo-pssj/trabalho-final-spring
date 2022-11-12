@@ -1,5 +1,6 @@
 package br.com.shinigami.service;
 
+import br.com.shinigami.dto.funcionario.AlterarSenhaDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioDTO;
 import br.com.shinigami.dto.funcionario.LoginDTO;
@@ -18,17 +19,16 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 @RequiredArgsConstructor
 public class FuncionarioService {
 
     private final FuncionarioRepository funcionarioRepository;
-    private final AuthenticationManager authenticationManager;
-    private final ObjectMapper objectMapper;
-    private final TokenService tokenService;
     private final CargoRepository cargoRepository;
+    private final TokenService tokenService;
+    private final EmailService emailService;
+    private final ObjectMapper objectMapper;
+    private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
 
 
@@ -45,9 +45,16 @@ public class FuncionarioService {
         return tokenService.getToken(funcionario);
     }
 
-    public String tokenTrocaDeSenha(String email)throws RegraDeNegocioException{
+    public String tokenTrocaDeSenha(String email) throws RegraDeNegocioException {
         FuncionarioEntity funcionario = findByEmail(email);
-        return tokenService.getTokenTrocaDeSenha(funcionario);
+        FuncionarioDTO funcionarioDTO = objectMapper.convertValue(funcionario, FuncionarioDTO.class);
+        String token = tokenService.getTokenTrocaDeSenha(funcionario);
+
+        String emailBase = "Seu token de recuperção de senha: <br> <br>" + token;
+        String assunto = "Recuperação de senha";
+
+        emailService.sendEmail(funcionarioDTO, emailBase, assunto);
+        return "Token de recuperação de senha enviado para seu email";
     }
 
     public FuncionarioDTO create(FuncionarioCreateDTO funcionarioNovo) {
@@ -57,14 +64,35 @@ public class FuncionarioService {
         funcionario.setCargo(cargoRepository.findById(funcionarioNovo.getIdCargo()).get());
         funcionarioRepository.save(funcionario);
 
-        // ADICIONAR ENVIO DE EMAIL
+        FuncionarioDTO funcionarioDTO = objectMapper.convertValue(funcionario, FuncionarioDTO.class);
 
-        return objectMapper.convertValue(funcionario, FuncionarioDTO.class);
+        String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso!";
+        String assunto = "Seu cadastro foi concluido com sucesso!";
+
+        emailService.sendEmail(funcionarioDTO, emailBase, assunto);
+
+        return funcionarioDTO;
     }
 
-    public FuncionarioDTO getLoggedUser() throws RegraDeNegocioException{
+    public String alterarSenha(AlterarSenhaDTO senha) throws RegraDeNegocioException {
+        FuncionarioDTO funcionario = getLoggedUser();
+        FuncionarioEntity funcionarioSenhaAlterada = funcionarioRepository.findByEmail(funcionario.getEmail());
+        funcionarioSenhaAlterada.setSenha(passwordEncoder.encode(senha.getSenha()));
+        if (funcionarioRepository.save(funcionarioSenhaAlterada) == null) {
+            throw new RegraDeNegocioException("Alteração de senha não foi concluida.");
+        }
+        return "Senha alterada com sucesso.";
+    }
+
+    public void desativarFuncionario(String email) throws RegraDeNegocioException {
+        FuncionarioEntity funcionario = findByEmail(email);
+        funcionario.setAtivo(Tipo.N);
+        funcionarioRepository.save(funcionario);
+    }
+
+    public FuncionarioDTO getLoggedUser() throws RegraDeNegocioException {
         String idFuncionario = SecurityContextHolder.getContext().getAuthentication().getPrincipal().toString();
-        if(idFuncionario.equals("anonymousUser")){
+        if (idFuncionario.equals("anonymousUser")) {
             throw new RegraDeNegocioException("Usuario anonimo.");
         }
         Integer idUserLogged = Integer.valueOf(idFuncionario);
@@ -73,15 +101,9 @@ public class FuncionarioService {
         return funcionario;
     }
 
-    public void desativarFuncionario(String email) throws RegraDeNegocioException{
-        FuncionarioEntity funcionario = findByEmail(email);
-        funcionario.setAtivo(Tipo.N);
-        funcionarioRepository.save(funcionario);
-    }
-
-    private FuncionarioEntity findByEmail(String email)throws RegraDeNegocioException{
+    private FuncionarioEntity findByEmail(String email) throws RegraDeNegocioException {
         FuncionarioEntity funcionario = funcionarioRepository.findByEmail(email);
-        if(funcionario == null){
+        if (funcionario == null) {
             throw new RegraDeNegocioException("Funcionario não existe.");
         }
         return funcionario;
