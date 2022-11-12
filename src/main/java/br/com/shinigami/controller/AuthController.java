@@ -44,4 +44,9 @@ public class AuthController {
         log.info("Criando funcionario....");
         return new ResponseEntity<>(funcionarioDTO, HttpStatus.OK);
     }
+
+    @PostMapping("/recuperar-senha")
+    public ResponseEntity<String> recuperarSenha(String email){
+        return new ResponseEntity<>(funcionarioService.tokenTrocaDeSenha(email), HttpStatus.OK);
+    }
 }

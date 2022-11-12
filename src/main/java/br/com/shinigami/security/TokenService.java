@@ -1,5 +1,6 @@
 package br.com.shinigami.security;
 
+import br.com.shinigami.entity.CargoEntity;
 import br.com.shinigami.entity.FuncionarioEntity;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -10,10 +11,10 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.Set;
+import java.time.ZoneOffset;
+import java.util.*;
 
 @Service
 public class TokenService {
@@ -23,20 +24,45 @@ public class TokenService {
     @Value("${jwt.secret}")
     private String secret;
 
-    @Value("${jwt.expiration}")
-    private String expiration;
+    @Value("${jwt.expiration.login}")
+    private String login;
+
+    @Value("${jwt.expiration.recuperacao}")
+    private String recuperacao;
 
     public String getToken(FuncionarioEntity funcionarioEntity) {
 
         LocalDate now = LocalDate.now();
         Date hoje = Date.from(now.atStartOfDay(ZoneId.systemDefault()).toInstant());
-        Date expira = Date.from(now.plusDays(Long.parseLong(expiration)).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        Date expira = Date.from(now.plusDays(Long.parseLong(login)).atStartOfDay(ZoneId.systemDefault()).toInstant());
 
-        String cargoDoFuncionario = funcionarioEntity.getCargo().getAuthority();
+        List<String> cargoDoFuncionario = new ArrayList<>();
+        cargoDoFuncionario.add(funcionarioEntity.getCargo().getAuthority());
 
 
         String token = Jwts.builder()
-                .setIssuer("pessoa-api")
+                .setIssuer("shinigami")
+                .claim(Claims.ID, String.valueOf(funcionarioEntity.getIdFuncionario()))
+                .claim(CARGO, cargoDoFuncionario)
+                .setIssuedAt(hoje)
+                .setExpiration(expira).signWith(SignatureAlgorithm.HS256, secret)
+                .compact();
+
+        return token;
+    }
+
+    public String getTokenTrocaDeSenha(FuncionarioEntity funcionarioEntity) {
+
+        LocalDateTime now = LocalDateTime.now();
+        Date hoje = Date.from(now.atZone(ZoneId.systemDefault()).toInstant());
+        Date expira = Date.from(now.plusMinutes(Long.parseLong(recuperacao)).atZone(ZoneId.systemDefault()).toInstant());
+
+        Set<String> cargoDoFuncionario = new HashSet<>();
+//        cargoDoFuncionario.add(funcionarioEntity.getCargo().getAuthority());
+        cargoDoFuncionario.add("ROLE_RECUPERA");
+
+        String token = Jwts.builder()
+                .setIssuer("shinigami")
                 .claim(Claims.ID, String.valueOf(funcionarioEntity.getIdFuncionario()))
                 .claim(CARGO, cargoDoFuncionario)
                 .setIssuedAt(hoje)
@@ -60,11 +86,11 @@ public class TokenService {
 
         String idFuncionario = chaves.get(Claims.ID, String.class);
 
-        String cargoFuncionario = chaves.get(CARGO, String.class);
+        List<String> cargoFuncionario = chaves.get(CARGO, List.class);
 
-        Set<SimpleGrantedAuthority> listaDeCargos = new HashSet<>();
-
-        listaDeCargos.add(new SimpleGrantedAuthority(cargoFuncionario));
+        List<SimpleGrantedAuthority> listaDeCargos = cargoFuncionario.stream()
+                    .map(SimpleGrantedAuthority::new)
+                    .toList();
 
         UsernamePasswordAuthenticationToken userPassAuthToken =
                 new UsernamePasswordAuthenticationToken(idFuncionario, null, listaDeCargos);
