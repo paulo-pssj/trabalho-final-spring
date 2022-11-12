@@ -3,16 +3,14 @@ package br.com.shinigami.controller;
 import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
 import br.com.shinigami.dto.funcionario.FuncionarioDTO;
 import br.com.shinigami.dto.funcionario.LoginDTO;
+import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -26,6 +24,13 @@ public class AuthController {
     private final FuncionarioService funcionarioService;
 
 
+    @GetMapping("funcionario-logado")
+    public ResponseEntity<FuncionarioDTO> retornaFuncionarioLogado() throws RegraDeNegocioException{
+        log.info("buscando usuario logado...");
+        FuncionarioDTO funcionario = funcionarioService.getLoggedUser();
+        log.info("Busca de funcionario realizada com sucesso.");
+        return new ResponseEntity<>(funcionario, HttpStatus.OK);
+    }
     @PostMapping
     public ResponseEntity<String> autenticar(@RequestBody @Valid LoginDTO loginDTO) {
         log.info("Logando funcionario....");
@@ -46,7 +51,15 @@ public class AuthController {
     }
 
     @PostMapping("/recuperar-senha")
-    public ResponseEntity<String> recuperarSenha(String email){
+    public ResponseEntity<String> recuperarSenha(String email) throws RegraDeNegocioException {
         return new ResponseEntity<>(funcionarioService.tokenTrocaDeSenha(email), HttpStatus.OK);
+    }
+
+    @PutMapping("/desativar-funcionario")
+    public ResponseEntity<Void> desativarFuncionario(String email)throws RegraDeNegocioException{
+        log.info("desativando funcionario...");
+        funcionarioService.desativarFuncionario(email);
+        log.info("Funcionario desativado com sucesso.");
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 }
