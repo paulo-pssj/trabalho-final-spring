@@ -56,7 +56,6 @@ public class TokenService {
         Date expira = Date.from(now.plusMinutes(Long.parseLong(recuperacao)).atZone(ZoneId.systemDefault()).toInstant());
 
         Set<String> cargoDoFuncionario = new HashSet<>();
-//        cargoDoFuncionario.add(funcionarioEntity.getCargo().getAuthority());
         cargoDoFuncionario.add("ROLE_RECUPERA");
 
         String token = Jwts.builder()

@@ -1,9 +1,6 @@
 package br.com.shinigami.controller;
 
-import br.com.shinigami.dto.funcionario.AlterarSenhaDTO;
-import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
-import br.com.shinigami.dto.funcionario.FuncionarioDTO;
-import br.com.shinigami.dto.funcionario.LoginDTO;
+import br.com.shinigami.dto.funcionario.*;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
@@ -71,5 +68,14 @@ public class AuthController {
         String info = funcionarioService.alterarSenha(senha);
         log.info("Senha alterada com sucesso.");
         return new ResponseEntity<>(info, HttpStatus.OK);
+    }
+
+    @PutMapping("/alterar-funcionario")
+    public ResponseEntity<FuncionarioDTO> funcionarioAtualizar(FuncionarioAtualizarDTO funcionarioAtualizarDTO) throws RegraDeNegocioException {
+        log.info("Alterando o funcionario(a)...");
+        FuncionarioDTO funcionarioDTO = funcionarioService.funcionarioAtualizar(funcionarioAtualizarDTO);
+        log.info("Funcionario(a) alterado(a) com sucesso.");
+        return new ResponseEntity<>(funcionarioDTO, HttpStatus.OK);
+
     }
 }

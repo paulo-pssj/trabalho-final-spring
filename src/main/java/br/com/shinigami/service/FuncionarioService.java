@@ -1,9 +1,6 @@
 package br.com.shinigami.service;
 
-import br.com.shinigami.dto.funcionario.AlterarSenhaDTO;
-import br.com.shinigami.dto.funcionario.FuncionarioCreateDTO;
-import br.com.shinigami.dto.funcionario.FuncionarioDTO;
-import br.com.shinigami.dto.funcionario.LoginDTO;
+import br.com.shinigami.dto.funcionario.*;
 import br.com.shinigami.entity.FuncionarioEntity;
 import br.com.shinigami.entity.Tipo;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
@@ -108,4 +105,18 @@ public class FuncionarioService {
         }
         return funcionario;
     }
+
+    public FuncionarioDTO funcionarioAtualizar(FuncionarioAtualizarDTO funcionarioDTO) throws RegraDeNegocioException {
+        FuncionarioDTO funcionario = getLoggedUser();
+        FuncionarioEntity funcionarioAtualizar = funcionarioRepository.findByEmail(funcionario.getEmail());
+        funcionarioAtualizar.setEmail(funcionarioDTO.getEmail());
+        funcionarioAtualizar.setLogin(funcionarioDTO.getLogin());
+        funcionarioAtualizar.setIdCargo(String.valueOf(funcionarioDTO.getIdCargo()));
+        if (funcionarioRepository.save(funcionarioAtualizar) == null) {
+            throw new RegraDeNegocioException("Alteração do funcionario não foi concluida.");
+        }
+        return objectMapper.convertValue(funcionarioAtualizar, FuncionarioDTO.class);
+    }
 }
+
+
