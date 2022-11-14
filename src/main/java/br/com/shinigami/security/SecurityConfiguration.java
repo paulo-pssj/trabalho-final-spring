@@ -31,10 +31,10 @@ public class SecurityConfiguration {
                 .authorizeHttpRequests((auth) ->
                         auth.antMatchers("/auth", "/auth/recuperar-senha").permitAll()
                                 .antMatchers("/auth/alterar-senha").hasRole("RECUPERA")
+                                .antMatchers(HttpMethod.GET, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("ANALISTA", "CORRETOR", "ADMIN")
+                                .antMatchers(HttpMethod.POST, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("CORRETOR", "ADMIN")
+                                .antMatchers(HttpMethod.PUT, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("CORRETOR", "ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")
-                                .antMatchers(HttpMethod.GET, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("ANALISTA", "CORRETOR")
-                                .antMatchers(HttpMethod.POST, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasRole("CORRETOR")
-                                .antMatchers(HttpMethod.PUT, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasRole("CORRETOR")
                                 .anyRequest().authenticated()
                 );
 
