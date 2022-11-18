@@ -6,9 +6,11 @@ import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
+import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ImovelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,6 +20,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,6 +30,8 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     private final ImovelRepository imovelRepository;
     private final EnderecoService enderecoService;
     private final ClienteService clienteService;
+
+    private final LogService logService;
     private final ObjectMapper objectMapper;
 
     public PageDTO<ImovelDTO> list(Integer page) throws RegraDeNegocioException {
@@ -58,6 +63,10 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         imovel.setAtivo(Tipo.S);
         imovelRepository.save(imovel);
         ImovelDTO imovelDTO = converteParaImovelDTO(imovel);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.IMOVEL,"IMOVEL CRIADO", LocalDate.now());
+        logService.create(logCreateDTO);
+
         return imovelDTO;
     }
 
@@ -71,6 +80,10 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         imovel.setCliente(clienteService.findById(imovelNovo.getIdDono()));
         imovelRepository.save(imovel);
         ImovelDTO imovelDTO = converteParaImovelDTO(imovel);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.IMOVEL,"IMOVEL ATUALIZADO", LocalDate.now());
+        logService.create(logCreateDTO);
+
         return imovelDTO;
     }
 
@@ -83,6 +96,9 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         imovel.setAtivo(Tipo.N);
         imovel.setCliente(clienteService.findById(imovel.getIdDono()));
         imovelRepository.save(imovel);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.IMOVEL,"IMOVEL DELETADO", LocalDate.now());
+        logService.create(logCreateDTO);
     }
 
     public List<ImovelDTO> listarImoveisDisponiveis() throws RegraDeNegocioException {
@@ -113,8 +129,14 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
         imovel.setCliente(clienteService.findById(imovel.getIdDono()));
         if (imovel.getAlugado().equals(Tipo.N)) {
             imovel.setAlugado(Tipo.S);
+
+            LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.IMOVEL,"IMOVEL ALUGADO", LocalDate.now());
+            logService.create(logCreateDTO);
         } else {
             imovel.setAlugado(Tipo.N);
+
+            LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.IMOVEL,"IMOVEL LIBERADO", LocalDate.now());
+            logService.create(logCreateDTO);
         }
         imovelRepository.save(imovel);
     }
