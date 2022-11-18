@@ -8,10 +8,12 @@ import br.com.shinigami.entity.Tipo;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.EnderecoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.maps.errors.ApiException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -20,13 +22,20 @@ import java.util.List;
 public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCreateDTO> {
     private final EnderecoRepository enderecoRepository;
     private final ObjectMapper objectMapper;
+    private final ContextService contextService;
 
     @Override
-    public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException {
+    public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException, IOException, InterruptedException, ApiException {
         EnderecoEntity enderecoEntityCriado = objectMapper.convertValue(endereco, EnderecoEntity.class);
         enderecoEntityCriado.setAtivo(Tipo.S);
         enderecoRepository.save(enderecoEntityCriado);
-        return objectMapper.convertValue(enderecoEntityCriado, EnderecoDTO.class);
+
+        EnderecoDTO enderecoDTO = objectMapper.convertValue(enderecoEntityCriado, EnderecoDTO.class);
+
+
+        contextService.gerarContext(enderecoDTO);
+
+        return enderecoDTO;
     }
 
     @Override
