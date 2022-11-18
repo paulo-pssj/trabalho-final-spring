@@ -39,6 +39,7 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
 
 
         contextService.gerarContext(enderecoDTO);
+
        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.ENDERECO,"ENDEREÇO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
         return enderecoDTO;

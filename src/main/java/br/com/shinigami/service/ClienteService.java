@@ -2,9 +2,11 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
+import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.entity.enums.TipoCliente;
+import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -12,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 
@@ -24,6 +27,8 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
 
+    private final LogService logService;
+
     @Override
     public ClienteDTO create(ClienteCreateDTO cliente) throws RegraDeNegocioException {
         ClienteEntity clienteEntityNovo = objectMapper.convertValue(cliente, ClienteEntity.class);
@@ -34,6 +39,10 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
         String emailBase = "Parabéns, Seu cadastro foi concluido com sucesso! Seu id é: " + clienteDto.getIdCliente();
         String assunto = "Seu cadastro foi concluido com sucesso!";
         emailService.sendEmail(clienteDto, emailBase, assunto);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CLIENTE,"CLIENTE CRIADO", LocalDate.now());
+        logService.create(logCreateDTO);
+
         return clienteDto;
 
     }
@@ -47,6 +56,8 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             }
             cliente.setAtivo(Tipo.N);
             clienteRepository.save(cliente);
+            LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CLIENTE,"CLIENTE DELETADO", LocalDate.now());
+            logService.create(logCreateDTO);
         } catch (RegraDeNegocioException e) {
             throw new RegraDeNegocioException(e.getMessage());
         }
@@ -65,6 +76,10 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
             clienteRecovery.setTelefone(clienteUpdate.getTelefone());
             clienteRecovery.setTipoCliente(clienteUpdate.getTipoCliente());
             ClienteEntity cliente = clienteRepository.save(clienteRecovery);
+
+            LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CLIENTE,"CLIENTE ATUALIZADO", LocalDate.now());
+            logService.create(logCreateDTO);
+
             return objectMapper.convertValue(cliente, ClienteDTO.class);
         } catch (RegraDeNegocioException e) {
             throw new RegraDeNegocioException(e.getMessage());
