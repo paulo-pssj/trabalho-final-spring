@@ -1,8 +1,10 @@
 package br.com.shinigami.service;
 
 import br.com.shinigami.dto.funcionario.*;
+import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.entity.FuncionarioEntity;
 import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.CargoRepository;
 import br.com.shinigami.repository.FuncionarioRepository;
@@ -16,6 +18,8 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 @RequiredArgsConstructor
 public class FuncionarioService {
@@ -27,6 +31,9 @@ public class FuncionarioService {
     private final ObjectMapper objectMapper;
     private final AuthenticationManager authenticationManager;
     private final PasswordEncoder passwordEncoder;
+
+    private final LogService logService;
+
 
 
     public String retornaTokenFuncionario(LoginDTO loginDTO) {
@@ -68,6 +75,10 @@ public class FuncionarioService {
 
         emailService.sendEmail(funcionarioDTO, emailBase, assunto);
 
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.FUNCIONARIO,"FUNCIONARIO CRIADO", LocalDate.now());
+        logService.create(logCreateDTO);
+
+
         return funcionarioDTO;
     }
 
@@ -85,6 +96,8 @@ public class FuncionarioService {
         FuncionarioEntity funcionario = findByEmail(email);
         funcionario.setAtivo(Tipo.N);
         funcionarioRepository.save(funcionario);
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.FUNCIONARIO,"FUNCIONARIO DESATIVADO", LocalDate.now());
+        logService.create(logCreateDTO);
     }
 
     public FuncionarioDTO getLoggedUser() throws RegraDeNegocioException {
@@ -115,6 +128,9 @@ public class FuncionarioService {
         if (funcionarioRepository.save(funcionarioAtualizar) == null) {
             throw new RegraDeNegocioException("Alteração do funcionario não foi concluida.");
         }
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.FUNCIONARIO,"FUNCIONARIO ATUALIZADO", LocalDate.now());
+        logService.create(logCreateDTO);
         return objectMapper.convertValue(funcionarioAtualizar, FuncionarioDTO.class);
     }
 }

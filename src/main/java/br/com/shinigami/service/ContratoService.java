@@ -6,10 +6,12 @@ import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
+import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ContratoEntity;
 import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -19,6 +21,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -31,6 +34,9 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
     private final ClienteService clienteService;
+
+    private final LogService logService;
+
 
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
@@ -56,6 +62,9 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
         emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
         emailService.sendEmail(contratoDTO.getLocatario(), emailBase, assunto);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
+        logService.create(logCreateDTO);
         return contratoDTO;
     }
 
@@ -68,6 +77,8 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setAtivo(Tipo.N);
         imovelService.alugarImovel(imovelService.findById(contratoEntity.getIdImovel()));
         contratoRepository.save(contratoEntity);
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO DELETADO", LocalDate.now());
+        logService.create(logCreateDTO);
     }
 
     @Override
@@ -87,6 +98,8 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setDataEntrada(contratoEntity.getDataEntrada());
         contratoEntity.setDataVencimento(contratoAtualizar.getDataVencimento());
         contratoRepository.save(contratoEntity);
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO ATUALIZADO", LocalDate.now());
+        logService.create(logCreateDTO);
         return converteParaContratoDTO(contratoEntity);
     }
 
