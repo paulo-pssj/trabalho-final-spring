@@ -8,7 +8,7 @@ import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ImovelEntity;
-import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ImovelRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;

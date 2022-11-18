@@ -3,8 +3,10 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
+import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.entity.EnderecoEntity;
-import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.EnderecoRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -14,6 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -23,6 +26,8 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
     private final EnderecoRepository enderecoRepository;
     private final ObjectMapper objectMapper;
     private final ContextService contextService;
+
+    private final LogService logService;
 
     @Override
     public EnderecoDTO create(EnderecoCreateDTO endereco) throws RegraDeNegocioException, IOException, InterruptedException, ApiException {
@@ -34,7 +39,8 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
 
 
         contextService.gerarContext(enderecoDTO);
-
+       LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.ENDERECO,"ENDEREÇO CRIADO", LocalDate.now());
+        logService.create(logCreateDTO);
         return enderecoDTO;
     }
 
@@ -46,10 +52,13 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         }
         enderecoEntity.setAtivo(Tipo.N);
         enderecoRepository.save(enderecoEntity);
+        contextService.delete(id);
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.ENDERECO,"ENDEREÇO DELETADO", LocalDate.now());
+        logService.create(logCreateDTO);
     }
 
     @Override
-    public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
+    public EnderecoDTO update(Integer id, EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException, IOException, InterruptedException, ApiException {
         EnderecoEntity enderecoEntityRecovery = objectMapper.convertValue(enderecoRepository.findById(id), EnderecoEntity.class);
         if (enderecoEntityRecovery == null) {
             throw new RegraDeNegocioException("Endereço não encontrado!");
@@ -63,7 +72,14 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         enderecoEntityRecovery.setNumero(enderecoAtualizar.getNumero());
         enderecoEntityRecovery.setAtivo(Tipo.S);
         EnderecoEntity enderecoEntity = enderecoRepository.save(enderecoEntityRecovery);
-        return objectMapper.convertValue(enderecoEntity, EnderecoDTO.class);
+
+        EnderecoDTO enderecoDTO = objectMapper.convertValue(enderecoEntity, EnderecoDTO.class);
+
+        contextService.delete(id);
+        contextService.gerarContext(enderecoDTO);
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.ENDERECO,"ENDEREÇO ATUALIZADO", LocalDate.now());
+        logService.create(logCreateDTO);
+        return enderecoDTO;
     }
 
     public List<EnderecoDTO> list() throws RegraDeNegocioException {
@@ -71,7 +87,6 @@ public class EnderecoService implements ServiceInterface<EnderecoDTO, EnderecoCr
         return listar.stream()
                 .map(endereco -> objectMapper.convertValue(endereco, EnderecoDTO.class))
                 .toList();
-
     }
 
     public EnderecoEntity findById(Integer idEndereco) throws RegraDeNegocioException {

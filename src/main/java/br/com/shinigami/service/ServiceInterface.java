@@ -9,7 +9,7 @@ public interface ServiceInterface<DTO, CreateDTO> {
 
     DTO create(CreateDTO obj) throws RegraDeNegocioException, IOException, InterruptedException, ApiException;
 
-    DTO update(Integer id, CreateDTO obj) throws RegraDeNegocioException;
+    DTO update(Integer id, CreateDTO obj) throws RegraDeNegocioException, IOException, InterruptedException, ApiException;
 
     void delete(Integer id) throws RegraDeNegocioException;
 

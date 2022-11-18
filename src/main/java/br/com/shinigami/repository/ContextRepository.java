@@ -5,5 +5,7 @@ import org.springframework.data.mongodb.repository.MongoRepository;
 
 import java.util.List;
 
-public interface ContextRepository extends MongoRepository<ContextEntity,Integer> {
+public interface ContextRepository extends MongoRepository<ContextEntity, Integer> {
+
+    ContextEntity findByIdEndereco(Integer idEndereco);
 }

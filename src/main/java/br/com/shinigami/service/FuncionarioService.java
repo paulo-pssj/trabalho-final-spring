@@ -2,7 +2,7 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.funcionario.*;
 import br.com.shinigami.entity.FuncionarioEntity;
-import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.CargoRepository;
 import br.com.shinigami.repository.FuncionarioRepository;

@@ -2,8 +2,8 @@ package br.com.shinigami.dto.imovel;
 
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.entity.Tipo;
-import br.com.shinigami.entity.TipoImovel;
+import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoImovel;
 import lombok.Data;
 
 @Data

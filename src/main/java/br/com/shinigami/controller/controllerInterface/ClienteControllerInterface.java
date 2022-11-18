@@ -2,7 +2,7 @@ package br.com.shinigami.controller.controllerInterface;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
-import br.com.shinigami.entity.TipoCliente;
+import br.com.shinigami.entity.enums.TipoCliente;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;

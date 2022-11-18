@@ -55,7 +55,7 @@ public class EnderecoController implements EnderecoControllerInterface {
 
     @PutMapping("/{idEndereco}")
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
-                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException {
+                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException, IOException, InterruptedException, ApiException {
         log.info("Atualizando Endereco...");
         EnderecoDTO endereco = enderecoService.update(id, enderecoAtualizar);
         log.info("Endereco Atualizado!!");

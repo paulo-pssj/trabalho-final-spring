@@ -2,8 +2,8 @@ package br.com.shinigami.repository;
 
 
 import br.com.shinigami.entity.ClienteEntity;
-import br.com.shinigami.entity.Tipo;
-import br.com.shinigami.entity.TipoCliente;
+import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoCliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,4 +1,4 @@
-package br.com.shinigami.entity;
+package br.com.shinigami.entity.enums;
 
 public enum TipoCliente {
     LOCADOR("LOCADOR"),

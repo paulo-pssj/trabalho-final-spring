@@ -3,7 +3,7 @@ package br.com.shinigami.controller;
 import br.com.shinigami.controller.controllerInterface.ClienteControllerInterface;
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
-import br.com.shinigami.entity.TipoCliente;
+import br.com.shinigami.entity.enums.TipoCliente;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.service.ClienteService;
 import lombok.RequiredArgsConstructor;

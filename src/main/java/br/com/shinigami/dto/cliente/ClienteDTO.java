@@ -1,6 +1,6 @@
 package br.com.shinigami.dto.cliente;
 
-import br.com.shinigami.entity.TipoCliente;
+import br.com.shinigami.entity.enums.TipoCliente;
 import lombok.Data;
 
 @Data

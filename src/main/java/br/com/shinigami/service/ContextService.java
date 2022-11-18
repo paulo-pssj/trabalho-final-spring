@@ -60,4 +60,9 @@ public class ContextService {
 
         return listaContext;
     }
+
+    public void delete(Integer idEndereco){
+     ContextEntity enderecoContext= contextRepository.findByIdEndereco(idEndereco);
+        contextRepository.delete(enderecoContext);
+    }
 }

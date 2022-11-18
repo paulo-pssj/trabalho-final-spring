@@ -1,5 +1,6 @@
 package br.com.shinigami.entity;
 
+import br.com.shinigami.entity.enums.Tipo;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;

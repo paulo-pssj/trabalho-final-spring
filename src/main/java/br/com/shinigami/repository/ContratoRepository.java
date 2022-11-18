@@ -2,7 +2,7 @@ package br.com.shinigami.repository;
 
 import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.entity.ContratoEntity;
-import br.com.shinigami.entity.Tipo;
+import br.com.shinigami.entity.enums.Tipo;
 import feign.Param;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

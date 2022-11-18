@@ -55,7 +55,7 @@ public interface EnderecoControllerInterface {
             }
     )
     public ResponseEntity<EnderecoDTO> update(@PathVariable("idEndereco") Integer id,
-                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException;
+                                              @Valid @RequestBody EnderecoCreateDTO enderecoAtualizar) throws RegraDeNegocioException, IOException, InterruptedException, ApiException;
 
     @Operation(summary = "Deletar endereço", description = "Deleta o endereço do banco de dados")
     @ApiResponses(
