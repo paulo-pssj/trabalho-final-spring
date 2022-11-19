@@ -1,4 +1,4 @@
-package br.com.shinigami;
+package br.com.shinigami.service;
 
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import com.google.maps.errors.ApiException;

@@ -2,7 +2,7 @@ package br.com.shinigami.controller;
 
 import br.com.shinigami.dto.funcionario.*;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.FuncionarioService;
+import br.com.shinigami.service.FuncionarioService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;

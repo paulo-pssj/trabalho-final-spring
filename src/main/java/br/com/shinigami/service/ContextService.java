@@ -1,4 +1,4 @@
-package br.com.shinigami;
+package br.com.shinigami.service;
 
 import br.com.shinigami.dto.context.ContextDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
