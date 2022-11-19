@@ -27,7 +27,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 @Slf4j
 @Service
-public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDTO> {
+public class        ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDTO> {
     private final ImovelRepository imovelRepository;
     private final EnderecoService enderecoService;
     private final ClienteService clienteService;

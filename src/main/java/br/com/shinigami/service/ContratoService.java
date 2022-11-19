@@ -84,6 +84,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     @Override
     public ContratoDTO update(Integer id, ContratoCreateDTO contratoAtualizar) throws RegraDeNegocioException {
         ContratoEntity contratoEntityBusca = objectMapper.convertValue(contratoRepository.findById(id), ContratoEntity.class);
+
         if (contratoEntityBusca == null) {
             throw new RegraDeNegocioException("Contrato não encontrado!");
         }
