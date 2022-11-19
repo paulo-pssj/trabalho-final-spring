@@ -4,6 +4,7 @@ import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ClienteEntity;
@@ -114,42 +115,22 @@ public class ContratoServiceTest {
     public void deveTestarUpdateComSucesso() throws RegraDeNegocioException {
         //SETUP
 
-        ClienteEntity clienteEntity = getClienteLocador();
+
 
         ClienteDTO clientoDTO = objectMapper.convertValue(getClienteLocador(), ClienteDTO.class);
 
-        ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
-                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
 
         Integer idContrato = 1;
 
-        ContratoEntity contratoEntity = new ContratoEntity();
-        contratoEntity.setIdContrato(idContrato);
-        contratoEntity.setImovel(imovelAntigo);
-        contratoEntity.setAtivo(Tipo.S);
-        contratoEntity.setDataEntrada(LocalDate.now());
-        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
-        contratoEntity.setLocador(getClienteLocador());
-        contratoEntity.setLocatario(getClienteLocatario());
-        contratoEntity.setIdContrato(1);
-        contratoEntity.setValorAluguel(1000);
-        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
-        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
-        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+        ContratoEntity contratoEntity = getContratoEntityPronto();
 
         ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
 
         ContratoDTO contratoDTO = objectMapper.convertValue(contratoEntity, ContratoDTO.class);
 
-        ImovelEntity imovelNovo = new ImovelEntity(2, 2, 1, 20000,
-                1000, TipoImovel.APARTAMENTO, Tipo.S,
-                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S,
-                1, 1, getClienteLocador(), getEnderecoEntity());
-
-
         when(contratoRepository.findById(anyInt())).thenReturn(Optional.of(contratoEntity));
         when(clienteService.findByIdClienteDto(anyInt())).thenReturn(clientoDTO);
-        when(imovelService.findById(anyInt())).thenReturn(imovelAntigo);
+        when(imovelService.findById(anyInt())).thenReturn(contratoEntity.getImovel());
 
         //ACT
         ContratoDTO retornoContratoDTO = contratoService.update(idContrato, contratoCreateDTO);
@@ -160,28 +141,48 @@ public class ContratoServiceTest {
 
     }
 
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUpdateComException() throws RegraDeNegocioException{
+
+        Integer id = 7;
+        ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
+
+        when(contratoRepository.findById(anyInt())).thenReturn(null);
+
+
+        contratoService.update(id,contratoCreateDTO);
+    }
+
     @Test
-    public void deveTestarDeletarComSucesso() throws RegraDeNegocioException {
-        //SETUP
+    public void deveTestarDeleteComSucesso() throws RegraDeNegocioException {
         Integer id = 8;
 
-        ContratoEntity contratoEntity = new ContratoEntity();
-        contratoEntity.setAtivo(Tipo.S);
+        ContratoEntity contratoEntity = getContratoEntityPronto();
         contratoEntity.setIdContrato(id);
 
         ClienteEntity clienteEntity = getClienteEntity();
+
         EnderecoEntity enderecoEntity = getEnderecoEntity();
+
         ImovelEntity imovelEntity = getImovelEntity(clienteEntity, enderecoEntity);
         imovelEntity.setIdImovel(1);
 
-
         when(contratoRepository.save(any())).thenReturn(contratoEntity);
 
-        //ACT
         contratoService.delete(id);
 
-        //ASSERT
         assertNotEquals(contratoEntity, Tipo.N);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarDeleteComException() throws RegraDeNegocioException{
+
+        Integer id = 7;
+        ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
+
+        when(contratoRepository.findById(anyInt())).thenReturn(null);
+
+        contratoService.delete(id);
     }
 
     @Test
@@ -195,18 +196,7 @@ public class ContratoServiceTest {
                 Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
 
 
-        ContratoEntity contratoEntity = new ContratoEntity();
-        contratoEntity.setAtivo(Tipo.S);
-        contratoEntity.setImovel(imovelAntigo);
-        contratoEntity.setDataEntrada(LocalDate.now());
-        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
-        contratoEntity.setLocador(getClienteLocador());
-        contratoEntity.setLocatario(getClienteLocatario());
-        contratoEntity.setIdContrato(1);
-        contratoEntity.setValorAluguel(1000);
-        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
-        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
-        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+        ContratoEntity contratoEntity = getContratoEntityPronto();
         Page<ContratoEntity> paginaMock = new PageImpl<>(List.of(contratoEntity));
 
         List<ContratoEntity> lista = new ArrayList<>();
@@ -222,24 +212,7 @@ public class ContratoServiceTest {
     @Test
     public void deveTestarRelatorioContratoClienteComSucesso(){
 
-        ClienteEntity clienteEntity = getClienteLocador();
-
-        ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
-                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
-
-
-        ContratoEntity contratoEntity = new ContratoEntity();
-        contratoEntity.setAtivo(Tipo.S);
-        contratoEntity.setImovel(imovelAntigo);
-        contratoEntity.setDataEntrada(LocalDate.now());
-        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
-        contratoEntity.setLocador(getClienteLocador());
-        contratoEntity.setLocatario(getClienteLocatario());
-        contratoEntity.setIdContrato(1);
-        contratoEntity.setValorAluguel(1000);
-        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
-        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
-        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+        ContratoEntity contratoEntity = getContratoEntityPronto();
 
         List<RelatorioContratoClienteDTO> relatorioDTO = new ArrayList<>();
 
@@ -258,6 +231,24 @@ public class ContratoServiceTest {
         assertEquals(relatorioDTO,relatorio);
 
     }
+
+//    @Test
+//    public void deveTestarFindByIdContratoComSucesso() throws RegraDeNegocioException {
+//        Integer id = 1;
+//
+//        ContratoEntity contratoEntity = getContratoEntityPronto();
+//
+//        ClienteDTO clienteDTO = getClienteDTO();
+//        clienteDTO.setIdCliente(1);
+//
+//        when(contratoRepository.findById(anyInt())).thenReturn(Optional.of(contratoEntity));
+//        when(clienteService.findByIdClienteDto(anyInt())).thenReturn(clienteDTO);
+//        when(imovelService.findById(anyInt())).thenReturn(contratoEntity.getImovel());
+//
+//       ContratoDTO contratoRetorno =  contratoService.findByIdContrato(id);
+//       contratoRetorno.getImovel().getDono().setIdCliente(1);
+//       assertNotNull(contratoRetorno);
+//    }
 
     private ContratoCreateDTO getContratoCreateDTO() {
         ContratoCreateDTO contratoCreateDTO = new ContratoCreateDTO();
@@ -330,7 +321,7 @@ public class ContratoServiceTest {
         ClienteEntity clienteEntity = new ClienteEntity();
         clienteEntity.setAtivo(Tipo.S);
         clienteEntity.setCpf("12345678910");
-        clienteEntity.setEmail("cliente@mail.com");
+        clienteEntity.setEmail("clientelocador@mail.com");
         clienteEntity.setIdCliente(2);
         clienteEntity.setNome("Locador");
         return clienteEntity;
@@ -340,9 +331,45 @@ public class ContratoServiceTest {
         ClienteEntity clienteEntity = new ClienteEntity();
         clienteEntity.setAtivo(Tipo.S);
         clienteEntity.setCpf("12345678910");
-        clienteEntity.setEmail("cliente@mail.com");
+        clienteEntity.setEmail("clientelocatario@mail.com");
         clienteEntity.setIdCliente(3);
         clienteEntity.setNome("Locatario");
         return clienteEntity;
+    }
+    private ContratoEntity getContratoEntityPronto() {
+
+        EnderecoEntity enderecoEntity = getEnderecoEntity();
+
+        ClienteEntity clienteEntity = new ClienteEntity();
+        clienteEntity.setAtivo(Tipo.S);
+        clienteEntity.setCpf("12345678910");
+        clienteEntity.setEmail("cliente@mail.com");
+        clienteEntity.setIdCliente(3);
+        clienteEntity.setNome("Locatario");
+
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity,enderecoEntity);
+
+        ContratoEntity contratoEntity = new ContratoEntity();
+        contratoEntity.setAtivo(Tipo.S);
+        contratoEntity.setImovel(imovelEntity);
+        contratoEntity.setDataEntrada(LocalDate.now());
+        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
+        contratoEntity.setLocador(getClienteLocador());
+        contratoEntity.setLocatario(getClienteLocatario());
+        contratoEntity.setIdContrato(1);
+        contratoEntity.setValorAluguel(1000);
+        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
+        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
+        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+
+
+        return contratoEntity;
+    }
+
+    private ContratoDTO getContratoDTOPronto() {
+
+        ContratoDTO contratoDTO = objectMapper.convertValue(getContratoEntityPronto(), ContratoDTO.class);
+
+        return contratoDTO;
     }
 }
