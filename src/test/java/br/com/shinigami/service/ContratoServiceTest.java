@@ -153,7 +153,24 @@ public class ContratoServiceTest {
     }
 
     @Test
-    public void deveDeletarComSucesso() {
+    public void deveTestarDeletarComSucesso() {
+        //SETUP
+        Integer id = 8;
+
+        ContratoEntity contratoEntity = new ContratoEntity();
+        contratoEntity.setAtivo(Tipo.S);
+        contratoEntity.setIdContrato(id);
+
+
+
+
+        //ACT
+//        contratoService.delete();
+
+
+
+
+        //ASSERT
 
     }
 
