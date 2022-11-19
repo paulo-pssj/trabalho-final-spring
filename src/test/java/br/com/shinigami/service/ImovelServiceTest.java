@@ -2,6 +2,7 @@ package br.com.shinigami.service;
 
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
+import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.EnderecoEntity;
@@ -98,6 +99,11 @@ public class ImovelServiceTest {
         imovelService.findById(idImovel);
     }
 
+    @Test
+    public void deveTestarCreateComSucesso() throws RegraDeNegocioException{
+
+    }
+
 
     private ImovelEntity getImovelEntity(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity) {
         ImovelEntity imovelEntity = new ImovelEntity();
@@ -120,6 +126,10 @@ public class ImovelServiceTest {
         imovelDTO.setEndereco(objectMapper.convertValue(enderecoEntity, EnderecoDTO.class));
         imovelDTO.setDono(objectMapper.convertValue(clienteEntity, ClienteDTO.class));
         return imovelDTO;
+    }
+
+    private ImovelCreateDTO getImovelCreateDTO(){
+        
     }
 
     private EnderecoEntity getEnderecoEntity() {
