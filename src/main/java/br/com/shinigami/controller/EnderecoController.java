@@ -5,7 +5,7 @@ import br.com.shinigami.controller.controllerInterface.EnderecoControllerInterfa
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.service.EnderecoService;
+import br.com.shinigami.EnderecoService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.maps.errors.ApiException;
 import lombok.RequiredArgsConstructor;

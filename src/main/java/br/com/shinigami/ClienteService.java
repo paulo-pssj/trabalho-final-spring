@@ -1,4 +1,4 @@
-package br.com.shinigami.service;
+package br.com.shinigami;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
@@ -26,7 +26,6 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     private final ClienteRepository clienteRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
-
     private final LogService logService;
 
     @Override

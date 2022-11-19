@@ -1,7 +1,7 @@
 package br.com.shinigami.controller;
 
 import br.com.shinigami.dto.context.ContextDTO;
-import br.com.shinigami.service.ContextService;
+import br.com.shinigami.ContextService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

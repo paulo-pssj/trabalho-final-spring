@@ -3,7 +3,7 @@ package br.com.shinigami.controller;
 import br.com.shinigami.dto.log.LogDTO;
 import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.service.LogService;
+import br.com.shinigami.LogService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.format.annotation.DateTimeFormat;
