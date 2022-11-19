@@ -22,6 +22,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -47,10 +48,7 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     }
 
     public ImovelDTO findByIdImovel(Integer id) throws RegraDeNegocioException {
-        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
-        if (imovel == null) {
-            throw new RegraDeNegocioException("Imovel não encontrando!");
-        }
+        ImovelEntity imovel = findById(id);
         ImovelDTO imovelDTO = converteParaImovelDTO(imovel);
         return imovelDTO;
     }
@@ -89,10 +87,8 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
-        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
-        if (imovel == null) {
-            throw new RegraDeNegocioException("Imovel não Encontrado!");
-        }
+        ImovelEntity imovel = findById(id);
+
         imovel.setAtivo(Tipo.N);
         imovel.setCliente(clienteService.findById(imovel.getIdDono()));
         imovelRepository.save(imovel);
@@ -118,11 +114,10 @@ public class ImovelService implements ServiceInterface<ImovelDTO, ImovelCreateDT
     }
 
     public ImovelEntity findById(Integer id) throws RegraDeNegocioException {
-        ImovelEntity imovel = objectMapper.convertValue(imovelRepository.findById(id), ImovelEntity.class);
-        if (imovel == null) {
-            throw new RegraDeNegocioException("Imovel não encontrando!");
-        }
-        return imovel;
+        ImovelEntity imovel = imovelRepository.findById(id)
+                .orElseThrow(() -> new RegraDeNegocioException("Imovel não encontrado"));
+ 
+        return objectMapper.convertValue(imovel, ImovelEntity.class);
     }
 
     public void alugarImovel(ImovelEntity imovel) throws RegraDeNegocioException {
