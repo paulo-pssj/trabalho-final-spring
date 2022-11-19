@@ -1,9 +1,11 @@
 package br.com.shinigami.service;
 
+import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
+import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
 import br.com.shinigami.entity.EnderecoEntity;
@@ -11,6 +13,7 @@ import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.entity.enums.TipoImovel;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
+import br.com.shinigami.repository.ClienteRepository;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -22,11 +25,16 @@ import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.Mockito.*;
@@ -108,7 +116,7 @@ public class ContratoServiceTest {
 
         ClienteEntity clienteEntity = getClienteLocador();
 
-        ClienteDTO clientoDTO = objectMapper.convertValue(getClienteLocador(),ClienteDTO.class);
+        ClienteDTO clientoDTO = objectMapper.convertValue(getClienteLocador(), ClienteDTO.class);
 
         ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
                 Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
@@ -131,7 +139,7 @@ public class ContratoServiceTest {
 
         ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
 
-        ContratoDTO contratoDTO = objectMapper.convertValue(contratoEntity,ContratoDTO.class);
+        ContratoDTO contratoDTO = objectMapper.convertValue(contratoEntity, ContratoDTO.class);
 
         ImovelEntity imovelNovo = new ImovelEntity(2, 2, 1, 20000,
                 1000, TipoImovel.APARTAMENTO, Tipo.S,
@@ -148,12 +156,12 @@ public class ContratoServiceTest {
 
         //ASSERT
         assertNotNull(retornoContratoDTO);
-        assertNotEquals(retornoContratoDTO,contratoDTO);
+        assertNotEquals(retornoContratoDTO, contratoDTO);
 
     }
 
     @Test
-    public void deveTestarDeletarComSucesso() {
+    public void deveTestarDeletarComSucesso() throws RegraDeNegocioException {
         //SETUP
         Integer id = 8;
 
@@ -161,16 +169,93 @@ public class ContratoServiceTest {
         contratoEntity.setAtivo(Tipo.S);
         contratoEntity.setIdContrato(id);
 
+        ClienteEntity clienteEntity = getClienteEntity();
+        EnderecoEntity enderecoEntity = getEnderecoEntity();
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, enderecoEntity);
+        imovelEntity.setIdImovel(1);
 
 
+        when(contratoRepository.save(any())).thenReturn(contratoEntity);
 
         //ACT
-//        contratoService.delete();
-
-
-
+        contratoService.delete(id);
 
         //ASSERT
+        assertNotEquals(contratoEntity, Tipo.N);
+    }
+
+    @Test
+    public void deveTestarListarComSucesso() throws RegraDeNegocioException {
+
+        Integer page = 1;
+
+        ClienteEntity clienteEntity = getClienteLocador();
+
+        ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
+                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
+
+
+        ContratoEntity contratoEntity = new ContratoEntity();
+        contratoEntity.setAtivo(Tipo.S);
+        contratoEntity.setImovel(imovelAntigo);
+        contratoEntity.setDataEntrada(LocalDate.now());
+        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
+        contratoEntity.setLocador(getClienteLocador());
+        contratoEntity.setLocatario(getClienteLocatario());
+        contratoEntity.setIdContrato(1);
+        contratoEntity.setValorAluguel(1000);
+        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
+        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
+        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+        Page<ContratoEntity> paginaMock = new PageImpl<>(List.of(contratoEntity));
+
+        List<ContratoEntity> lista = new ArrayList<>();
+        lista.add(contratoEntity);
+
+        when(contratoRepository.findAllByAtivo(any(), any(Pageable.class))).thenReturn(paginaMock);
+
+        PageDTO<ContratoDTO> paginaMockRetorno = contratoService.list(page);
+
+        assertNotNull(paginaMockRetorno);
+    }
+
+    @Test
+    public void deveTestarRelatorioContratoClienteComSucesso(){
+
+        ClienteEntity clienteEntity = getClienteLocador();
+
+        ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
+                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
+
+
+        ContratoEntity contratoEntity = new ContratoEntity();
+        contratoEntity.setAtivo(Tipo.S);
+        contratoEntity.setImovel(imovelAntigo);
+        contratoEntity.setDataEntrada(LocalDate.now());
+        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
+        contratoEntity.setLocador(getClienteLocador());
+        contratoEntity.setLocatario(getClienteLocatario());
+        contratoEntity.setIdContrato(1);
+        contratoEntity.setValorAluguel(1000);
+        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
+        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
+        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+
+        List<RelatorioContratoClienteDTO> relatorioDTO = new ArrayList<>();
+
+        RelatorioContratoClienteDTO relatorioContratoClienteDTO = new RelatorioContratoClienteDTO(contratoEntity.getIdContrato(),contratoEntity.getDataEntrada(),contratoEntity.getDataVencimento()
+                ,contratoEntity.getValorAluguel(),contratoEntity.getLocador().getNome(),contratoEntity.getLocador().getCpf(),
+                contratoEntity.getLocador().getEmail(),contratoEntity.getLocador().getTipoCliente(),
+                contratoEntity.getLocatario().getNome(),contratoEntity.getLocatario().getCpf(),contratoEntity.getLocatario().getEmail(),
+                contratoEntity.getLocatario().getTipoCliente());
+        relatorioDTO.add(relatorioContratoClienteDTO);
+
+        when(contratoRepository.RelatorioContratoCliente(any())).thenReturn(relatorioDTO);
+
+        List<RelatorioContratoClienteDTO> relatorio = contratoService.relatorioContratoCliente(contratoEntity.getIdContrato());
+
+        assertNotNull(relatorio);
+        assertEquals(relatorioDTO,relatorio);
 
     }
 
