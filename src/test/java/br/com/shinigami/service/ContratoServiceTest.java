@@ -3,11 +3,13 @@ package br.com.shinigami.service;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
 import br.com.shinigami.entity.EnderecoEntity;
 import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoImovel;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -21,9 +23,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.time.LocalDate;
+import java.util.Optional;
 
 import static org.mockito.Mockito.*;
 
@@ -66,10 +70,10 @@ public class ContratoServiceTest {
         ClienteDTO clienteDTO = getClienteDTO();
 
 
-        EnderecoEntity enderecoEntity = getEndereçoEntity();
+        EnderecoEntity enderecoEntity = getEnderecoEntity();
         ImovelEntity imovelEntity = getImovelEntity(clienteEntity, enderecoEntity);
         ContratoEntity contratoEntity = getContratoEntity(locador, locatario, imovelEntity);
-        ContratoCreateDTO contratoCreateDTO =  getContratoCreateDTO();
+        ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
 
 
         when(contratoRepository.save(any())).thenReturn(contratoEntity);
@@ -81,8 +85,8 @@ public class ContratoServiceTest {
         //ACT
         ContratoDTO contratoDTO = new ContratoDTO();
         contratoDTO = contratoService.create(contratoCreateDTO);
-        contratoDTO.setDataEntrada(LocalDate.of(2022,8,12));
-        contratoDTO.setDataVencimento(LocalDate.of(2023,3,10));
+        contratoDTO.setDataEntrada(LocalDate.of(2022, 8, 12));
+        contratoDTO.setDataVencimento(LocalDate.of(2023, 3, 10));
 
         //ASSERT
         assertNotNull(contratoDTO);
@@ -97,12 +101,68 @@ public class ContratoServiceTest {
 
     }
 
+
+    @Test
+    public void deveTestarUpdateComSucesso() throws RegraDeNegocioException {
+        //SETUP
+
+        ClienteEntity clienteEntity = getClienteLocador();
+
+        ClienteDTO clientoDTO = objectMapper.convertValue(getClienteLocador(),ClienteDTO.class);
+
+        ImovelEntity imovelAntigo = new ImovelEntity(1, 2, 1, 2000, 100, TipoImovel.APARTAMENTO, Tipo.S,
+                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S, 1, 1, getClienteLocador(), getEnderecoEntity());
+
+        Integer idContrato = 1;
+
+        ContratoEntity contratoEntity = new ContratoEntity();
+        contratoEntity.setIdContrato(idContrato);
+        contratoEntity.setImovel(imovelAntigo);
+        contratoEntity.setAtivo(Tipo.S);
+        contratoEntity.setDataEntrada(LocalDate.now());
+        contratoEntity.setDataVencimento(LocalDate.now().plusDays(30));
+        contratoEntity.setLocador(getClienteLocador());
+        contratoEntity.setLocatario(getClienteLocatario());
+        contratoEntity.setIdContrato(1);
+        contratoEntity.setValorAluguel(1000);
+        contratoEntity.setIdLocador(contratoEntity.getIdLocador());
+        contratoEntity.setIdLocatario(contratoEntity.getIdLocatario());
+        contratoEntity.getImovel().setIdDono(clienteEntity.getIdCliente());
+
+        ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
+
+        ContratoDTO contratoDTO = objectMapper.convertValue(contratoEntity,ContratoDTO.class);
+
+        ImovelEntity imovelNovo = new ImovelEntity(2, 2, 1, 20000,
+                1000, TipoImovel.APARTAMENTO, Tipo.S,
+                Tipo.S, Tipo.S, Tipo.N, Tipo.N, 1, Tipo.S,
+                1, 1, getClienteLocador(), getEnderecoEntity());
+
+
+        when(contratoRepository.findById(anyInt())).thenReturn(Optional.of(contratoEntity));
+        when(clienteService.findByIdClienteDto(anyInt())).thenReturn(clientoDTO);
+        when(imovelService.findById(anyInt())).thenReturn(imovelAntigo);
+
+        //ACT
+        ContratoDTO retornoContratoDTO = contratoService.update(idContrato, contratoCreateDTO);
+
+        //ASSERT
+        assertNotNull(retornoContratoDTO);
+        assertNotEquals(retornoContratoDTO,contratoDTO);
+
+    }
+
+    @Test
+    public void deveDeletarComSucesso() {
+
+    }
+
     private ContratoCreateDTO getContratoCreateDTO() {
         ContratoCreateDTO contratoCreateDTO = new ContratoCreateDTO();
-        contratoCreateDTO.setDataEntrada(LocalDate.of(2022,8,12));
+        contratoCreateDTO.setDataEntrada(LocalDate.of(2022, 8, 12));
         contratoCreateDTO.setIdImovel(1);
         contratoCreateDTO.setIdLocatario(1);
-        contratoCreateDTO.setDataVencimento(LocalDate.of(2023,3,10));
+        contratoCreateDTO.setDataVencimento(LocalDate.of(2023, 3, 10));
         return contratoCreateDTO;
     }
 
@@ -142,7 +202,7 @@ public class ContratoServiceTest {
         return imovelEntity;
     }
 
-    private EnderecoEntity getEndereçoEntity() {
+    private EnderecoEntity getEnderecoEntity() {
         EnderecoEntity enderecoEntity = new EnderecoEntity();
         enderecoEntity.setAtivo(Tipo.S);
         enderecoEntity.setIdEndereco(1);
