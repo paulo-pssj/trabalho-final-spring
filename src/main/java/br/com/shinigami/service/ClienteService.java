@@ -26,7 +26,6 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     private final ClienteRepository clienteRepository;
     private final ObjectMapper objectMapper;
     private final EmailService emailService;
-
     private final LogService logService;
 
     @Override
