@@ -101,6 +101,68 @@ public class ImovelServiceTest {
 
     @Test
     public void deveTestarCreateComSucesso() throws RegraDeNegocioException{
+        ClienteEntity clienteEntity = getClienteLocador();
+        EnderecoEntity endereco = getEnderecoEntity();
+        ImovelCreateDTO imovelCreateDTO = getImovelCreateDTO(clienteEntity, endereco);
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, endereco);
+
+        when(imovelRepository.save(any())).thenReturn(imovelEntity);
+
+        ImovelDTO imovelDTO = imovelService.create(imovelCreateDTO);
+
+        assertNotNull(imovelDTO);
+    }
+
+    @Test
+    public void deveTestasUpdadeComSucesso() throws RegraDeNegocioException{
+        ClienteEntity clienteEntity = getClienteLocador();
+        EnderecoEntity endereco = getEnderecoEntity();
+        ImovelCreateDTO imovelCreateDTO = getImovelCreateDTO(clienteEntity, endereco);
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, endereco);
+
+        when(imovelRepository.save(any())).thenReturn(imovelEntity);
+        when(imovelRepository.findByIdImovelAndAtivo(anyInt(), any())).thenReturn(imovelEntity);
+
+        ImovelDTO imovelDTO = imovelService.update(1,  imovelCreateDTO);
+
+        assertNotNull(imovelDTO);
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestasUpdadeComException() throws RegraDeNegocioException{
+        ClienteEntity clienteEntity = getClienteLocador();
+        EnderecoEntity endereco = getEnderecoEntity();
+        ImovelCreateDTO imovelCreateDTO = getImovelCreateDTO(clienteEntity, endereco);
+
+        when(imovelRepository.findByIdImovelAndAtivo(anyInt(), any())).thenReturn(null);
+
+        imovelService.update(1,  imovelCreateDTO);
+
+    }
+
+    @Test
+    public void deveTestarAlugarImovelComSucessoComImovelNaoAlugado() throws RegraDeNegocioException{
+        ClienteEntity clienteEntity = getClienteLocador();
+        EnderecoEntity endereco = getEnderecoEntity();
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, endereco);
+
+        when(clienteService.findById(any())).thenReturn(clienteEntity);
+
+        imovelService.alugarImovel(imovelEntity);
+
+    }
+
+    @Test
+    public void deveTestarAlugarImovelComSucessoComImovelAlugado() throws RegraDeNegocioException{
+        ClienteEntity clienteEntity = getClienteLocador();
+        EnderecoEntity endereco = getEnderecoEntity();
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, endereco);
+
+        imovelEntity.setAlugado(Tipo.S);
+
+        when(clienteService.findById(any())).thenReturn(clienteEntity);
+
+        imovelService.alugarImovel(imovelEntity);
 
     }
 
@@ -118,6 +180,15 @@ public class ImovelServiceTest {
         return imovelEntity;
     }
 
+    private ImovelCreateDTO getImovelCreateDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity) {
+        ImovelCreateDTO imovel = new ImovelCreateDTO();
+        imovel.setAlugado(Tipo.N);
+        imovel.setAreaDeLazer(Tipo.S);
+        imovel.setIdEndereco(enderecoEntity.getIdEndereco());
+        imovel.setIdDono(clienteEntity.getIdCliente());
+        return imovel;
+    }
+
     private ImovelDTO getImovelDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity){
         ImovelDTO imovelDTO = new ImovelDTO();
         imovelDTO.setAlugado(Tipo.N);
@@ -128,9 +199,6 @@ public class ImovelServiceTest {
         return imovelDTO;
     }
 
-    private ImovelCreateDTO getImovelCreateDTO(){
-        
-    }
 
     private EnderecoEntity getEnderecoEntity() {
         EnderecoEntity enderecoEntity = new EnderecoEntity();
