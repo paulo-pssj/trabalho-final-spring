@@ -108,15 +108,12 @@ public class ImovelServiceTest {
     }
 
     @Test
-<<<<<<< HEAD
-    public void deveTestarCreateComSucesso() throws RegraDeNegocioException {
-=======
+
     public void deveTestarCreateComSucesso() throws RegraDeNegocioException{
         ClienteEntity clienteEntity = getClienteLocador();
         EnderecoEntity endereco = getEnderecoEntity();
         ImovelCreateDTO imovelCreateDTO = getImovelCreateDTO(clienteEntity, endereco);
         ImovelEntity imovelEntity = getImovelEntity(clienteEntity, endereco);
->>>>>>> 4d9f5d7990febd673a6f082c8dbe67936db9b137
 
         when(imovelRepository.save(any())).thenReturn(imovelEntity);
 
@@ -276,9 +273,7 @@ public class ImovelServiceTest {
         return imovelEntity;
     }
 
-<<<<<<< HEAD
-    private ImovelDTO getImovelDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity) {
-=======
+
     private ImovelCreateDTO getImovelCreateDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity) {
         ImovelCreateDTO imovel = new ImovelCreateDTO();
         imovel.setAlugado(Tipo.N);
@@ -289,7 +284,7 @@ public class ImovelServiceTest {
     }
 
     private ImovelDTO getImovelDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity){
->>>>>>> 4d9f5d7990febd673a6f082c8dbe67936db9b137
+
         ImovelDTO imovelDTO = new ImovelDTO();
         imovelDTO.setAlugado(Tipo.N);
         imovelDTO.setIdImovel(1);
@@ -298,14 +293,6 @@ public class ImovelServiceTest {
         imovelDTO.setDono(objectMapper.convertValue(clienteEntity, ClienteDTO.class));
         return imovelDTO;
     }
-
-<<<<<<< HEAD
-    private ImovelCreateDTO getImovelCreateDTO() {
-
-    }
-=======
->>>>>>> 4d9f5d7990febd673a6f082c8dbe67936db9b137
-
 
 
     private EnderecoEntity getEnderecoEntity() {
