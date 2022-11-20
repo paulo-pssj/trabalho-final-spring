@@ -75,7 +75,7 @@ public class ImovelServiceTest {
     }
 
     @Test
-    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException{
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
         //setup
         Integer idImovel = 1;
         ClienteEntity clienteLocador = getClienteLocador();
@@ -91,7 +91,7 @@ public class ImovelServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarFindByIdComException() throws RegraDeNegocioException{
+    public void deveTestarFindByIdComException() throws RegraDeNegocioException {
         Integer idImovel = 10;
 
         when(imovelRepository.findById(anyInt())).thenReturn(Optional.empty());
@@ -100,7 +100,7 @@ public class ImovelServiceTest {
     }
 
     @Test
-    public void deveTestarCreateComSucesso() throws RegraDeNegocioException{
+    public void deveTestarCreateComSucesso() throws RegraDeNegocioException {
 
     }
 
@@ -118,7 +118,7 @@ public class ImovelServiceTest {
         return imovelEntity;
     }
 
-    private ImovelDTO getImovelDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity){
+    private ImovelDTO getImovelDTO(ClienteEntity clienteEntity, EnderecoEntity enderecoEntity) {
         ImovelDTO imovelDTO = new ImovelDTO();
         imovelDTO.setAlugado(Tipo.N);
         imovelDTO.setIdImovel(1);
@@ -128,9 +128,11 @@ public class ImovelServiceTest {
         return imovelDTO;
     }
 
-    private ImovelCreateDTO getImovelCreateDTO(){
-        
+    private ImovelCreateDTO getImovelCreateDTO() {
+
     }
+
+
 
     private EnderecoEntity getEnderecoEntity() {
         EnderecoEntity enderecoEntity = new EnderecoEntity();

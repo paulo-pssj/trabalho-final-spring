@@ -94,7 +94,7 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
 
     }
 
-    public List<ClienteDTO> listByLocadorLocataio(TipoCliente tipo) throws RegraDeNegocioException {
+    public List<ClienteDTO> listByLocadorLocatario(TipoCliente tipo) throws RegraDeNegocioException {
 
         List<ClienteEntity> listar = clienteRepository.findByTipoClienteAndAtivo(tipo, Tipo.S);
         return listar.stream()

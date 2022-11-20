@@ -4,6 +4,7 @@ import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.enums.Tipo;
+import br.com.shinigami.entity.enums.TipoCliente;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ClienteRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
@@ -20,10 +21,11 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import javax.validation.constraints.NotNull;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
@@ -42,7 +44,6 @@ public class ClienteServiceTest {
     @Mock
     private ClienteRepository clienteRepository;
 
-//    @Mock
     private ObjectMapper objectMapper = new ObjectMapper();
 
     @Before
@@ -96,8 +97,100 @@ public class ClienteServiceTest {
 
     }
 
-    
+    @Test
+    public void deveTestarUpdateComSucesso() throws RegraDeNegocioException {
+        // SETUP
+        Integer id= 5;
+        ClienteCreateDTO clienteCreateDTO = getClienteCreateDTO();
 
+        // findById(id);
+        ClienteEntity clienteEntity1 = getClienteEntity();
+        clienteEntity1.setNome("Pablo Horácio Guiñazu");
+        clienteEntity1.setIdCliente(5);
+        clienteEntity1.setAtivo(Tipo.S);
+        when(clienteRepository.findByIdClienteAndAtivo(anyInt(),any(Tipo.class))).thenReturn((clienteEntity1));
+        when(clienteRepository.save(any())).thenReturn(clienteEntity1);
+
+        // pessoaRepository.save(pessoaEntityRecuperada);
+        ClienteEntity clienteEntity = getClienteEntity();
+        when(clienteRepository.save(any())).thenReturn(clienteEntity);
+
+        // ACT
+        ClienteDTO clienteDTO = clienteService.update(id, clienteCreateDTO);
+
+        // ASSERT
+        assertNotNull(clienteDTO);
+        assertNotNull(clienteEntity);
+        assertNotEquals("Pablo Horácio Guiñazu", clienteDTO.getNome());
+    }
+
+    @Test
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
+        // Criar variaveis (SETUP)
+        Integer busca = 5;
+
+        //pessoaRepository.findById(id)
+        ClienteEntity clienteEntity1 = getClienteEntity();
+        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(clienteEntity1));
+
+        // Ação (ACT)
+        ClienteEntity clienteEntity = clienteService.findById(busca);
+
+        // Verificação (ASSERT)
+        assertNotNull(clienteEntity);
+
+    }
+
+    @Test
+    public void deveTestarListComSucesso() throws RegraDeNegocioException {
+        // Criar variaveis (SETUP)
+        List<ClienteEntity> lista = new ArrayList<>();
+        lista.add(getClienteEntity());
+        when(clienteRepository.findAllByAtivo(any())).thenReturn(lista);
+
+        // Ação (ACT)
+        List<ClienteDTO> list = clienteService.list();
+
+        // Verificação (ASSERT)
+        assertNotNull(list);
+        assertTrue(list.size() > 0);
+        assertEquals(1, lista.size());
+    }
+
+//    @Test
+//    public void deveTestarListByLocadorLocatarioComSucesso() throws RegraDeNegocioException {
+//        // Criar variaveis (SETUP)
+//        List<ClienteEntity> listar = new ArrayList<>();
+//        listar.add(getClienteEntity());
+//        when(clienteRepository.findByTipoClienteAndAtivo(any(TipoCliente.class),eq(Tipo.S))).thenReturn(listar);
+//
+//
+//        // Ação (ACT)
+//        List<ClienteDTO> lista = clienteService.listByLocadorLocatario(any(TipoCliente.class));
+//
+//        // Verificação (ASSERT)
+//        assertNotNull(lista);
+//        assertTrue(lista.size() > 0);
+//        assertEquals(1, lista.size());
+//    }
+
+    @Test
+    public void deveTestarFindById() throws RegraDeNegocioException{
+        Integer idCliente = 5;
+
+        when(clienteRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        clienteService.findById(idCliente);
+    }
+
+    @Test
+    public void deveTestarFindByIdClienteDto(){
+        Integer idCliente = 5;
+
+        when(clienteRepository.findById(anyInt())).thenReturn(Optional.empty());
+
+        clienteService.findByIdClienteDto(idCliente);
+    }
 
     private static ClienteDTO getClienteDTO() {
         ClienteDTO clienteDTO = new ClienteDTO();
@@ -114,6 +207,7 @@ public class ClienteServiceTest {
         clienteEntity.setCpf("12345678910");
         clienteEntity.setEmail("maicon@hotmail.com");
         clienteEntity.setTelefone("4891654568");
+        clienteEntity.setTipoCliente(TipoCliente.LOCADOR);
         return clienteEntity;
     }
 
@@ -126,4 +220,5 @@ public class ClienteServiceTest {
         clienteCreateDTO.setTelefone("4891654568");
         return clienteCreateDTO;
     }
+
 }
