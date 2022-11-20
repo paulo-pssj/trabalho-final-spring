@@ -4,8 +4,6 @@ import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
-import br.com.shinigami.dto.endereco.EnderecoDTO;
-import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
@@ -14,7 +12,6 @@ import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.entity.enums.TipoImovel;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
-import br.com.shinigami.repository.ClienteRepository;
 import br.com.shinigami.repository.ContratoRepository;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,13 +28,12 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
