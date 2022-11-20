@@ -19,8 +19,6 @@ import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.test.util.ReflectionTestUtils;
 
-import javax.validation.constraints.NotNull;
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -85,7 +83,7 @@ public class ClienteServiceTest {
         ClienteEntity clienteEntity1 = getClienteEntity();
         clienteEntity1.setIdCliente(5);
         clienteEntity1.setAtivo(Tipo.S);
-        when(clienteRepository.findByIdClienteAndAtivo(anyInt(),any(Tipo.class))).thenReturn((clienteEntity1));
+        when(clienteRepository.findByIdClienteAndAtivo(anyInt(), any(Tipo.class))).thenReturn((clienteEntity1));
         when(clienteRepository.save(any())).thenReturn(clienteEntity1);
 
 
@@ -100,7 +98,7 @@ public class ClienteServiceTest {
     @Test
     public void deveTestarUpdateComSucesso() throws RegraDeNegocioException {
         // SETUP
-        Integer id= 5;
+        Integer id = 5;
         ClienteCreateDTO clienteCreateDTO = getClienteCreateDTO();
 
         // findById(id);
@@ -108,7 +106,7 @@ public class ClienteServiceTest {
         clienteEntity1.setNome("Pablo Horácio Guiñazu");
         clienteEntity1.setIdCliente(5);
         clienteEntity1.setAtivo(Tipo.S);
-        when(clienteRepository.findByIdClienteAndAtivo(anyInt(),any(Tipo.class))).thenReturn((clienteEntity1));
+        when(clienteRepository.findByIdClienteAndAtivo(anyInt(), any(Tipo.class))).thenReturn((clienteEntity1));
         when(clienteRepository.save(any())).thenReturn(clienteEntity1);
 
         // pessoaRepository.save(pessoaEntityRecuperada);
@@ -157,40 +155,65 @@ public class ClienteServiceTest {
         assertEquals(1, lista.size());
     }
 
-//    @Test
-//    public void deveTestarListByLocadorLocatarioComSucesso() throws RegraDeNegocioException {
-//        // Criar variaveis (SETUP)
-//        List<ClienteEntity> listar = new ArrayList<>();
-//        listar.add(getClienteEntity());
-//        when(clienteRepository.findByTipoClienteAndAtivo(any(TipoCliente.class),eq(Tipo.S))).thenReturn(listar);
-//
-//
-//        // Ação (ACT)
-//        List<ClienteDTO> lista = clienteService.listByLocadorLocatario(any(TipoCliente.class));
-//
-//        // Verificação (ASSERT)
-//        assertNotNull(lista);
-//        assertTrue(lista.size() > 0);
-//        assertEquals(1, lista.size());
-//    }
+    @Test
+    public void deveTestarListByLocadorLocatarioComSucesso() throws RegraDeNegocioException {
+        // Criar variaveis (SETUP)
+        List<ClienteEntity> listar = new ArrayList<>();
+        listar.add(getClienteEntity());
+        when(clienteRepository.findByTipoClienteAndAtivo(any(TipoCliente.class), any(Tipo.class))).thenReturn(listar);
+
+
+        // Ação (ACT)
+        List<ClienteDTO> lista = clienteService.listByLocadorLocatario(TipoCliente.LOCADOR);
+
+
+        // Verificação (ASSERT)
+        assertNotNull(lista);
+        assertTrue(lista.size() > 0);
+        assertEquals(1, lista.size());
+    }
 
     @Test
-    public void deveTestarFindById() throws RegraDeNegocioException{
+    public void deveTestarFindById() throws RegraDeNegocioException {
         Integer idCliente = 5;
 
         when(clienteRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         clienteService.findById(idCliente);
+
+        verify(clienteRepository, times(1)).findById(any());
     }
 
     @Test
-    public void deveTestarFindByIdClienteDto(){
+    public void deveTestarFindByIdClienteDto() {
         Integer idCliente = 5;
 
         when(clienteRepository.findById(anyInt())).thenReturn(Optional.empty());
 
         clienteService.findByIdClienteDto(idCliente);
+        verify(clienteRepository, times(1)).findById(any());
     }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarUpdateComException() throws RegraDeNegocioException {
+
+        ClienteCreateDTO clienteCreateDTO = getClienteCreateDTO();
+
+        when(clienteRepository.findByIdClienteAndAtivo(any(), any())).thenReturn(null);
+
+        clienteService.update(1, clienteCreateDTO);
+
+    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarDeleteComException() throws RegraDeNegocioException {
+
+        when(clienteRepository.findByIdClienteAndAtivo(any(), any())).thenReturn(null);
+
+        clienteService.delete(1);
+
+    }
+
 
     private static ClienteDTO getClienteDTO() {
         ClienteDTO clienteDTO = new ClienteDTO();

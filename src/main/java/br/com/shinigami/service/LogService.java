@@ -20,9 +20,11 @@ public class LogService {
     private final ObjectMapper objectMapper;
 
 
-    public void create(LogCreateDTO logCreateDTO){
+    public void create(LogCreateDTO logCreateDTO) {
         logRepository.save(objectMapper.convertValue(logCreateDTO, LogEntity.class));
     }
+
+
 
     private List<LogDTO> list(){
         return logRepository.findAll()
@@ -32,9 +34,6 @@ public class LogService {
     }
 
     private List<LogDTO> listByTipoLog(TipoLog tipoLog){
-        if (tipoLog == null){
-            return list();
-        }
         return logRepository.findAllByTipoLog(tipoLog)
                 .stream()
                 .map(log-> objectMapper.convertValue(log, LogDTO.class))
