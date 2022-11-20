@@ -57,17 +57,17 @@ public class EnderecoServiceTest {
 
 
     @Test
-    public void deveTestarCreateComSucesso() {
+    public void deveTestarCreateComSucesso() throws RegraDeNegocioException, IOException, InterruptedException, ApiException {
 
         EnderecoEntity enderecoEntity = getEnderecoEntity();
+        EnderecoCreateDTO enderecoCreateDTO =objectMapper.convertValue(enderecoEntity,EnderecoCreateDTO.class);
 
         when(enderecoRepository.save(any())).thenReturn(enderecoEntity);
 
-        EnderecoEntity enderecoRetorno = enderecoRepository.save(enderecoEntity);
+        EnderecoDTO enderecoRetorno = enderecoService.create(enderecoCreateDTO);
 
 
         assertNotNull(enderecoRetorno);
-        assertEquals(enderecoEntity, enderecoRetorno);
         assertNotEquals(" ", enderecoRetorno.getRua());
 
     }
@@ -143,18 +143,16 @@ public class EnderecoServiceTest {
         assertEquals(1, lista.size());
     }
 
-//    @Test
-//    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
-//        Integer id = 1;
-//        EnderecoEntity enderecoEntity = getEnderecoEntity();
-//
-//        when(enderecoRepository.findById(anyInt())).thenReturn(Optional.of(enderecoEntity));
-//
-//        EnderecoEntity enderecoRetorno = enderecoService.findById(id);
-//
-//        assertEquals(1, enderecoRetorno.getIdEndereco());
-//        assertEquals("Cristiano Fischer", enderecoRetorno.getRua());
-//    }
+    @Test
+    public void deveTestarFindByIdComSucesso() throws RegraDeNegocioException {
+        Integer id = 1;
+        EnderecoEntity enderecoEntity = getEnderecoEntity();
+
+        when(enderecoRepository.findById(anyInt())).thenReturn(Optional.of(enderecoEntity));
+
+        EnderecoEntity enderecoRetorno = enderecoService.findById(id);
+        assertNotNull(enderecoRetorno);
+    }
 
 
     private EnderecoEntity getEnderecoEntity() {
