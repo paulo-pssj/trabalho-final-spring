@@ -85,7 +85,7 @@ public class FuncionarioServiceTest {
 //        when(tokenService.getToken(any())).thenReturn(token);
 //        when(authenticationManager.authenticate(any())).thenReturn(authenticate);
 //
-//        String tokenRetorno = funcionarioService.retornaTokenFuncionario(loginDTO);
+//        String tokenRetorno = funcionarioService.retornarTokenFuncionario(loginDTO);
 //
 //        assertEquals(token, tokenRetorno);
 //    }

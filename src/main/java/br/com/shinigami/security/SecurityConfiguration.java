@@ -34,6 +34,7 @@ public class SecurityConfiguration {
                                 .antMatchers(HttpMethod.GET, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("ANALISTA", "CORRETOR", "ADMIN")
                                 .antMatchers(HttpMethod.POST, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("CORRETOR", "ADMIN")
                                 .antMatchers(HttpMethod.PUT, "/contrato/**", "/endereco/**", "/imovel/**", "/cliente/**").hasAnyRole("CORRETOR", "ADMIN")
+                                .antMatchers("/mapa").hasAnyRole("ANALISTA", "ADMIN")
                                 .antMatchers("/**").hasRole("ADMIN")
                                 .anyRequest().authenticated()
                 );
