@@ -4,6 +4,7 @@ import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
@@ -112,7 +113,6 @@ public class ContratoServiceTest {
         //SETUP
 
 
-
         ClienteDTO clientoDTO = objectMapper.convertValue(getClienteLocador(), ClienteDTO.class);
 
 
@@ -138,7 +138,7 @@ public class ContratoServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarUpdateComException() throws RegraDeNegocioException{
+    public void deveTestarUpdateComException() throws RegraDeNegocioException {
 
         Integer id = 7;
         ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
@@ -146,7 +146,7 @@ public class ContratoServiceTest {
         when(contratoRepository.findById(anyInt())).thenReturn(null);
 
 
-        contratoService.update(id,contratoCreateDTO);
+        contratoService.update(id, contratoCreateDTO);
     }
 
     @Test
@@ -171,7 +171,7 @@ public class ContratoServiceTest {
     }
 
     @Test(expected = RegraDeNegocioException.class)
-    public void deveTestarDeleteComException() throws RegraDeNegocioException{
+    public void deveTestarDeleteComException() throws RegraDeNegocioException {
 
         Integer id = 7;
         ContratoCreateDTO contratoCreateDTO = getContratoCreateDTO();
@@ -206,16 +206,16 @@ public class ContratoServiceTest {
     }
 
     @Test
-    public void deveTestarRelatorioContratoClienteComSucesso(){
+    public void deveTestarRelatorioContratoClienteComSucesso() {
 
         ContratoEntity contratoEntity = getContratoEntityPronto();
 
         List<RelatorioContratoClienteDTO> relatorioDTO = new ArrayList<>();
 
-        RelatorioContratoClienteDTO relatorioContratoClienteDTO = new RelatorioContratoClienteDTO(contratoEntity.getIdContrato(),contratoEntity.getDataEntrada(),contratoEntity.getDataVencimento()
-                ,contratoEntity.getValorAluguel(),contratoEntity.getLocador().getNome(),contratoEntity.getLocador().getCpf(),
-                contratoEntity.getLocador().getEmail(),contratoEntity.getLocador().getTipoCliente(),
-                contratoEntity.getLocatario().getNome(),contratoEntity.getLocatario().getCpf(),contratoEntity.getLocatario().getEmail(),
+        RelatorioContratoClienteDTO relatorioContratoClienteDTO = new RelatorioContratoClienteDTO(contratoEntity.getIdContrato(), contratoEntity.getDataEntrada(), contratoEntity.getDataVencimento()
+                , contratoEntity.getValorAluguel(), contratoEntity.getLocador().getNome(), contratoEntity.getLocador().getCpf(),
+                contratoEntity.getLocador().getEmail(), contratoEntity.getLocador().getTipoCliente(),
+                contratoEntity.getLocatario().getNome(), contratoEntity.getLocatario().getCpf(), contratoEntity.getLocatario().getEmail(),
                 contratoEntity.getLocatario().getTipoCliente());
         relatorioDTO.add(relatorioContratoClienteDTO);
 
@@ -224,7 +224,7 @@ public class ContratoServiceTest {
         List<RelatorioContratoClienteDTO> relatorio = contratoService.relatorioContratoCliente(contratoEntity.getIdContrato());
 
         assertNotNull(relatorio);
-        assertEquals(relatorioDTO,relatorio);
+        assertEquals(relatorioDTO, relatorio);
 
     }
 
@@ -233,18 +233,33 @@ public class ContratoServiceTest {
 //        Integer id = 1;
 //
 //        ContratoEntity contratoEntity = getContratoEntityPronto();
+//        contratoEntity.getImovel().setIdDono(1);
+//
+//        ImovelEntity imovelEntity = contratoEntity.getImovel();
+//        imovelEntity.setIdDono(1);
+//        contratoEntity.setImovel(imovelEntity);
 //
 //        ClienteDTO clienteDTO = getClienteDTO();
-//        clienteDTO.setIdCliente(1);
+//        clienteDTO.setIdCliente(2);
+//        imovelEntity.setCliente(contratoEntity.getLocador());
 //
 //        when(contratoRepository.findById(anyInt())).thenReturn(Optional.of(contratoEntity));
 //        when(clienteService.findByIdClienteDto(anyInt())).thenReturn(clienteDTO);
-//        when(imovelService.findById(anyInt())).thenReturn(contratoEntity.getImovel());
 //
-//       ContratoDTO contratoRetorno =  contratoService.findByIdContrato(id);
-//       contratoRetorno.getImovel().getDono().setIdCliente(1);
-//       assertNotNull(contratoRetorno);
+//        ContratoDTO contratoRetorno = contratoService.findByIdContrato(id);
+//
+//        contratoRetorno.getImovel().getDono().setIdCliente(1);
+//        assertNotNull(contratoRetorno);
 //    }
+
+    @Test(expected = RegraDeNegocioException.class)
+    public void deveTestarFindByIdContratoComException() throws RegraDeNegocioException {
+        Integer id = 1;
+        when(contratoRepository.findById(anyInt())).thenReturn(null);
+
+        contratoService.findByIdContrato(id);
+
+    }
 
     private ContratoCreateDTO getContratoCreateDTO() {
         ContratoCreateDTO contratoCreateDTO = new ContratoCreateDTO();
@@ -275,6 +290,10 @@ public class ContratoServiceTest {
         contratoEntity.setValorAluguel(1200);
         contratoEntity.setLocador(locador);
         contratoEntity.setLocatario(locatario);
+        contratoEntity.setIdLocador(1);
+        contratoEntity.setIdLocatario(2);
+        contratoEntity.getImovel().setIdImovel(1);
+        contratoEntity.getImovel().setIdDono(1);
         return contratoEntity;
     }
 
@@ -332,6 +351,7 @@ public class ContratoServiceTest {
         clienteEntity.setNome("Locatario");
         return clienteEntity;
     }
+
     private ContratoEntity getContratoEntityPronto() {
 
         EnderecoEntity enderecoEntity = getEnderecoEntity();
@@ -343,7 +363,7 @@ public class ContratoServiceTest {
         clienteEntity.setIdCliente(3);
         clienteEntity.setNome("Locatario");
 
-        ImovelEntity imovelEntity = getImovelEntity(clienteEntity,enderecoEntity);
+        ImovelEntity imovelEntity = getImovelEntity(clienteEntity, enderecoEntity);
 
         ContratoEntity contratoEntity = new ContratoEntity();
         contratoEntity.setAtivo(Tipo.S);
