@@ -1,7 +1,7 @@
 package br.com.shinigami.controller;
 
 
-import br.com.shinigami.controller.controllerInterface.EnderecoControllerInterface;
+import br.com.shinigami.controller.documentinterface.EnderecoControllerInterface;
 import br.com.shinigami.dto.endereco.EnderecoCreateDTO;
 import br.com.shinigami.dto.endereco.EnderecoDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;

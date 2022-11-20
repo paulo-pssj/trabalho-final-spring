@@ -36,7 +36,7 @@ public class FuncionarioService {
 
 
 
-    public String retornaTokenFuncionario(LoginDTO loginDTO) {
+    public String retornarTokenFuncionario(LoginDTO loginDTO) {
         UsernamePasswordAuthenticationToken userPassAuthToken = new UsernamePasswordAuthenticationToken(
                 loginDTO.getLogin(),
                 loginDTO.getSenha()
@@ -49,7 +49,7 @@ public class FuncionarioService {
         return tokenService.getToken(funcionario);
     }
 
-    public String tokenTrocaDeSenha(String email) throws RegraDeNegocioException {
+    public String retornarTokenTrocaDeSenha(String email) throws RegraDeNegocioException {
         FuncionarioEntity funcionario = findByEmail(email);
         FuncionarioDTO funcionarioDTO = objectMapper.convertValue(funcionario, FuncionarioDTO.class);
         String token = tokenService.getTokenTrocaDeSenha(funcionario);
@@ -119,7 +119,7 @@ public class FuncionarioService {
         return funcionario;
     }
 
-    public FuncionarioDTO funcionarioAtualizar(FuncionarioAtualizarDTO funcionarioDTO) throws RegraDeNegocioException {
+    public FuncionarioDTO atualizarFuncionario(FuncionarioAtualizarDTO funcionarioDTO) throws RegraDeNegocioException {
         FuncionarioDTO funcionario = getLoggedUser();
         FuncionarioEntity funcionarioAtualizar = funcionarioRepository.findByEmail(funcionario.getEmail());
         funcionarioAtualizar.setEmail(funcionarioDTO.getEmail());

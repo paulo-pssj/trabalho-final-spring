@@ -1,7 +1,7 @@
 package br.com.shinigami.controller;
 
 
-import br.com.shinigami.controller.controllerInterface.ContratoControllerInterface;
+import br.com.shinigami.controller.documentinterface.ContratoControllerInterface;
 import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;

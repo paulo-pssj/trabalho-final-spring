@@ -1,7 +1,7 @@
 package br.com.shinigami.controller;
 
 
-import br.com.shinigami.controller.controllerInterface.ImovelControllerInterface;
+import br.com.shinigami.controller.documentinterface.ImovelControllerInterface;
 import br.com.shinigami.dto.RelatorioImovelEnderecoDTO;
 import br.com.shinigami.dto.imovel.ImovelCreateDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;

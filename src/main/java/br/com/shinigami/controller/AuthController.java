@@ -34,7 +34,7 @@ public class AuthController {
     public ResponseEntity<String> autenticar(@RequestBody @Valid LoginDTO loginDTO) {
         log.info("Logando funcionario....");
 
-        String token = funcionarioService.retornaTokenFuncionario(loginDTO);
+        String token = funcionarioService.retornarTokenFuncionario(loginDTO);
 
         log.info("Token Gerado com sucesso.");
 
@@ -51,7 +51,7 @@ public class AuthController {
 
     @PostMapping("/recuperar-senha")
     public ResponseEntity<String> recuperarSenha(String email) throws RegraDeNegocioException {
-        return new ResponseEntity<>(funcionarioService.tokenTrocaDeSenha(email), HttpStatus.OK);
+        return new ResponseEntity<>(funcionarioService.retornarTokenTrocaDeSenha(email), HttpStatus.OK);
     }
 
     @PutMapping("/desativar-funcionario")
@@ -73,7 +73,7 @@ public class AuthController {
     @PutMapping("/alterar-funcionario")
     public ResponseEntity<FuncionarioDTO> funcionarioAtualizar(FuncionarioAtualizarDTO funcionarioAtualizarDTO) throws RegraDeNegocioException {
         log.info("Alterando o funcionario(a)...");
-        FuncionarioDTO funcionarioDTO = funcionarioService.funcionarioAtualizar(funcionarioAtualizarDTO);
+        FuncionarioDTO funcionarioDTO = funcionarioService.atualizarFuncionario(funcionarioAtualizarDTO);
         log.info("Funcionario(a) alterado(a) com sucesso.");
         return new ResponseEntity<>(funcionarioDTO, HttpStatus.OK);
 

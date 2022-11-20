@@ -99,7 +99,7 @@ public class FuncionarioServiceTest {
 
         when(funcionarioRepository.findByEmail(any())).thenReturn(funcionario);
         when(tokenService.getTokenTrocaDeSenha(any())).thenReturn(token);
-        String msgRetorno = funcionarioService.tokenTrocaDeSenha(funcionario.getEmail());
+        String msgRetorno = funcionarioService.retornarTokenTrocaDeSenha(funcionario.getEmail());
 
         assertEquals(msg, msgRetorno);
     }
@@ -129,7 +129,7 @@ public class FuncionarioServiceTest {
         when(funcionarioRepository.save(any())).thenReturn(getFuncionarioAtualizado());
 
 
-        FuncionarioDTO funcionarioDTO = funcionarioService.funcionarioAtualizar(getFuncionarioAtualizarDTO());
+        FuncionarioDTO funcionarioDTO = funcionarioService.atualizarFuncionario(getFuncionarioAtualizarDTO());
 
         assertEquals("teste", funcionarioDTO.getLogin());
     }
@@ -145,7 +145,7 @@ public class FuncionarioServiceTest {
         when(funcionarioRepository.save(any())).thenReturn(null);
 
 
-        funcionarioService.funcionarioAtualizar(getFuncionarioAtualizarDTO());
+        funcionarioService.atualizarFuncionario(getFuncionarioAtualizarDTO());
 
     }
 

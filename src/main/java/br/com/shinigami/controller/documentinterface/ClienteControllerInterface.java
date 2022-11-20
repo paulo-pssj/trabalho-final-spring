@@ -1,4 +1,4 @@
-package br.com.shinigami.controller.controllerInterface;
+package br.com.shinigami.controller.documentinterface;
 
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
