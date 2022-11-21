@@ -1,5 +1,6 @@
 package br.com.shinigami.controller;
 
+import br.com.shinigami.controller.documentinterface.LogControllerInterface;
 import br.com.shinigami.dto.log.LogDTO;
 import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
@@ -18,7 +19,7 @@ import java.util.List;
 @Log4j2
 @RequiredArgsConstructor
 @RequestMapping("/log")
-public class LogController {
+public class LogController implements LogControllerInterface {
 
     private final LogService logService;
 

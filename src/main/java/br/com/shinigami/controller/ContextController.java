@@ -1,5 +1,6 @@
 package br.com.shinigami.controller;
 
+import br.com.shinigami.controller.documentinterface.ContextControllerInterface;
 import br.com.shinigami.dto.context.ContextDTO;
 import br.com.shinigami.service.ContextService;
 import lombok.RequiredArgsConstructor;
@@ -15,7 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/mapa")
-public class ContextController {
+public class ContextController implements ContextControllerInterface  {
 
     private final ContextService contextService;
 
