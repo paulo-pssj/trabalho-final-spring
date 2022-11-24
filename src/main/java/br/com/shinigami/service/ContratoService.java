@@ -52,12 +52,13 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         ContratoEntity contratoEntityNovo = objectMapper.convertValue(contrato, ContratoEntity.class);
         ImovelEntity imovelEntity = imovelService.findById(contrato.getIdImovel());
         ClienteEntity clienteLocatario = clienteService.findById(contrato.getIdLocatario());
-        CupomDTO cupomDTO= cupomApiClient.findByEmail(clienteLocatario.getEmail());
+
 
         double valorAluguel = imovelEntity.getValorMensal() + imovelEntity.getCondominio();
-        double desconto = 0.10;
-        if(cupomDTO!=null && cupomDTO.isAtivo()){
-            contratoEntityNovo.setValorAluguel(valorAluguel-(valorAluguel*desconto));
+
+        CupomDTO cupomDTO = cupomApiClient.findByEmail(clienteLocatario.getEmail());
+        if (cupomDTO.isAtivo()) {
+            contratoEntityNovo.setValorAluguel(valorAluguel - (valorAluguel * cupomDTO.getDesconto()));
             cupomApiClient.desativarCupom(clienteLocatario.getEmail());
         } else {
             contratoEntityNovo.setValorAluguel(valorAluguel);
@@ -83,16 +84,16 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         String emailCupom = "Contrato criado com sucesso! <br> Contrato entre: " +
                 "<br> locador: " + contratoDTO.getLocador().getNome() +
                 "<br> locatario: " + contratoDTO.getLocatario().getNome() +
-                "<br>" + "Valor Mensal: R$" + contratoDTO.getImovel().getValorMensal()+
-                "<br>" + "Você ganhou um cupom para ser usado no Aluguel de Veículos"+
-                "<br>" + "Para usar seu cupom, forneça seu email na hora de alugar seu veículo!"+
+                "<br>" + "Valor Mensal: R$" + contratoDTO.getImovel().getValorMensal() +
+                "<br>" + "Você ganhou um cupom para ser usado no Aluguel de Veículos" +
+                "<br>" + "Para usar seu cupom, forneça seu email na hora de alugar seu veículo!" +
                 "<br>" + "O cupom tem uma validade de 5 dias a partir de hoje " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
         produtorService.enviarCupom(contratoDTO.getLocatario().getEmail());
         emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
         emailService.sendEmail(contratoDTO.getLocatario(), emailCupom, assunto);
 
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
 
         return contratoDTO;
@@ -108,7 +109,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setAtivo(Tipo.N);
         imovelService.alugarImovel(imovelService.findById(contratoEntity.getIdImovel()));
         contratoRepository.save(contratoEntity);
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO DELETADO", LocalDate.now());
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO DELETADO", LocalDate.now());
         logService.create(logCreateDTO);
     }
 
@@ -130,7 +131,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setDataEntrada(contratoEntity.getDataEntrada());
         contratoEntity.setDataVencimento(contratoAtualizar.getDataVencimento());
         contratoRepository.save(contratoEntity);
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO ATUALIZADO", LocalDate.now());
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO ATUALIZADO", LocalDate.now());
         logService.create(logCreateDTO);
         return converteParaContratoDTO(contratoEntity);
     }
