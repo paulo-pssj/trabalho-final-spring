@@ -22,6 +22,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -60,11 +61,20 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
         String assunto = "Seu contrato foi gerado com sucesso!!";
 
+        String emailCupom = "Contrato criado com sucesso! <br> Contrato entre: " +
+                "<br> locador: " + contratoDTO.getLocador().getNome() +
+                "<br> locatario: " + contratoDTO.getLocatario().getNome() +
+                "<br>" + "Valor Mensal: R$" + contratoDTO.getImovel().getValorMensal()+
+                "<br>" + "Você ganhou um cupom para ser usado no Aluguel de Veículos"+
+                "<br>" + "Para usar seu cupom, forneça seu email na hora de alugar seu veículo!"+
+                "<br>" + "O cupom tem uma validade de 5 dias a partir de hoje " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+
         emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
-        emailService.sendEmail(contratoDTO.getLocatario(), emailBase, assunto);
+        emailService.sendEmail(contratoDTO.getLocatario(), emailCupom, assunto);
 
         LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
+
         return contratoDTO;
     }
 
