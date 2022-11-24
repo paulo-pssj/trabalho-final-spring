@@ -58,6 +58,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         double desconto = 0.10;
         if(cupomDTO!=null && cupomDTO.isAtivo()){
             contratoEntityNovo.setValorAluguel(valorAluguel-(valorAluguel*desconto));
+            cupomApiClient.desativarCupom(clienteLocatario.getEmail());
         } else {
             contratoEntityNovo.setValorAluguel(valorAluguel);
         }
