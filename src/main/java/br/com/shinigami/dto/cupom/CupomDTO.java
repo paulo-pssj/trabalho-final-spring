@@ -9,6 +9,10 @@ public class CupomDTO {
 
     private String email;
 
+    private String idMongo;
+
+    private boolean ativo;
+
     private Double desconto;
 
     private LocalDate dataCriacao;

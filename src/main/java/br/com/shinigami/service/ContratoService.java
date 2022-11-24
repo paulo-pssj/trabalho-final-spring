@@ -1,13 +1,16 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.client.CupomApiClient;
 import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.cupom.CupomDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.dto.page.PageDTO;
+import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
 import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
@@ -41,16 +44,28 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     private final LogService logService;
 
+    private final CupomApiClient cupomApiClient;
+
 
     @Override
     public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException, JsonProcessingException {
         ContratoEntity contratoEntityNovo = objectMapper.convertValue(contrato, ContratoEntity.class);
         ImovelEntity imovelEntity = imovelService.findById(contrato.getIdImovel());
+        ClienteEntity clienteLocatario = clienteService.findById(contrato.getIdLocatario());
+        CupomDTO cupomDTO= cupomApiClient.findByEmail(clienteLocatario.getEmail());
+
+        double valorAluguel = imovelEntity.getValorMensal() + imovelEntity.getCondominio();
+        double desconto = 0.10;
+        if(cupomDTO!=null && cupomDTO.isAtivo()){
+            contratoEntityNovo.setValorAluguel(valorAluguel-(valorAluguel*desconto));
+        } else {
+            contratoEntityNovo.setValorAluguel(valorAluguel);
+        }
         contratoEntityNovo.setAtivo(Tipo.S);
         contratoEntityNovo.setImovel(imovelEntity);
         contratoEntityNovo.setLocador(clienteService.findById(imovelEntity.getIdDono()));
-        contratoEntityNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
-        contratoEntityNovo.setValorAluguel(imovelEntity.getValorMensal() + imovelEntity.getCondominio());
+        contratoEntityNovo.setLocatario(clienteLocatario);
+
 
         imovelService.alugarImovel(imovelEntity);
         ContratoEntity contratoEntityAdicionado = contratoRepository.save(contratoEntityNovo);
@@ -76,12 +91,12 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
         emailService.sendEmail(contratoDTO.getLocatario(), emailCupom, assunto);
 
-
         LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
 
         return contratoDTO;
     }
+
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
