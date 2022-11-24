@@ -5,6 +5,7 @@ import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
 import br.com.shinigami.dto.page.PageDTO;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -46,7 +47,7 @@ public interface ContratoControllerInterface {
                     @ApiResponse(responseCode = "500", description = "Foi gerada uma exceção")
             }
     )
-    ResponseEntity<ContratoDTO> create(@RequestBody @Valid ContratoCreateDTO contrato) throws RegraDeNegocioException;
+    ResponseEntity<ContratoDTO> create(@RequestBody @Valid ContratoCreateDTO contrato) throws RegraDeNegocioException, JsonProcessingException;
 
     @Operation(summary = "Atualizar contrato", description = "Atualiza o contrato do banco de dados com base no id e o body informado")
     @ApiResponses(

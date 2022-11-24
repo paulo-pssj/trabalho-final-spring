@@ -28,9 +28,9 @@ public class ProdutorService {
     private final ObjectMapper objectMapper;
 
     @Value(value= "${kafka.topic}")
-    private final String topic;
-    private final double desconto = 5;
-    private final int expiracao=5;
+    private String topic;
+    private static double desconto = 5;
+    private static int expiracao=5;
 
     public void enviarCupom(String email) throws JsonProcessingException {
 
@@ -45,7 +45,7 @@ public class ProdutorService {
         MessageBuilder<String> stringMessageBuilder = MessageBuilder.withPayload(msg)
                 .setHeader(KafkaHeaders.TOPIC, topic)
                 .setHeader(KafkaHeaders.MESSAGE_KEY, UUID.randomUUID().toString())
-                .setHeader(KafkaHeaders.PARTITION_ID, "0");
+                .setHeader(KafkaHeaders.PARTITION_ID, 0);
 
         ListenableFuture<SendResult<String, String>> enviadoParaTopico = kafkaTemplate.send(stringMessageBuilder.build());
         enviadoParaTopico.addCallback(new ListenableFutureCallback<>() {

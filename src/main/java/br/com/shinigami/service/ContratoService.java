@@ -14,6 +14,7 @@ import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ContratoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,11 +37,13 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     private final EmailService emailService;
     private final ClienteService clienteService;
 
+    private final ProdutorService produtorService;
+
     private final LogService logService;
 
 
     @Override
-    public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
+    public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException, JsonProcessingException {
         ContratoEntity contratoEntityNovo = objectMapper.convertValue(contrato, ContratoEntity.class);
         ImovelEntity imovelEntity = imovelService.findById(contrato.getIdImovel());
         contratoEntityNovo.setAtivo(Tipo.S);
@@ -69,8 +72,10 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
                 "<br>" + "Para usar seu cupom, forneça seu email na hora de alugar seu veículo!"+
                 "<br>" + "O cupom tem uma validade de 5 dias a partir de hoje " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
+        produtorService.enviarCupom(contratoDTO.getLocatario().getEmail());
         emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
         emailService.sendEmail(contratoDTO.getLocatario(), emailCupom, assunto);
+
 
         LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
