@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Repository
@@ -37,6 +38,8 @@ public interface ContratoRepository extends JpaRepository<ContratoEntity, Intege
             "where(:idContrato is null or c.idContrato = :idContrato)"
     )
     List<RelatorioContratoClienteDTO> RelatorioContratoCliente(@Param("idContrato") Integer idContrato);
+
+    List<ContratoEntity> findAllByDataEntrada(LocalDate data);
 
 
 }

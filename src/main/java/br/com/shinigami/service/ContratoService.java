@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -155,6 +156,16 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
     public List<RelatorioContratoClienteDTO> relatorioContratoCliente(Integer idContrato) {
         return contratoRepository.RelatorioContratoCliente(idContrato);
+    }
+
+    @Scheduled(cron = "0 1 * * * *")
+    public void atualizarPrecoMensalDoContrato(){
+        List<ContratoEntity> contratos = contratoRepository.findAllByDataEntrada(LocalDate.now().minusMonths(1))
+                .stream()
+                .map(contrato -> {
+                    contrato.setValorAluguel(contrato.getImovel().getValorMensal() + contrato.getImovel().getCondominio());
+                    return contrato;
+                }).toList();
     }
 
     public ContratoDTO findByIdContrato(int id) throws RegraDeNegocioException {
