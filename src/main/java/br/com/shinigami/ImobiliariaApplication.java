@@ -8,11 +8,8 @@ import org.springframework.scheduling.annotation.EnableScheduling;
 
 @SpringBootApplication
 @EnableMongoRepositories
-<<<<<<< HEAD
 @EnableScheduling
-=======
 @EnableFeignClients
->>>>>>> bafb704c87ffd46acd8ee339355f3e9870749b61
 public class ImobiliariaApplication {
 
     public static void main(String[] args) {
