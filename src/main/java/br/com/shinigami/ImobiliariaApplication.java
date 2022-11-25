@@ -15,5 +15,4 @@ public class ImobiliariaApplication {
     public static void main(String[] args) {
         SpringApplication.run(ImobiliariaApplication.class, args);
     }
-
 }

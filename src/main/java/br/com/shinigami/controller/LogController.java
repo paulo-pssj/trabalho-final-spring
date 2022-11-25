@@ -39,7 +39,9 @@ public class LogController implements LogControllerInterface {
 
     @GetMapping("/quantidade-Log")
     public ResponseEntity<List<AggregateTipoLogDTO>> groupByLog() {
+        log.info("Listando Logs por quantidade");
         List<AggregateTipoLogDTO> aggregateTipoLogDTO = logService.groupByLog();
+        log.info("Logs listados com sucesso");
         return new ResponseEntity<>(aggregateTipoLogDTO, HttpStatus.OK);
     }
 }
