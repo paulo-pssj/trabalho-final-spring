@@ -29,6 +29,8 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import static java.lang.Math.abs;
+
 @RequiredArgsConstructor
 @Slf4j
 @Service
@@ -57,8 +59,8 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         double valorAluguel = imovelEntity.getValorMensal() + imovelEntity.getCondominio();
 
         CupomDTO cupomDTO = cupomApiClient.findByEmail(clienteLocatario.getEmail());
-        if (cupomDTO.isAtivo()) {
-            contratoEntityNovo.setValorAluguel(valorAluguel - (valorAluguel * cupomDTO.getDesconto()));
+        if (cupomDTO != null && cupomDTO.isAtivo()) {
+            contratoEntityNovo.setValorAluguel(valorAluguel - (valorAluguel * (cupomDTO.getDesconto() / 100)));
             cupomApiClient.desativarCupom(clienteLocatario.getEmail());
         } else {
             contratoEntityNovo.setValorAluguel(valorAluguel);

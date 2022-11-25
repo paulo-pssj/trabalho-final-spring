@@ -26,7 +26,7 @@ public class ProdutorService {
 
     @Value(value= "${kafka.topic}")
     private String topic;
-    private final double DESCONTO = 0.10;
+    private final double DESCONTO = 10;
     private final int EXPIRACAO =5;
     private final int TOPICO_PARTICAO_PRODUTOR_ALUGUEL_CARROS=0;
 
