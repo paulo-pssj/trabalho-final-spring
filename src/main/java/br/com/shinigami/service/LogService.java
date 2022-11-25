@@ -1,5 +1,6 @@
 package br.com.shinigami.service;
 
+import br.com.shinigami.dto.AggregateTipoLogDTO;
 import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.dto.log.LogDTO;
 import br.com.shinigami.entity.LogEntity;
@@ -25,36 +26,39 @@ public class LogService {
     }
 
 
-
-    private List<LogDTO> list(){
+    private List<LogDTO> list() {
         return logRepository.findAll()
                 .stream()
-                .map(log ->objectMapper.convertValue(log, LogDTO.class))
+                .map(log -> objectMapper.convertValue(log, LogDTO.class))
                 .toList();
     }
 
-    private List<LogDTO> listByTipoLog(TipoLog tipoLog){
+    private List<LogDTO> listByTipoLog(TipoLog tipoLog) {
         return logRepository.findAllByTipoLog(tipoLog)
                 .stream()
-                .map(log-> objectMapper.convertValue(log, LogDTO.class))
+                .map(log -> objectMapper.convertValue(log, LogDTO.class))
                 .toList();
     }
 
-    public List<LogDTO> listByDataETipo(TipoLog tipoLog, LocalDate data){
-        if (tipoLog == null && data != null){
+    public List<LogDTO> listByDataETipo(TipoLog tipoLog, LocalDate data) {
+        if (tipoLog == null && data != null) {
             return logRepository.findAllByData(data)
                     .stream()
-                    .map(logEntity -> objectMapper.convertValue(logEntity,LogDTO.class))
+                    .map(logEntity -> objectMapper.convertValue(logEntity, LogDTO.class))
                     .toList();
-        } else if (data == null && tipoLog != null){
+        } else if (data == null && tipoLog != null) {
             return listByTipoLog(tipoLog);
-        } else if (data == null && tipoLog == null){
+        } else if (data == null && tipoLog == null) {
             return list();
         } else {
-            return logRepository.findAllByTipoLogAndData(tipoLog,data)
+            return logRepository.findAllByTipoLogAndData(tipoLog, data)
                     .stream()
-                    .map(log-> objectMapper.convertValue(log, LogDTO.class))
+                    .map(log -> objectMapper.convertValue(log, LogDTO.class))
                     .toList();
         }
+    }
+
+    public List<AggregateTipoLogDTO> groupByLog() {
+        return logRepository.groupByTipo();
     }
 }

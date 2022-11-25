@@ -19,5 +19,4 @@ public interface ClienteRepository extends JpaRepository<ClienteEntity, Integer>
 
     ClienteEntity findByIdClienteAndAtivo(Integer idCliente, Tipo ativo);
 
-
 }

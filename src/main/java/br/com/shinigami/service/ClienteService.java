@@ -109,4 +109,5 @@ public class ClienteService implements ServiceInterface<ClienteDTO, ClienteCreat
     public ClienteEntity findById(Integer idCliente) throws RegraDeNegocioException {
         return objectMapper.convertValue(clienteRepository.findById(idCliente), ClienteEntity.class);
     }
+
 }

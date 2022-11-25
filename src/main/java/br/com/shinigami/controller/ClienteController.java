@@ -1,6 +1,7 @@
 package br.com.shinigami.controller;
 
 import br.com.shinigami.controller.documentinterface.ClienteControllerInterface;
+import br.com.shinigami.dto.AggregateTipoLogDTO;
 import br.com.shinigami.dto.cliente.ClienteCreateDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.entity.enums.TipoCliente;
