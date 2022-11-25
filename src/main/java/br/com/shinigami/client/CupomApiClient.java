@@ -7,7 +7,7 @@ import feign.RequestLine;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(value="cupom-api", url="localhost:8090/")
+@FeignClient(value="cupom-api", url="http://vemser-dbc.dbccompany.com.br:39000/rlangbecker/cupom-api")
 @Headers("Content-Type: application/json")
 public interface CupomApiClient {
 
