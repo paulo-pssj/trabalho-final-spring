@@ -1,19 +1,23 @@
 package br.com.shinigami.service;
 
 
+import br.com.shinigami.client.CupomApiClient;
 import br.com.shinigami.dto.RelatorioContratoClienteDTO;
 import br.com.shinigami.dto.cliente.ClienteDTO;
 import br.com.shinigami.dto.contrato.ContratoCreateDTO;
 import br.com.shinigami.dto.contrato.ContratoDTO;
+import br.com.shinigami.dto.cupom.CupomDTO;
 import br.com.shinigami.dto.imovel.ImovelDTO;
 import br.com.shinigami.dto.log.LogCreateDTO;
 import br.com.shinigami.dto.page.PageDTO;
+import br.com.shinigami.entity.ClienteEntity;
 import br.com.shinigami.entity.ContratoEntity;
 import br.com.shinigami.entity.ImovelEntity;
 import br.com.shinigami.entity.enums.Tipo;
 import br.com.shinigami.entity.enums.TipoLog;
 import br.com.shinigami.exceptions.RegraDeNegocioException;
 import br.com.shinigami.repository.ContratoRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,7 +26,10 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
+
+import static java.lang.Math.abs;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -35,18 +42,34 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
     private final EmailService emailService;
     private final ClienteService clienteService;
 
+    private final ProdutorService produtorService;
+
     private final LogService logService;
+
+    private final CupomApiClient cupomApiClient;
 
 
     @Override
-    public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException {
+    public ContratoDTO create(ContratoCreateDTO contrato) throws RegraDeNegocioException, JsonProcessingException {
         ContratoEntity contratoEntityNovo = objectMapper.convertValue(contrato, ContratoEntity.class);
         ImovelEntity imovelEntity = imovelService.findById(contrato.getIdImovel());
+        ClienteEntity clienteLocatario = clienteService.findById(contrato.getIdLocatario());
+
+
+        double valorAluguel = imovelEntity.getValorMensal() + imovelEntity.getCondominio();
+
+        CupomDTO cupomDTO = cupomApiClient.findByEmail(clienteLocatario.getEmail());
+        if (cupomDTO != null && cupomDTO.isAtivo()) {
+            contratoEntityNovo.setValorAluguel(valorAluguel - (valorAluguel * (cupomDTO.getDesconto() / 100)));
+            cupomApiClient.desativarCupom(clienteLocatario.getEmail());
+        } else {
+            contratoEntityNovo.setValorAluguel(valorAluguel);
+        }
         contratoEntityNovo.setAtivo(Tipo.S);
         contratoEntityNovo.setImovel(imovelEntity);
         contratoEntityNovo.setLocador(clienteService.findById(imovelEntity.getIdDono()));
-        contratoEntityNovo.setLocatario(clienteService.findById(contrato.getIdLocatario()));
-        contratoEntityNovo.setValorAluguel(imovelEntity.getValorMensal() + imovelEntity.getCondominio());
+        contratoEntityNovo.setLocatario(clienteLocatario);
+
 
         imovelService.alugarImovel(imovelEntity);
         ContratoEntity contratoEntityAdicionado = contratoRepository.save(contratoEntityNovo);
@@ -60,13 +83,24 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
 
         String assunto = "Seu contrato foi gerado com sucesso!!";
 
-        emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
-        emailService.sendEmail(contratoDTO.getLocatario(), emailBase, assunto);
+        String emailCupom = "Contrato criado com sucesso! <br> Contrato entre: " +
+                "<br> locador: " + contratoDTO.getLocador().getNome() +
+                "<br> locatario: " + contratoDTO.getLocatario().getNome() +
+                "<br>" + "Valor Mensal: R$" + contratoDTO.getImovel().getValorMensal() +
+                "<br>" + "Você ganhou um cupom para ser usado no Aluguel de Veículos" +
+                "<br>" + "Para usar seu cupom, forneça seu email na hora de alugar seu veículo!" +
+                "<br>" + "O cupom tem uma validade de 5 dias a partir de hoje " + LocalDate.now().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
 
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO CRIADO", LocalDate.now());
+        produtorService.enviarCupom(contratoDTO.getLocatario().getEmail());
+        emailService.sendEmail(contratoDTO.getLocador(), emailBase, assunto);
+        emailService.sendEmail(contratoDTO.getLocatario(), emailCupom, assunto);
+
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO CRIADO", LocalDate.now());
         logService.create(logCreateDTO);
+
         return contratoDTO;
     }
+
 
     @Override
     public void delete(Integer id) throws RegraDeNegocioException {
@@ -77,7 +111,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setAtivo(Tipo.N);
         imovelService.alugarImovel(imovelService.findById(contratoEntity.getIdImovel()));
         contratoRepository.save(contratoEntity);
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO DELETADO", LocalDate.now());
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO DELETADO", LocalDate.now());
         logService.create(logCreateDTO);
     }
 
@@ -99,7 +133,7 @@ public class ContratoService implements ServiceInterface<ContratoDTO, ContratoCr
         contratoEntity.setDataEntrada(contratoEntity.getDataEntrada());
         contratoEntity.setDataVencimento(contratoAtualizar.getDataVencimento());
         contratoRepository.save(contratoEntity);
-        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO,"CONTRATO ATUALIZADO", LocalDate.now());
+        LogCreateDTO logCreateDTO = new LogCreateDTO(TipoLog.CONTRATO, "CONTRATO ATUALIZADO", LocalDate.now());
         logService.create(logCreateDTO);
         return converteParaContratoDTO(contratoEntity);
     }
